@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Index from './routes';
 import Login from './routes/login/login';
 import Register from './routes/register/register';
+import Products from './routes/products/products';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />
+  },
+  {
+    path: "/products",
+    element: <Products/>
   }
 ]);
 

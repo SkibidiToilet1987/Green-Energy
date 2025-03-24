@@ -29,7 +29,7 @@ const MainNavigation = () => {
                 <strong>Register</strong>
               </Button>
             </Nav.Link>
-            <Nav.Link className="fs-5 text-white" href="/green-products">
+            <Nav.Link className="fs-5 text-white" href="/products">
               <Button variant="outline-light">
                 <strong>Products</strong>
               </Button>
