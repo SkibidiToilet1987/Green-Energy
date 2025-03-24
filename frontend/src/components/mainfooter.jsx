@@ -28,7 +28,7 @@ const MainFooter = () => {
                                 <Nav.Link as={Link} to="/energy-usage" className="text-light">Energy Usage</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to="/green-products" className="text-light">Green Products</Nav.Link>
+                                <Nav.Link as={Link} to="/products" className="text-light">Green Products</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Col>

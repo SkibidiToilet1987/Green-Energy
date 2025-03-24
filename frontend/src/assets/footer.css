@@ -20,7 +20,8 @@ footer .nav-link {
 }
 
 footer .nav-link:hover {
-    color: #a8d08d;  /* Light green color on hover */
+    color: #a8d08d;
+    /* Light green color on hover */
 }
 
 footer .text-light {
@@ -33,4 +34,27 @@ footer img {
 
 footer .mt-4 {
     margin-top: 20px;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* Makes the root element take the full height of the page */
+}
+
+.main-content {
+    flex: 1;
+    /* Takes up all available space */
+}
+
+footer {
+    margin-top: auto;
+    /* Pushes the footer to the bottom */
 }

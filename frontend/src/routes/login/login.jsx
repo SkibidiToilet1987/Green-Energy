@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainNavigation from '../../components/MainNavigation';
 import MainFooter from '../../components/MainFooter';
+import { Link } from 'react-router-dom';  // Import Link for navigation
 import '../../assets/login.css';
 
 export default function Login() {
@@ -67,7 +68,18 @@ export default function Login() {
         } catch (error) {
             // Handle API errors
             if (error.response) {
-                setValidationErrors({ api: error.response.data.message || "Invalid email or password. Please try again." });
+                if (error.response.status === 401) { // Assuming 401 for invalid credentials
+                    setValidationErrors({
+                        api: (
+                            <>
+                                Invalid credentials. Try again or{' '}
+                                <Link to="/register/">Register Here</Link>.
+                            </>
+                        )
+                    });
+                } else {
+                    setValidationErrors({ api: error.response.data.message || "Invalid email or password. Please try again." });
+                }
             } else {
                 setValidationErrors({ api: "An error occurred. Please check your internet connection and try again." });
             }
@@ -81,7 +93,7 @@ export default function Login() {
             <MainNavigation />
             <Container className="vh-100 d-flex justify-content-center align-items-center">
                 <Row className="w-50 justify-content-center">
-                    <Col>
+                    <Col md={10} style={{ paddingTop: "40px" }}>
                         <Card className="shadow">
                             <Card.Body>
                                 <Card.Title className="fs-2 text-center"><strong>Login</strong></Card.Title>

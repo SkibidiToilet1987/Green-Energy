@@ -5,11 +5,12 @@ import {
   createBrowserRouter,
   RouterProvider
 } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.css';
 import Index from './routes';
 import Login from './routes/login/login';
 import Register from './routes/register/register';
 import Products from './routes/products/products';
+import About from './routes/about/about';
+import 'bootstrap/dist/css/bootstrap.css';
 
 const router = createBrowserRouter([
   {
@@ -26,7 +27,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/products",
-    element: <Products/>
+    element: <Products />
+  },
+  {
+    path: "/about",
+    element: <About />
   }
 ]);
 

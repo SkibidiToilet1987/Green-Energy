@@ -1,4 +1,6 @@
 .error-background {
-    background-color: #ffebee; /* Light red background */
-    border-color: #dc3545; /* Optional: Match Bootstrap's invalid border color */
+    background-color: #ffebee;
+    /* Light red background */
+    border-color: #dc3545;
+    /* Optional: Match Bootstrap's invalid border color */
 }

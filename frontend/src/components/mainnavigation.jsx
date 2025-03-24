@@ -34,6 +34,11 @@ const MainNavigation = () => {
                 <strong>Products</strong>
               </Button>
             </Nav.Link>
+            <Nav.Link className="fs-5 text-white" href="/about">
+              <Button variant="outline-light">
+                <strong>About Us</strong>
+              </Button>
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

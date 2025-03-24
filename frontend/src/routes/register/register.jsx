@@ -152,7 +152,7 @@ export default function Register() {
             <MainNavigation />
             <Container fluid="true" className="vh-100 d-flex justify-content-center align-items-center">
                 <Row className="w-50 justify-content-center">
-                    <Col md={6}>
+                    <Col md={7} style={{ paddingTop: "40px" }}>
                         <Card className="shadow">
                             <Card.Body>
                                 <Card.Title className="fs-2 text-center"><strong>Signup</strong></Card.Title>
