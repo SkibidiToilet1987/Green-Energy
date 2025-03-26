@@ -11,6 +11,7 @@ import Login from './routes/login/login';
 import Register from './routes/register/register';
 import Products from './routes/products/products';
 import About from './routes/about/about';
+import Cart from './routes/cart/cart';
 import 'bootstrap/dist/css/bootstrap.css';
 
 const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/about",
     element: <About />
+  },
+  {
+    path: "/cart",
+    element: <Cart />
   }
 ]);
 

@@ -18,7 +18,6 @@ const Products = () => {
   useEffect(() => {
     axios.get('http://localhost:3000/products')
       .then(response => {
-        console.log('Fetched products:', response.data);
         setProducts(response.data);
       })
       .catch(error => console.error('Error fetching products:', error));
@@ -150,7 +149,10 @@ const Products = () => {
                       <Card.Text className="text-muted flex-grow-1">{product.description}</Card.Text>
                       <div className="d-flex justify-content-between align-items-center mt-3">
                         <span className="fw-bold fs-5">£{product.price}</span>
-                        <Button variant="primary" style={{background:"#212529", borderColor:"#212529"}} onClick={() => addToCart(product)}>Add to Cart</Button>
+                        <Button variant="primary" style={{backgroundColor:"#212529", borderColor:"#212529"}} onClick={() => {
+                          console.log('Adding to cart:', product); // Debugging line
+                          addToCart(product);
+                        }}>Add to Cart</Button>
                       </div>
                     </Card.Body>
                   </Card>
@@ -177,14 +179,14 @@ const Products = () => {
         <Container>
           <Row>
             <Col md={6} className="mb-4 mb-md-0">
-              <div className="featured-card bg-dark text-white p-4 h-100">
+              <div className="featured-card bg-dark text-white p-4 h-100 text-center">
                 <h3 className="border-bottom pb-2">Consultations & Installations</h3>
                 <p>Our certified technicians ensure proper installation and setup of all our green energy products.</p>
                 <Button variant="light" className="rounded-pill btn-rounded">Schedule Now</Button>
               </div>
             </Col>
             <Col md={6}>
-              <div className="featured-card bg-dark text-white p-4 h-100">
+              <div className="featured-card bg-dark text-white p-4 h-100 text-center">
                 <h3 className="border-bottom pb-2">Calculate Your Carbon Footprint</h3>
                 <p>Use our carbon footprint calculator to see how much you can reduce your carbon footprint by switching to green energy solutions.</p>
                 <Button variant="light" className="rounded-pill btn-rounded">Try Calculator</Button>
