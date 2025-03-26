@@ -4,15 +4,21 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users/index');
 var authRouter = require('./routes/auth/index');
-
+var productRouter = require('./routes/product/productRoutes');
 
 var app = express();
 
-// view engine setup
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/ISL')
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log('Error connecting to MongoDB:', err));
+
+// view engine setup (if you still need it for rendering views)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -23,24 +29,29 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
+// Set up routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/products', productRouter);
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// Error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
+  // Set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // Send JSON response instead of rendering a view
   res.status(err.status || 500);
-  res.render('error');
+  res.json({
+    message: err.message,
+    error: err
+  });
 });
 
 module.exports = app;

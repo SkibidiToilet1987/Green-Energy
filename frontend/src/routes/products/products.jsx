@@ -1,60 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
 import { FaSearch, FaLeaf, FaFilter } from 'react-icons/fa';
 import '../../assets/product.css';  // Make sure this file is included
 import MainFooter from '../../components/MainFooter';
 import MainNavigation from '../../components/MainNavigation';
-
-const products = [
-  {
-    id: 1,
-    name: 'Solar Panel',
-    description: 'A highly efficient solar panel to power your home sustainably.',
-    image: 'https://images.pexels.com/photos/2800832/pexels-photo-2800832.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    price: '£299.99',
-    category: 'Solar'
-  },
-  {
-    id: 2,
-    name: 'Electric Car Charger',
-    description: 'A home charging station for electric vehicles.',
-    image: 'https://images.pexels.com/photos/9800009/pexels-photo-9800009.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    price: '£199.99',
-    category: 'Transport'
-  },
-  {
-    id: 3,
-    name: 'Smart Thermostat',
-    description: 'Control your home temperature intelligently with this smart thermostat.',
-    image: 'https://images.pexels.com/photos/7616651/pexels-photo-7616651.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    price: '£129.99',
-    category: 'Home'
-  },
-  {
-    id: 4,
-    name: 'Smart LED Bulb',
-    description: 'Energy-efficient smart LED bulb for modern homes.',
-    image: 'https://images.pexels.com/photos/3946155/pexels-photo-3946155.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    price: '£19.99',
-    category: 'Home'
-  },
-  {
-    id: 5,
-    name: 'Water Heating System',
-    description: 'Eco-friendly water heating system to reduce your carbon footprint.',
-    image: 'https://steptodown.com/istock-downloader/images/steptodown.com795688.jpg',
-    price: '£899.99',
-    category: 'Solar'
-  }
-];
-
-const categories = ['All', 'Solar', 'Wind', 'Transport', 'Home'];
+import { CartContext } from '../../context/CartContext';
+import axios from 'axios';
 
 const Products = () => {
+  const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
+  const { addToCart } = useContext(CartContext);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/products')
+      .then(response => {
+        console.log('Fetched products:', response.data);
+        setProducts(response.data);
+      })
+      .catch(error => console.error('Error fetching products:', error));
+  }, []);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -78,8 +46,8 @@ const Products = () => {
 
   // Sort products based on selected sort option
   const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sortBy === 'priceLow') return parseFloat(a.price.substring(1)) - parseFloat(b.price.substring(1));
-    if (sortBy === 'priceHigh') return parseFloat(b.price.substring(1)) - parseFloat(a.price.substring(1));
+    if (sortBy === 'priceLow') return a.price - b.price;
+    if (sortBy === 'priceHigh') return b.price - a.price;
     return 0; // Default 'featured' sort maintains original order
   });
 
@@ -142,7 +110,7 @@ const Products = () => {
 
                 <h5 className="fw-bold mb-3">Categories</h5>
                 <div className="d-flex flex-column">
-                  {categories.map((category) => (
+                  {['All', 'Solar', 'Smart Home', 'Electric Vehicles'].map((category) => (
                     <Button
                       key={category}
                       variant={selectedCategory === category ? "dark" : "outline-dark"}
@@ -172,7 +140,7 @@ const Products = () => {
           <Col lg={9}>
             <Row>
               {sortedProducts.map((product) => (
-                <Col md={6} lg={4} key={product.id} className="mb-4">
+                <Col md={6} lg={4} key={product._id} className="mb-4">
                   <Card className="h-100 product-card border-0 shadow-sm">
                     <div className="product-image-container">
                       <Card.Img variant="top" src={product.image || 'https://via.placeholder.com/300x200'} className="product-image" />
@@ -181,7 +149,8 @@ const Products = () => {
                       <Card.Title>{product.name}</Card.Title>
                       <Card.Text className="text-muted flex-grow-1">{product.description}</Card.Text>
                       <div className="d-flex justify-content-between align-items-center mt-3">
-                        <span className="fw-bold fs-5">{product.price}</span>
+                        <span className="fw-bold fs-5">£{product.price}</span>
+                        <Button variant="primary" style={{background:"#212529", borderColor:"#212529"}} onClick={() => addToCart(product)}>Add to Cart</Button>
                       </div>
                     </Card.Body>
                   </Card>

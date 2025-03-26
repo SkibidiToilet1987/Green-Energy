@@ -1,6 +1,7 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom/client';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import { CookiesProvider } from 'react-cookie';
+import { CartProvider } from './context/CartContext';
 import {
   createBrowserRouter,
   RouterProvider
@@ -38,7 +39,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <CookiesProvider>
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </CookiesProvider>
   </React.StrictMode>
 );
