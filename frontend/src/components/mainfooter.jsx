@@ -52,7 +52,7 @@ const MainFooter = () => {
                 {/* Footer Bottom */}
                 <Row className="text-center mt-4">
                     <Col>
-                        <p className="text-light mb-0">&copy; {new Date().getFullYear()} Green Energy Co. | All Rights Reserved</p>
+                        <p className="text-light mb-0">&copy; {new Date().getFullYear()} Rolsa Technologies Co. | All Rights Reserved</p>
                         <Button variant="outline-light" href="#top" className="mt-2">Back to Top</Button>
                     </Col>
                 </Row>

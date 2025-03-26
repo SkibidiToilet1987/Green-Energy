@@ -10,47 +10,39 @@ const products = [
     id: 1,
     name: 'Solar Panel',
     description: 'A highly efficient solar panel to power your home sustainably.',
-    image: '',
+    image: 'https://images.pexels.com/photos/2800832/pexels-photo-2800832.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     price: '£299.99',
     category: 'Solar'
   },
   {
     id: 2,
-    name: 'Wind Turbine',
-    description: 'A compact wind turbine for eco-friendly energy generation.',
-    image: '',
-    price: '£499.99',
-    category: 'Wind'
-  },
-  {
-    id: 3,
     name: 'Electric Car Charger',
     description: 'A home charging station for electric vehicles.',
-    image: '',
+    image: 'https://images.pexels.com/photos/9800009/pexels-photo-9800009.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     price: '£199.99',
     category: 'Transport'
   },
   {
-    id: 4,
+    id: 3,
     name: 'Smart Thermostat',
     description: 'Control your home temperature intelligently with this smart thermostat.',
-    image: '',
+    image: 'https://images.pexels.com/photos/7616651/pexels-photo-7616651.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     price: '£129.99',
     category: 'Home'
   },
   {
-    id: 5,
+    id: 4,
     name: 'Smart LED Bulb',
     description: 'Energy-efficient smart LED bulb for modern homes.',
-    image: '',
+    image: 'https://images.pexels.com/photos/3946155/pexels-photo-3946155.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     price: '£19.99',
     category: 'Home'
   },
   {
-    id: 6,
+    id: 5,
     name: 'Water Heating System',
     description: 'Eco-friendly water heating system to reduce your carbon footprint.',
-    image: '',
+    image: 'https://steptodown.com/istock-downloader/images/steptodown.com795688.jpg',
     price: '£899.99',
     category: 'Solar'
   }
@@ -101,12 +93,10 @@ const Products = () => {
             <Col lg={6}>
               <h1 className="display-4 fw-bold mb-3">Sustainable Energy Solutions</h1>
               <p className="lead mb-4">Transform your home and lifestyle with our cutting-edge green energy products.</p>
-              <Button variant="light" size="lg" className="me-2 btn-rounded">Shop Products</Button>
-              <Button variant="outline-light" size="lg" className="btn-rounded">Our Services</Button>
             </Col>
             <Col lg={6} className="d-none d-lg-block">
               <div className="text-center">
-                <FaLeaf className="display-1 animated-icon" />
+                <FaLeaf className="display-1 pulse-animation" />
               </div>
             </Col>
           </Row>
@@ -119,7 +109,6 @@ const Products = () => {
         <Row className="mb-4">
           <Col>
             <h2 className="fw-bold">Green Energy Products</h2>
-            <p className="text-muted">High-quality sustainable solutions for modern living</p>
           </Col>
         </Row>
 
@@ -222,7 +211,6 @@ const Products = () => {
               <div className="featured-card bg-dark text-white p-4 h-100">
                 <h3 className="border-bottom pb-2">Consultations & Installations</h3>
                 <p>Our certified technicians ensure proper installation and setup of all our green energy products.</p>
-                <p>We also offer free consultations</p>
                 <Button variant="light" className="rounded-pill btn-rounded">Schedule Now</Button>
               </div>
             </Col>
