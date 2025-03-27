@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
-import { FaSearch, FaLeaf, FaFilter } from 'react-icons/fa';
-import '../../assets/product.css';  // Make sure this file is included
+import { Container, Row, Col, Card, Button, Form, Badge } from 'react-bootstrap';
+import { FaSearch, FaLeaf, FaFilter, FaShoppingCart, FaTimes, FaMinus, FaPlus } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import '../../assets/product.css';
 import MainFooter from '../../components/MainFooter';
 import MainNavigation from '../../components/MainNavigation';
 import { CartContext } from '../../context/CartContext';
@@ -11,14 +12,17 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [categories, setCategories] = useState(['All', 'Solar', 'Wind', 'Transport', 'Home']);
   const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
-  const { addToCart } = useContext(CartContext);
+  const { cart, addToCart, updateQuantity } = useContext(CartContext);
 
   useEffect(() => {
     axios.get('http://localhost:3000/products')
       .then(response => {
         setProducts(response.data);
+        const uniqueCategories = ['All', ...new Set(response.data.map(p => p.category))];
+        setCategories(uniqueCategories);
       })
       .catch(error => console.error('Error fetching products:', error));
   }, []);
@@ -35,7 +39,6 @@ const Products = () => {
     setSortBy(e.target.value);
   };
 
-  // Filter products based on search term and category
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -43,16 +46,86 @@ const Products = () => {
     return matchesSearch && matchesCategory;
   });
 
-  // Sort products based on selected sort option
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortBy === 'priceLow') return a.price - b.price;
     if (sortBy === 'priceHigh') return b.price - a.price;
-    return 0; // Default 'featured' sort maintains original order
+    return 0;
   });
+
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   return (
     <div className="products-page dark-theme">
       <MainNavigation />
+
+      {/* Fixed Cart Notification */}
+      <div className="cart-notification">
+        <Button variant="dark" className="cart-button position-relative">
+          <FaShoppingCart size={20} />
+          {totalItems > 0 && (
+            <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle">
+              {totalItems}
+            </Badge>
+          )}
+        </Button>
+
+        {totalItems > 0 && (
+          <Card className="cart-dropdown">
+            <Card.Body>
+              <h6 className="mb-3">Your Cart ({totalItems} items)</h6>
+              <div className="cart-items">
+                {cart.map((item) => (
+                  <div key={item._id} className="cart-item d-flex justify-content-between align-items-center mb-2">
+                    <div className="d-flex align-items-center">
+                      <img 
+                        src={item.image || 'https://via.placeholder.com/50'} 
+                        alt={item.name} 
+                        className="cart-item-image me-2"
+                      />
+                      <div>
+                        <div className="fw-bold">{item.name}</div>
+                        <small>£{item.price} × {item.quantity}</small>
+                      </div>
+                    </div>
+                    <div className="d-flex align-items-center">
+                      <Button 
+                        variant="outline-secondary" 
+                        size="sm"
+                        onClick={() => updateQuantity(item._id, 'decrement')}
+                        disabled={item.quantity <= 1}
+                        className="ms-2"
+                      >
+                        <FaMinus />
+                      </Button>
+                      <span className="mx-2">{item.quantity}</span>
+                      <Button 
+                        variant="outline-secondary" 
+                        size="sm"
+                        onClick={() => updateQuantity(item._id, 'increment')}
+                        className="ms-2"
+                      >
+                        <FaPlus />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                <span className="fw-bold">
+                  Total: £{totalPrice.toFixed(2)}
+                </span>
+                <Link to="/cart">
+                  <Button variant="success" size="sm">
+                    Checkout
+                  </Button>
+                </Link>
+              </div>
+            </Card.Body>
+          </Card>
+        )}
+      </div>
+
       {/* Hero Section */}
       <div className="hero-section text-white py-5">
         <Container>
@@ -60,10 +133,12 @@ const Products = () => {
             <Col lg={6}>
               <h1 className="display-4 fw-bold mb-3">Sustainable Energy Solutions</h1>
               <p className="lead mb-4">Transform your home and lifestyle with our cutting-edge green energy products.</p>
+              <Button variant="light" size="lg" className="me-2 btn-rounded">Shop Products</Button>
+              <Button variant="outline-light" size="lg" className="btn-rounded">Our Services</Button>
             </Col>
             <Col lg={6} className="d-none d-lg-block">
               <div className="text-center">
-                <FaLeaf className="display-1 pulse-animation" />
+                <FaLeaf className="display-1 animated-icon" />
               </div>
             </Col>
           </Row>
@@ -72,10 +147,10 @@ const Products = () => {
 
       {/* Main Content */}
       <Container className="py-5">
-        {/* Page Title */}
         <Row className="mb-4">
           <Col>
             <h2 className="fw-bold">Green Energy Products</h2>
+            <p className="text-muted">High-quality sustainable solutions for modern living</p>
           </Col>
         </Row>
 
@@ -102,14 +177,14 @@ const Products = () => {
                     placeholder="Search products..."
                     value={searchTerm}
                     onChange={handleSearchChange}
-                    className="ps-5 bg-light border-0"  // Added padding for better spacing
+                    className="ps-5 bg-light border-0"
                   />
                   <FaSearch className="position-absolute text-muted" style={{ top: '12px', left: '12px' }} />
                 </div>
 
                 <h5 className="fw-bold mb-3">Categories</h5>
                 <div className="d-flex flex-column">
-                  {['All', 'Solar', 'Smart Home', 'Electric Vehicles'].map((category) => (
+                  {categories.map((category) => (
                     <Button
                       key={category}
                       variant={selectedCategory === category ? "dark" : "outline-dark"}
@@ -149,10 +224,14 @@ const Products = () => {
                       <Card.Text className="text-muted flex-grow-1">{product.description}</Card.Text>
                       <div className="d-flex justify-content-between align-items-center mt-3">
                         <span className="fw-bold fs-5">£{product.price}</span>
-                        <Button variant="primary" style={{backgroundColor:"#212529", borderColor:"#212529"}} onClick={() => {
-                          console.log('Adding to cart:', product); // Debugging line
-                          addToCart(product);
-                        }}>Add to Cart</Button>
+                        <Button 
+                          variant="dark" 
+                          onClick={() => addToCart(product)}
+                          className="ms-auto"
+                          style={{ minWidth: '120px' }}
+                        >
+                          Add to Cart
+                        </Button>
                       </div>
                     </Card.Body>
                   </Card>
@@ -160,7 +239,6 @@ const Products = () => {
               ))}
             </Row>
 
-            {/* Empty State */}
             {sortedProducts.length === 0 && (
               <div className="text-center py-5">
                 <h3>No products found</h3>
@@ -179,14 +257,15 @@ const Products = () => {
         <Container>
           <Row>
             <Col md={6} className="mb-4 mb-md-0">
-              <div className="featured-card bg-dark text-white p-4 h-100 text-center">
+              <div className="featured-card bg-dark text-white p-4 h-100">
                 <h3 className="border-bottom pb-2">Consultations & Installations</h3>
                 <p>Our certified technicians ensure proper installation and setup of all our green energy products.</p>
+                <p>We also offer free consultations</p>
                 <Button variant="light" className="rounded-pill btn-rounded">Schedule Now</Button>
               </div>
             </Col>
             <Col md={6}>
-              <div className="featured-card bg-dark text-white p-4 h-100 text-center">
+              <div className="featured-card bg-dark text-white p-4 h-100">
                 <h3 className="border-bottom pb-2">Calculate Your Carbon Footprint</h3>
                 <p>Use our carbon footprint calculator to see how much you can reduce your carbon footprint by switching to green energy solutions.</p>
                 <Button variant="light" className="rounded-pill btn-rounded">Try Calculator</Button>
@@ -194,7 +273,6 @@ const Products = () => {
             </Col>
           </Row>
 
-          {/* New Card for Calculate Your Energy Usage */}
           <Row className="justify-content-center mt-4">
             <Col md={6}>
               <div className="featured-card bg-dark text-white p-4 h-100 text-center">

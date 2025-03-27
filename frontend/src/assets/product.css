@@ -149,3 +149,94 @@ h1 {
   color: #ffffff; /* Optional: adds a green color to the leaf */
 }
 
+/* Cart Notification Styles */
+.cart-notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cart-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  background-color: #212529;
+  border: none;
+}
+
+.cart-button:hover {
+  transform: scale(1.05);
+  background-color: #343a40;
+}
+
+.cart-dropdown {
+  width: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #343a40;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin-top: 10px;
+}
+
+.cart-items {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.cart-item {
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  background-color: #495057;
+  margin-bottom: 8px;
+}
+
+.cart-item:hover {
+  background-color: #5a6268;
+}
+
+.cart-item-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .cart-notification {
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .cart-dropdown {
+    width: 300px;
+  }
+}
+
+/* Dark theme adjustments */
+.dark-theme .cart-dropdown {
+  background-color: #343a40;
+  color: white;
+}
+
+.dark-theme .cart-item {
+  background-color: #495057;
+}
+
+.dark-theme .cart-item:hover {
+  background-color: #5a6268;
+}
+
