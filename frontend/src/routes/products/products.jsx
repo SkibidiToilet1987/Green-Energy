@@ -4,7 +4,7 @@ import { FaSearch, FaLeaf, FaFilter, FaShoppingCart, FaTimes, FaMinus, FaPlus, F
 import { Link } from 'react-router-dom';
 import '../../assets/product.css';
 import MainFooter from '../../components/MainFooter';
-import MainNavigation from '../../components/MainNavigation';
+import MainNavigation from '../../components/mainnavigation';
 import { CartContext } from '../../context/CartContext';
 import axios from 'axios';
 
@@ -92,7 +92,13 @@ const Products = () => {
                       <Button 
                         variant="outline-secondary" 
                         size="sm"
-                        onClick={() => updateQuantity(item._id, 'decrement')}
+                        onClick={() => {
+                          if (item.quantity === 1) {
+                            removeFromCart(item._id); // Remove the product entirely if quantity is 1
+                          } else {
+                            updateQuantity(item._id, 'decrement'); // Decrease quantity otherwise
+                          }
+                        }}
                         className="ms-2"
                       >
                         {item.quantity === 1 ? <FaTrash /> : <FaMinus />}
