@@ -1,11 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const Checkout = require('../../models/checkoutModel'); // Ensure this path is correct
+const Checkout = require('../../models/checkoutModel'); // Import the Checkout model
 
-// POST /checkout - Save checkout information
+// POST /checkout - Save checkout form data to MongoDB
 router.post('/', async (req, res) => {
   try {
-    const { name, email, address, cardNumber, accountNumber, ccv, phoneNumber, cartItems } = req.body;
+    const {
+      name,
+      email,
+      address,
+      cardNumber,
+      accountNumber,
+      ccv,
+      phoneNumber,
+    } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !address || !cardNumber || !accountNumber || !ccv || !phoneNumber) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
 
     // Create a new checkout entry
     const checkout = new Checkout({
@@ -16,15 +29,14 @@ router.post('/', async (req, res) => {
       accountNumber,
       ccv,
       phoneNumber,
-      cartItems, // Save the cart items
     });
 
     // Save to database
     await checkout.save();
-    res.status(201).json({ message: 'Checkout information saved successfully' });
+    res.status(201).json({ message: 'Checkout data saved successfully' });
   } catch (error) {
-    console.error('Error saving checkout information:', error);
-    res.status(500).json({ error: 'Failed to save checkout information' });
+    console.error('Error saving checkout data:', error.message);
+    res.status(500).json({ error: 'Failed to save checkout data' });
   }
 });
 

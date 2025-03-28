@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
-import { Card, Col, Container, Row, Form, Button, Spinner } from 'react-bootstrap';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Card, Form, Button, Spinner } from 'react-bootstrap';
 import MainNavigation from '../../components/MainNavigation';
 import MainFooter from '../../components/MainFooter';
-import '../../assets/checkout.css';
+import axios from 'axios';
 
 const Checkout = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [validationErrors, setValidationErrors] = useState({});
-  const navigate = useNavigate();
-
-  // State to manage form input values
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
@@ -19,55 +13,22 @@ const Checkout = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [ccv, setCcv] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [validationErrors, setValidationErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // Input handlers for specific fields
-  const handleCardNumberChange = (e) => {
-    const value = e.target.value.replace(/\D/g, '').slice(0, 16);
-    setCardNumber(value);
-  };
-
-  const handleAccountNumberChange = (e) => {
-    const value = e.target.value.replace(/\D/g, '').slice(0, 8);
-    setAccountNumber(value);
-  };
-
-  const handleCcvChange = (e) => {
-    const value = e.target.value.replace(/\D/g, '').slice(0, 3);
-    setCcv(value);
-  };
-
-  const handlePhoneNumberChange = (e) => {
-    const value = e.target.value.replace(/\D/g, '').slice(0, 9);
-    setPhoneNumber(value);
-  };
-
-  // Form submission handler
   const handleSubmit = (event) => {
     event.preventDefault();
 
     // Validation logic
     const newErrors = {};
-    if (!name) {
-      newErrors.name = 'Name is required';
-    }
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    if (!address) {
-      newErrors.address = 'Address is required';
-    }
-    if (cardNumber.length !== 16) {
-      newErrors.cardNumber = 'Card number must be exactly 16 digits';
-    }
-    if (accountNumber.length !== 8) {
-      newErrors.accountNumber = 'Account number must be exactly 8 digits';
-    }
-    if (ccv.length !== 3) {
-      newErrors.ccv = 'CCV must be exactly 3 digits';
-    }
-    if (phoneNumber.length !== 9) {
-      newErrors.phoneNumber = 'Phone number must be exactly 9 digits';
-    }
+    if (!name) newErrors.name = 'Name is required';
+    if (!email || !/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Please enter a valid email address';
+    if (!address) newErrors.address = 'Address is required';
+    if (cardNumber.length !== 16) newErrors.cardNumber = 'Card number must be exactly 16 digits';
+    if (accountNumber.length !== 8) newErrors.accountNumber = 'Account number must be exactly 8 digits';
+    if (ccv.length !== 3) newErrors.ccv = 'CCV must be exactly 3 digits';
+    if (phoneNumber.length !== 9) newErrors.phoneNumber = 'Phone number must be exactly 9 digits';
 
     if (Object.keys(newErrors).length > 0) {
       setValidationErrors(newErrors);
@@ -85,13 +46,14 @@ const Checkout = () => {
         accountNumber,
         ccv,
         phoneNumber,
+        cartItems: JSON.parse(localStorage.getItem('cartItems')), // Retrieve cart items from localStorage
       })
       .then((response) => {
-        // Navigate to confirmation page after successful submission
-        navigate('/checkout/confirm');
+        console.log('Checkout data saved successfully:', response.data);
+        navigate('/checkout/confirm'); // Navigate to confirmation page
       })
       .catch((error) => {
-        // Handle errors
+        console.error('Error saving checkout data:', error);
         setValidationErrors({ api: 'An error occurred during checkout.' });
       })
       .finally(() => {
@@ -111,7 +73,6 @@ const Checkout = () => {
                   <strong>Checkout</strong>
                 </Card.Title>
                 <Form onSubmit={handleSubmit} className="checkout-form">
-                  {/* Name */}
                   <Form.Group className="mb-3" controlId="formName">
                     <Form.Label>Name</Form.Label>
                     <Form.Control
@@ -126,7 +87,6 @@ const Checkout = () => {
                     )}
                   </Form.Group>
 
-                  {/* Email */}
                   <Form.Group className="mb-3" controlId="formEmail">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
@@ -141,7 +101,6 @@ const Checkout = () => {
                     )}
                   </Form.Group>
 
-                  {/* Address */}
                   <Form.Group className="mb-3" controlId="formAddress">
                     <Form.Label>Address</Form.Label>
                     <Form.Control
@@ -156,14 +115,13 @@ const Checkout = () => {
                     )}
                   </Form.Group>
 
-                  {/* Card Number */}
                   <Form.Group className="mb-3" controlId="formCardNumber">
                     <Form.Label>Card Number</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter Card Number"
                       value={cardNumber}
-                      onChange={handleCardNumberChange}
+                      onChange={(e) => setCardNumber(e.target.value)}
                       maxLength={16}
                       isInvalid={!!validationErrors.cardNumber}
                     />
@@ -172,14 +130,13 @@ const Checkout = () => {
                     )}
                   </Form.Group>
 
-                  {/* Account Number */}
                   <Form.Group className="mb-3" controlId="formAccountNumber">
                     <Form.Label>Account Number</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter Account Number"
                       value={accountNumber}
-                      onChange={handleAccountNumberChange}
+                      onChange={(e) => setAccountNumber(e.target.value)}
                       maxLength={8}
                       isInvalid={!!validationErrors.accountNumber}
                     />
@@ -188,14 +145,13 @@ const Checkout = () => {
                     )}
                   </Form.Group>
 
-                  {/* CCV */}
                   <Form.Group className="mb-3" controlId="formCcv">
                     <Form.Label>CCV</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter CCV"
                       value={ccv}
-                      onChange={handleCcvChange}
+                      onChange={(e) => setCcv(e.target.value)}
                       maxLength={3}
                       isInvalid={!!validationErrors.ccv}
                     />
@@ -204,14 +160,13 @@ const Checkout = () => {
                     )}
                   </Form.Group>
 
-                  {/* Phone Number */}
                   <Form.Group className="mb-3" controlId="formPhoneNumber">
                     <Form.Label>Phone Number</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter Phone Number"
                       value={phoneNumber}
-                      onChange={handlePhoneNumberChange}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
                       maxLength={9}
                       isInvalid={!!validationErrors.phoneNumber}
                     />
@@ -220,12 +175,10 @@ const Checkout = () => {
                     )}
                   </Form.Group>
 
-                  {/* API Error Message (Inline) */}
                   {validationErrors.api && (
                     <div className="text-danger mb-3">{validationErrors.api}</div>
                   )}
 
-                  {/* Submit Button */}
                   <Button
                     style={{ width: '100%' }}
                     variant="primary"

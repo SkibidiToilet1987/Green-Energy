@@ -1,22 +1,15 @@
 const mongoose = require('mongoose');
 
 const checkoutSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  address: { type: String, required: true },
-  cardNumber: { type: String, required: true },
-  accountNumber: { type: String, required: true },
-  ccv: { type: String, required: true },
-  phoneNumber: { type: String, required: true },
-  cartItems: [
-    {
-      productId: { type: String, required: true },
-      name: { type: String, required: true },
-      price: { type: Number, required: true },
-      quantity: { type: Number, required: true },
-    },
-  ],
-  createdAt: { type: Date, default: Date.now },
+  name: { type: String, required: true }, // Buyer's name
+  email: { type: String, required: true }, // Buyer's email
+  address: { type: String, required: true }, // Buyer's address
+  cardNumber: { type: String, required: true }, // Buyer's card number
+  accountNumber: { type: String, required: true }, // Buyer's account number
+  ccv: { type: String, required: true }, // Buyer's CCV
+  phoneNumber: { type: String, required: true }, // Buyer's phone number
+  createdAt: { type: Date, default: Date.now }, // Timestamp
 });
 
-module.exports = mongoose.model('Checkout', checkoutSchema);
+// Export the model for the "checkout" collection
+module.exports = mongoose.models.Checkout || mongoose.model('Checkout', checkoutSchema, 'checkout');

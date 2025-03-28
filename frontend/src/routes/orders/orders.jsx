@@ -4,10 +4,11 @@ import MainFooter from '../../components/MainFooter'
 
 const Orders = () => {
   return (
-    <>
-    <MainNavigation/>
-    <MainFooter/>
-    </>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <MainNavigation/>
+      <div style={{ flex: '1' }}></div>
+      <MainFooter/>
+    </div>
   )
 }
 

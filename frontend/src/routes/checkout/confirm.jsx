@@ -1,47 +1,77 @@
-import React from 'react'
-import MainFooter from '../../components/MainFooter'
-import MainNavigation from '../../components/MainNavigation'
-import { CheckCircle } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import "../../assets/confirm.css"
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import MainNavigation from '../../components/MainNavigation';
+import MainFooter from '../../components/MainFooter';
+import { useNavigate } from 'react-router-dom';
 
 const Confirm = () => {
-  return (
-    <div className="confirmation-page">
-      <MainNavigation/>
-      <main className="confirmation-container">
-        <div className="confirmation-content">
-          <div className="confirmation-icon">
-            <CheckCircle size={100} color="#212529" strokeWidth={1.5} />
-          </div>
-          <h1 className="confirmation-title">Order Confirmed!</h1>
-          <p className="confirmation-message">
-            Thank you for your purchase. Your order has been successfully processed 
-            and is being prepared for shipment.
-          </p>
-          <div className="confirmation-details">
-            <div className="detail-item">
-              <span className="detail-label">Order Number:</span>
-              <span className="detail-value">#INV-{Math.floor(Math.random() * 1000000)}</span>
-            </div>
-            <div className="detail-item">
-              <span className="detail-label">Estimated Delivery:</span>
-              <span className="detail-value">5-7 Business Days</span>
-            </div>
-          </div>
-          <div className="confirmation-actions">
-            <Link to="/orders" className="view-orders-btn">
-              View My Orders
-            </Link>
-            <Link to="/products" className="continue-shopping-btn">
-              Continue Shopping
-            </Link>
-          </div>
-        </div>
-      </main>
-      <MainFooter/>
-    </div>
-  )
-}
+  const navigate = useNavigate();
 
-export default Confirm
+  const [orderNumber, setOrderNumber] = useState('');
+  const [deliveryTime, setDeliveryTime] = useState('5-7 Business Days');
+
+  // Generate a random order number
+  useEffect(() => {
+    const generateOrderNumber = () => {
+      return Math.floor(Math.random() * 1000000); // Random order number
+    };
+
+    setOrderNumber(generateOrderNumber());
+  }, []);
+
+  const handleGoBack = () => {
+    navigate('/products'); // Redirect to products page
+  };
+
+  const handleViewOrders = () => {
+    navigate('/orders'); // Redirect to orders page
+  };
+
+  return (
+    <>
+      <MainNavigation />
+      <Container className="vh-100 d-flex justify-content-center align-items-center">
+        <Row className="w-50 justify-content-center">
+          <Col md={10} style={{ paddingTop: '40px' }}>
+            <Card className="shadow text-center" style={{ backgroundColor: 'white', color: '#212529' }}>
+              <Card.Body>
+                <Card.Title className="fs-2">
+                  <strong>Thank You for Your Purchase!</strong>
+                </Card.Title>
+                <Card.Text className="mt-3">
+                  Your order has been successfully placed. You will receive a confirmation email shortly.
+                </Card.Text>
+                <Card.Text className="mt-3">
+                  <strong>Order Number:</strong> #{orderNumber}
+                </Card.Text>
+                <Card.Text className="mt-2">
+                  <strong>Estimated Delivery:</strong> {deliveryTime}
+                </Card.Text>
+                <div className="mt-4">
+                  <Button
+                    variant="dark"
+                    onClick={handleViewOrders}
+                    className="me-3"
+                    style={{ backgroundColor: '#212529', borderColor: '#212529' }}
+                  >
+                    View Orders
+                  </Button>
+                  <Button
+                    variant="dark"
+                    onClick={handleGoBack}
+                    style={{ backgroundColor: '#212529', borderColor: '#212529' }}
+                  >
+                    Continue Shopping
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+      <MainFooter />
+    </>
+  );
+};
+
+export default Confirm;
