@@ -1,6 +1,7 @@
+import React, { useState } from 'react';
 import { Card, Col, Container, Row, Form, Button, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainNavigation from '../../components/MainNavigation';
 import MainFooter from '../../components/MainFooter';
 import '../../assets/checkout.css';
@@ -8,85 +9,94 @@ import '../../assets/checkout.css';
 const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    address: '',
-    street: '',
-    city: '',
-    contactInfo: '',
-    cardNumber: '',
-    accountNumber: '',
-    ccv: ''
-  });
+  const navigate = useNavigate();
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  // State to manage form input values
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [ccv, setCcv] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  // Input handlers for specific fields
+  const handleCardNumberChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 16);
+    setCardNumber(value);
   };
 
-  const validatePhone = (phone) => {
-    const phoneRegex = /^\d{10}$/; // Validates a 10-digit phone number
-    return phoneRegex.test(phone);
+  const handleAccountNumberChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 8);
+    setAccountNumber(value);
   };
 
-  const validateCardNumber = (cardNumber) => {
-    const cardRegex = /^\d{16}$/; // Validates a 16-digit credit card number
-    return cardRegex.test(cardNumber);
+  const handleCcvChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 3);
+    setCcv(value);
   };
 
-  const validateCCV = (ccv) => {
-    const ccvRegex = /^\d{3}$/; // Validates a 3-digit CCV
-    return ccvRegex.test(ccv);
+  const handlePhoneNumberChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 9);
+    setPhoneNumber(value);
   };
 
-  const validateRequiredFields = (data) => {
-    const errors = {};
-
-    if (!data.firstName.trim()) errors.firstName = "First name is required.";
-    if (!data.lastName.trim()) errors.lastName = "Last name is required.";
-    if (!data.address.trim()) errors.address = "Address is required.";
-    if (!data.street.trim()) errors.street = "Street is required.";
-    if (!data.city.trim()) errors.city = "City is required.";
-    if (!data.contactInfo.trim() || !validatePhone(data.contactInfo)) errors.contactInfo = "Valid contact information is required.";
-    if (!data.cardNumber.trim() || !validateCardNumber(data.cardNumber)) errors.cardNumber = "Valid card number is required.";
-    if (!data.accountNumber.trim()) errors.accountNumber = "Account number is required.";
-    if (!data.ccv.trim() || !validateCCV(data.ccv)) errors.ccv = "Valid CCV is required.";
-
-    return errors;
-  };
-
+  // Form submission handler
   const handleSubmit = (event) => {
     event.preventDefault();
-    setIsLoading(true);
-    setValidationErrors({});
 
-    // Perform validation
-    const errors = validateRequiredFields(formData);
-    if (Object.keys(errors).length > 0) {
-      setValidationErrors(errors);
-      setIsLoading(false);
+    // Validation logic
+    const newErrors = {};
+    if (!name) {
+      newErrors.name = 'Name is required';
+    }
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    if (!address) {
+      newErrors.address = 'Address is required';
+    }
+    if (cardNumber.length !== 16) {
+      newErrors.cardNumber = 'Card number must be exactly 16 digits';
+    }
+    if (accountNumber.length !== 8) {
+      newErrors.accountNumber = 'Account number must be exactly 8 digits';
+    }
+    if (ccv.length !== 3) {
+      newErrors.ccv = 'CCV must be exactly 3 digits';
+    }
+    if (phoneNumber.length !== 9) {
+      newErrors.phoneNumber = 'Phone number must be exactly 9 digits';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setValidationErrors(newErrors);
       return;
     }
 
-    // Proceed with the API request
+    // If validation passes, make API request
+    setIsLoading(true);
     axios
-      .post('http://localhost:3000/checkout', formData)
+      .post('http://localhost:3000/checkout', {
+        name,
+        email,
+        address,
+        cardNumber,
+        accountNumber,
+        ccv,
+        phoneNumber,
+      })
       .then((response) => {
-        // Handle successful checkout (e.g., redirect to confirmation page)
+        // Navigate to confirmation page after successful submission
+        navigate('/checkout/confirm');
       })
       .catch((error) => {
-        setValidationErrors({ apiError: "An error occurred during checkout." });
+        // Handle errors
+        setValidationErrors({ api: 'An error occurred during checkout.' });
+      })
+      .finally(() => {
         setIsLoading(false);
       });
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
   };
 
   return (
@@ -94,37 +104,41 @@ const Checkout = () => {
       <MainNavigation />
       <Container className="vh-100 d-flex justify-content-center align-items-center">
         <Row className="w-50 justify-content-center">
-          <Col md={10} style={{ paddingTop: "40px" }}>
+          <Col md={10} style={{ paddingTop: '40px' }}>
             <Card className="shadow">
               <Card.Body>
-                <Card.Title className="fs-2 text-center"><strong>Checkout</strong></Card.Title>
-                <Form onSubmit={handleSubmit}>
-                  {/* First Name */}
-                  <Form.Group className="mb-3" controlId="formFirstName">
-                    <Form.Label>First Name</Form.Label>
+                <Card.Title className="fs-2 text-center">
+                  <strong>Checkout</strong>
+                </Card.Title>
+                <Form onSubmit={handleSubmit} className="checkout-form">
+                  {/* Name */}
+                  <Form.Group className="mb-3" controlId="formName">
+                    <Form.Label>Name</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter First Name"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      isInvalid={!!validationErrors.firstName}
+                      placeholder="Enter your name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      isInvalid={!!validationErrors.name}
                     />
-                    {validationErrors.firstName && <Form.Text className="text-danger">{validationErrors.firstName}</Form.Text>}
+                    {validationErrors.name && (
+                      <Form.Text className="text-danger">{validationErrors.name}</Form.Text>
+                    )}
                   </Form.Group>
 
-                  {/* Last Name */}
-                  <Form.Group className="mb-3" controlId="formLastName">
-                    <Form.Label>Last Name</Form.Label>
+                  {/* Email */}
+                  <Form.Group className="mb-3" controlId="formEmail">
+                    <Form.Label>Email</Form.Label>
                     <Form.Control
-                      type="text"
-                      placeholder="Enter Last Name"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      isInvalid={!!validationErrors.lastName}
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      isInvalid={!!validationErrors.email}
                     />
-                    {validationErrors.lastName && <Form.Text className="text-danger">{validationErrors.lastName}</Form.Text>}
+                    {validationErrors.email && (
+                      <Form.Text className="text-danger">{validationErrors.email}</Form.Text>
+                    )}
                   </Form.Group>
 
                   {/* Address */}
@@ -132,55 +146,14 @@ const Checkout = () => {
                     <Form.Label>Address</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleChange}
+                      placeholder="Enter your address"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
                       isInvalid={!!validationErrors.address}
                     />
-                    {validationErrors.address && <Form.Text className="text-danger">{validationErrors.address}</Form.Text>}
-                  </Form.Group>
-
-                  {/* Street */}
-                  <Form.Group className="mb-3" controlId="formStreet">
-                    <Form.Label>Street</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter Street"
-                      name="street"
-                      value={formData.street}
-                      onChange={handleChange}
-                      isInvalid={!!validationErrors.street}
-                    />
-                    {validationErrors.street && <Form.Text className="text-danger">{validationErrors.street}</Form.Text>}
-                  </Form.Group>
-
-                  {/* City */}
-                  <Form.Group className="mb-3" controlId="formCity">
-                    <Form.Label>City</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter City"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleChange}
-                      isInvalid={!!validationErrors.city}
-                    />
-                    {validationErrors.city && <Form.Text className="text-danger">{validationErrors.city}</Form.Text>}
-                  </Form.Group>
-
-                  {/* Contact Info */}
-                  <Form.Group className="mb-3" controlId="formContactInfo">
-                    <Form.Label>Contact Information (Phone Number)</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter Phone Number"
-                      name="contactInfo"
-                      value={formData.contactInfo}
-                      onChange={handleChange}
-                      isInvalid={!!validationErrors.contactInfo}
-                    />
-                    {validationErrors.contactInfo && <Form.Text className="text-danger">{validationErrors.contactInfo}</Form.Text>}
+                    {validationErrors.address && (
+                      <Form.Text className="text-danger">{validationErrors.address}</Form.Text>
+                    )}
                   </Form.Group>
 
                   {/* Card Number */}
@@ -189,12 +162,14 @@ const Checkout = () => {
                     <Form.Control
                       type="text"
                       placeholder="Enter Card Number"
-                      name="cardNumber"
-                      value={formData.cardNumber}
-                      onChange={handleChange}
+                      value={cardNumber}
+                      onChange={handleCardNumberChange}
+                      maxLength={16}
                       isInvalid={!!validationErrors.cardNumber}
                     />
-                    {validationErrors.cardNumber && <Form.Text className="text-danger">{validationErrors.cardNumber}</Form.Text>}
+                    {validationErrors.cardNumber && (
+                      <Form.Text className="text-danger">{validationErrors.cardNumber}</Form.Text>
+                    )}
                   </Form.Group>
 
                   {/* Account Number */}
@@ -203,42 +178,73 @@ const Checkout = () => {
                     <Form.Control
                       type="text"
                       placeholder="Enter Account Number"
-                      name="accountNumber"
-                      value={formData.accountNumber}
-                      onChange={handleChange}
+                      value={accountNumber}
+                      onChange={handleAccountNumberChange}
+                      maxLength={8}
                       isInvalid={!!validationErrors.accountNumber}
                     />
-                    {validationErrors.accountNumber && <Form.Text className="text-danger">{validationErrors.accountNumber}</Form.Text>}
+                    {validationErrors.accountNumber && (
+                      <Form.Text className="text-danger">{validationErrors.accountNumber}</Form.Text>
+                    )}
                   </Form.Group>
 
                   {/* CCV */}
-                  <Form.Group className="mb-3" controlId="formCCV">
+                  <Form.Group className="mb-3" controlId="formCcv">
                     <Form.Label>CCV</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter CCV"
-                      name="ccv"
-                      value={formData.ccv}
-                      onChange={handleChange}
+                      value={ccv}
+                      onChange={handleCcvChange}
+                      maxLength={3}
                       isInvalid={!!validationErrors.ccv}
                     />
-                    {validationErrors.ccv && <Form.Text className="text-danger">{validationErrors.ccv}</Form.Text>}
+                    {validationErrors.ccv && (
+                      <Form.Text className="text-danger">{validationErrors.ccv}</Form.Text>
+                    )}
                   </Form.Group>
 
+                  {/* Phone Number */}
+                  <Form.Group className="mb-3" controlId="formPhoneNumber">
+                    <Form.Label>Phone Number</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter Phone Number"
+                      value={phoneNumber}
+                      onChange={handlePhoneNumberChange}
+                      maxLength={9}
+                      isInvalid={!!validationErrors.phoneNumber}
+                    />
+                    {validationErrors.phoneNumber && (
+                      <Form.Text className="text-danger">{validationErrors.phoneNumber}</Form.Text>
+                    )}
+                  </Form.Group>
+
+                  {/* API Error Message (Inline) */}
+                  {validationErrors.api && (
+                    <div className="text-danger mb-3">{validationErrors.api}</div>
+                  )}
+
                   {/* Submit Button */}
-                  <Button style={{ width: "100%" }} variant="primary" type="submit" disabled={isLoading}>
+                  <Button
+                    style={{ width: '100%' }}
+                    variant="primary"
+                    type="submit"
+                    disabled={isLoading}
+                  >
                     {isLoading ? (
-                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
                     ) : (
-                      "Submit"
+                      'Submit'
                     )}
                   </Button>
                 </Form>
-
-                {/* API Error Message */}
-                {validationErrors.apiError && (
-                  <div className="text-danger mt-3">{validationErrors.apiError}</div>
-                )}
               </Card.Body>
             </Card>
           </Col>

@@ -120,6 +120,47 @@
     height: 100%;
   }
   
+  .mission-section {
+    background-color: #f8f9fa;
+    padding: 80px 0;
+  }
+  
+  .mission-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+  
+  .mission-card {
+    background-color: var(--white);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .mission-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  }
+  
+  .mission-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+  
+  .mission-title {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color:#212529;
+  }
+  
+  .mission-description {
+    color: #666;
+    line-height: 1.6;
+  }
+  
   .faq-section {
     padding: 80px 0;
     background-color: #f4f4f4;
@@ -198,6 +239,10 @@
     .main-heading {
       font-size: 2.5rem;
     }
+  
+    .mission-grid {
+      grid-template-columns: 1fr 1fr;
+    }
   }
   
   @media (max-width: 768px) {
@@ -239,5 +284,9 @@
   
     .section-title {
       font-size: 1.6rem;
+    }
+  
+    .mission-grid {
+      grid-template-columns: 1fr;
     }
   }

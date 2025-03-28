@@ -1,98 +1,43 @@
-/* Checkout Page Styles */
+/* Checkout Form Customization */
 
-/* General Styles for the Form */
-.checkout-form {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 50px auto;
-    max-width: 600px;
-}
-
-/* Form Title */
-.checkout-form h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 2rem;
-}
-
-/* Form Group */
-.checkout-form .form-group {
-    margin-bottom: 20px;
-}
-
-/* Input Fields */
-.checkout-form .form-control {
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 1rem;
-}
-
-/* Error Styling for Invalid Input */
-.error-background {
-    background-color: #ffebee;
-    border-color: #dc3545;
-}
-
-.error-background:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
-}
-
-/* Error Messages */
-.checkout-form .text-danger {
-    font-size: 0.875rem;
-    color: #dc3545;
-}
-
-/* Submit Button */
-.checkout-form .btn-submit {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.125rem;
-    background-color: #007bff;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    transition: background-color 0.3s;
-}
-
-.checkout-form .btn-submit:hover {
-    background-color: #0056b3;
-}
-
-/* Spinner when Button is Loading */
-.checkout-form .spinner-border {
+/* Remove the default gray border for form controls */
+.form-control {
+    border: 1px solid #ccc;  /* You can replace this with any color you like */
+    border-radius: 0.25rem;
+  }
+  
+  /* Remove focus border on error fields */
+  .form-control.is-invalid {
+    border-color: #dc3545; /* Red border for invalid inputs */
+    box-shadow: none; /* Remove the box-shadow that comes with the default Bootstrap error state */
+  }
+  
+  /* Remove focus border on valid fields (optional) */
+  .form-control.is-valid {
+    border-color: #28a745; /* Green border for valid inputs (optional) */
+    box-shadow: none; /* Remove the box-shadow */
+  }
+  
+  /* Placeholder styling to ensure it’s visible even with custom input */
+  .form-control::placeholder {
+    color: #6c757d; /* Change placeholder color if needed */
+    opacity: 1; /* Ensure the placeholder has full opacity */
+  }
+  
+  /* Submit Button Spinner */
+  .spinner-border {
     width: 20px;
     height: 20px;
-}
-
-/* Shipping Address Form Fields */
-.checkout-form .address-section {
-    margin-bottom: 20px;
-}
-
-/* Contact Information Section */
-.checkout-form .contact-info-section {
-    margin-bottom: 30px;
-}
-
-/* Payment Details Section */
-.checkout-form .payment-details-section {
-    margin-bottom: 30px;
-}
-
-/* Overall Container */
-.checkout-page-container {
-    background-color: #f1f1f1;
-    padding: 40px 0;
-}
-
-/* Container with Flexbox for Centering */
-.checkout-page-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
+  }
+  
+  /* Optional: Customizing the background of error inputs */
+  .error-background {
+    background-color: #ffebee;
+    border-color: #dc3545;
+  }
+  
+  .error-background:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+  }
+  

@@ -15,6 +15,24 @@ const About = () => {
     }
   ];
 
+  const greenEnergyMissions = [
+    {
+      title: "Why Green Energy Matters",
+      description: "Climate change is no longer a distant threat—it's a present reality. Rising global temperatures, extreme weather events, and ecological disruption are direct consequences of our continued reliance on fossil fuels. Green energy offers a critical pathway to mitigate these challenges, reduce carbon emissions, and preserve our planet's delicate ecosystems.",
+      icon: "🌍"
+    },
+    {
+      title: "How We Can Make a Difference",
+      description: "By transitioning to renewable energy sources like solar, wind, and hydro, we can dramatically reduce greenhouse gas emissions. Each megawatt of green energy prevents tons of carbon dioxide from entering our atmosphere. Our technologies and strategies empower communities, businesses, and individuals to be active participants in the global sustainability movement.",
+      icon: "🌿"
+    },
+    {
+      title: "Why Now is the Time",
+      description: "The window for meaningful climate action is narrowing. Scientists warn that we must significantly reduce emissions by 2030 to prevent irreversible damage. Green energy technologies are now more efficient and cost-effective than ever before. By investing in renewable energy now, we can create jobs, stimulate economic growth, and secure a livable future for generations to come.",
+      icon: "⏰"
+    }
+  ];
+
   return (
     <div className="about-page">
       <MainNavigation />
@@ -23,7 +41,8 @@ const About = () => {
           <div className="container">
             <div className="hero-wrapper">
               <div className="hero-text">
-                <h1 className="main-heading">Meet Our Creative Team</h1>
+                <h1 className="main-heading">About Rolsa</h1>
+                <h1 className="main-heading">Technologies</h1>
                 <p className="hero-description">
                   Green energy is vital for a sustainable future. We are dedicated to reducing greenhouse gas emissions, conserving natural resources, and leading the fight against climate change.
                 </p>
@@ -47,6 +66,21 @@ const About = () => {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mission-section">
+          <div className="container">
+            <h2 className="section-title">Our Green Energy Mission</h2>
+            <div className="mission-grid">
+              {greenEnergyMissions.map((mission, index) => (
+                <div key={index} className="mission-card">
+                  <div className="mission-icon">{mission.icon}</div>
+                  <h3 className="mission-title">{mission.title}</h3>
+                  <p className="mission-description">{mission.description}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

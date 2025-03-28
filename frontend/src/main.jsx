@@ -14,6 +14,8 @@ import About from './routes/about/about';
 import Cart from './routes/cart/cart';
 import 'bootstrap/dist/css/bootstrap.css';
 import Checkout from './routes/checkout/checkout';
+import Confirm from './routes/checkout/confirm';
+import Orders from './routes/orders/orders';
 
 const router = createBrowserRouter([
   {
@@ -43,6 +45,14 @@ const router = createBrowserRouter([
   {
     path: "/checkout",
     element: <Checkout/>
+  },
+  {
+    path:"/checkout/confirm",
+    element: <Confirm/>
+  },
+  {
+    path:"/orders",
+    element: <Orders/>
   }
 ]);
 
