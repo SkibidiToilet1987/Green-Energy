@@ -50,9 +50,6 @@ const Cart = () => {
       .then((response) => {
         console.log('Shopping cart data saved successfully:', response.data);
 
-        // Save cart data to localStorage for use in the checkout form
-        localStorage.setItem('cartItems', JSON.stringify(checkoutData.cartItems));
-
         // Redirect to the checkout page
         navigate('/checkout');
       })
@@ -138,7 +135,7 @@ const Cart = () => {
                       Total: <strong>£{totalPrice.toFixed(2)}</strong>
                     </h4>
                     <Button
-                      variant="success"
+                      variant="dark"
                       size="lg"
                       className="btn-rounded px-5"
                       onClick={handleCheckout}

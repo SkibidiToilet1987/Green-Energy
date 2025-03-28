@@ -1,9 +1,18 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    // Load cart from localStorage on initialization
+    const savedCart = localStorage.getItem('cartItems');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cart));
+  }, [cart]);
 
   // Add item to cart
   const addToCart = (product) => {
@@ -25,32 +34,20 @@ export const CartProvider = ({ children }) => {
 
   // Update quantity (increment or decrement)
   const updateQuantity = (productId, action) => {
-    setCart((prevCart) => {
-      return prevCart.map(item => {
-        if (item._id === productId) {
-          let newQuantity;
-          if (action === 'increment') {
-            newQuantity = item.quantity + 1;
-          } else if (action === 'decrement') {
-            // Decrement quantity by 1
-            newQuantity = item.quantity - 1;
-
-            // If quantity becomes 0 or less, remove item from cart
-            if (newQuantity <= 0) {
-              removeFromCart(productId);
-              return null;
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item._id === productId
+          ? {
+              ...item,
+              quantity: action === 'increment' ? item.quantity + 1 : Math.max(item.quantity - 1, 1),
             }
-          }
-
-          return { ...item, quantity: newQuantity };
-        }
-        return item;
-      }).filter(item => item !== null); // Remove null (deleted item)
-    });
+          : item
+      )
+    );
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity }}>
+    <CartContext.Provider value={{ cart, setCart, addToCart, removeFromCart, updateQuantity }}>
       {children}
     </CartContext.Provider>
   );
