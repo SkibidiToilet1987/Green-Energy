@@ -13,6 +13,7 @@ import Products from './routes/products/products';
 import About from './routes/about/about';
 import Cart from './routes/cart/cart';
 import 'bootstrap/dist/css/bootstrap.css';
+import Checkout from './routes/checkout/checkout';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: "/cart",
     element: <Cart />
+  },
+  {
+    path: "/checkout",
+    element: <Checkout/>
   }
 ]);
 

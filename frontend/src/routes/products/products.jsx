@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Form, Badge } from 'react-bootstrap';
-import { FaSearch, FaLeaf, FaFilter, FaShoppingCart, FaTimes, FaMinus, FaPlus } from 'react-icons/fa';
+import { FaSearch, FaLeaf, FaFilter, FaShoppingCart, FaTimes, FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import '../../assets/product.css';
 import MainFooter from '../../components/MainFooter';
@@ -15,7 +15,7 @@ const Products = () => {
   const [categories, setCategories] = useState(['All', 'Solar', 'Wind', 'Transport', 'Home']);
   const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
-  const { cart, addToCart, updateQuantity } = useContext(CartContext);
+  const { cart, addToCart, removeFromCart, updateQuantity } = useContext(CartContext);
 
   useEffect(() => {
     axios.get('http://localhost:3000/products')
@@ -93,10 +93,9 @@ const Products = () => {
                         variant="outline-secondary" 
                         size="sm"
                         onClick={() => updateQuantity(item._id, 'decrement')}
-                        disabled={item.quantity <= 1}
                         className="ms-2"
                       >
-                        <FaMinus />
+                        {item.quantity === 1 ? <FaTrash /> : <FaMinus />}
                       </Button>
                       <span className="mx-2">{item.quantity}</span>
                       <Button 

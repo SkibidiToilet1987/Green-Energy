@@ -1,57 +1,143 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { CartContext } from '../../context/CartContext';
 import MainNavigation from '../../components/MainNavigation';
 import MainFooter from '../../components/MainFooter';
-import { Card, Button, Row, Col, Container } from 'react-bootstrap';
+import { Card, Button, Row, Col, Container, Modal } from 'react-bootstrap';
+import { FaTrash, FaShoppingCart, FaCheck } from 'react-icons/fa';
 
 const Cart = () => {
-  const { cart, removeFromCart } = useContext(CartContext);
+  const { cart, removeFromCart, updateQuantity } = useContext(CartContext);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState(null);
+
+  // Calculate total price
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  // Confirm removal modal handler
+  const handleRemoveConfirmation = (product) => {
+    setItemToRemove(product);
+    setShowConfirmModal(true);
+  };
+
+  // Confirm remove action
+  const confirmRemove = () => {
+    if (itemToRemove) {
+      removeFromCart(itemToRemove._id);
+      setShowConfirmModal(false);
+      setItemToRemove(null);
+    }
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <MainNavigation />
-        <div style={{ flex: '1', padding: '20px' }}>
-            <Container>
-                <Card className="shadow-lg rounded-3">
-                    <Card.Body>
-                        <h2 className="text-center mb-4">Shopping Cart</h2>
-                        {cart.length === 0 ? (
-                            <p className="text-center">Your cart is empty</p>
-                        ) : (
-                            <Row className="g-4">
-                                {cart.map((product) => (
-                                    <Col md={6} lg={4} key={product._id}>
-                                        <Card className="product-card h-100">
-                                            <Card.Img
-                                                variant="top"
-                                                src={product.image || 'https://via.placeholder.com/300x200'}
-                                                className="product-image"
-                                            />
-                                            <Card.Body>
-                                                <Card.Title>{product.name}</Card.Title>
-                                                <Card.Text className="text-muted">
-                                                    £{product.price} x {product.quantity}
-                                                </Card.Text>
-                                                <div className="d-flex justify-content-between align-items-center">
-                                                    <Button
-                                                        variant="danger"
-                                                        className="btn-rounded"
-                                                        onClick={() => removeFromCart(product._id)}
-                                                    >
-                                                        Remove
-                                                    </Button>
-                                                </div>
-                                            </Card.Body>
-                                        </Card>
-                                    </Col>
-                                ))}
-                            </Row>
-                        )}
-                    </Card.Body>
-                </Card>
-            </Container>
-        </div>
-        <MainFooter />
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f4f4f4' }}>
+      <MainNavigation />
+      
+      <div style={{ flex: '1', padding: '20px' }}>
+        <Container>
+          <Card className="shadow-lg rounded-3">
+            <Card.Body>
+              <h2 className="text-center mb-4">
+                <FaShoppingCart className="me-2" /> Shopping Cart
+              </h2>
+              
+              {cart.length === 0 ? (
+                <div className="text-center py-5">
+                  <p className="text-muted">Your cart is empty</p>
+                  <Button href="/products" variant="primary" className="btn-rounded">
+                    Continue Shopping
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Row className="g-4 mb-4">
+                    {cart.map((product) => (
+                      <Col md={6} lg={4} key={product._id}>
+                        <Card className="product-card h-100 hover-shadow">
+                          <Card.Img
+                            variant="top"
+                            src={product.image || 'https://via.placeholder.com/300x200'}
+                            className="product-image"
+                            style={{ height: '200px', objectFit: 'cover' }}
+                          />
+                          <Card.Body>
+                            <Card.Title>{product.name}</Card.Title>
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                              <Card.Text className="text-muted mb-0">
+                                £{product.price.toFixed(2)} × {product.quantity}
+                              </Card.Text>
+                              <div className="d-flex align-items-center">
+                                <Button 
+                                  variant="outline-secondary" 
+                                  size="sm" 
+                                  className="me-2"
+                                  onClick={() => updateQuantity(product._id, 'decrement')}
+                                >
+                                  -
+                                </Button>
+                                <span>{product.quantity}</span>
+                                <Button 
+                                  variant="outline-secondary" 
+                                  size="sm" 
+                                  className="ms-2"
+                                  onClick={() => updateQuantity(product._id, 'increment')}
+                                >
+                                  +
+                                </Button>
+                              </div>
+                            </div>
+                            <Button
+                              variant="danger"
+                              className="btn-rounded w-100"
+                              onClick={() => handleRemoveConfirmation(product)}
+                            >
+                              <FaTrash className="me-2" /> Remove Item
+                            </Button>
+                          </Card.Body>
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+
+                  {/* Total and Checkout Section */}
+                  <div className="text-center">
+                    <h4 className="mb-3">
+                      Total: <strong>£{totalPrice.toFixed(2)}</strong>
+                    </h4>
+                    <Button 
+                      variant="success" 
+                      size="lg" 
+                      className="btn-rounded px-5"
+                      href="/checkout"
+                    >
+                      <FaCheck className="me-2" /> Confirm & Checkout
+                    </Button>
+                  </div>
+                </>
+              )}
+            </Card.Body>
+          </Card>
+        </Container>
+      </div>
+
+      {/* Confirmation Modal */}
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Removal</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to remove {itemToRemove?.name} from your cart?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmRemove}>
+            Remove
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <MainFooter />
     </div>
   );
 };
