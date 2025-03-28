@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import MainNavigation from '../../components/MainNavigation';
+import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import { useNavigate } from 'react-router-dom';
 
