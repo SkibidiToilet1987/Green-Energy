@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { CartContext } from '../../context/CartContext';
-import MainNavigation from '../../components/MainNavigation';
+import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import { Card, Button, Row, Col, Container, Modal } from 'react-bootstrap';
 import { FaTrash, FaShoppingCart, FaCheck } from 'react-icons/fa';
