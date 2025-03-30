@@ -24,7 +24,7 @@ const Cart = () => {
   // Confirm remove action
   const confirmRemove = () => {
     if (itemToRemove) {
-      removeFromCart(itemToRemove._id); // Call the remove function from CartContext
+      removeFromCart(itemToRemove._id);
       setShowConfirmModal(false);
       setItemToRemove(null);
     }
@@ -33,7 +33,7 @@ const Cart = () => {
   // Update quantity
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity > 0) {
-      updateCartItemQuantity(productId, newQuantity); // Call the update function from CartContext
+      updateCartItemQuantity(productId, newQuantity);
     }
   };
 
@@ -49,13 +49,10 @@ const Cart = () => {
       })),
     };
 
-    // Save cart data to the backend
     axios
       .post('http://localhost:3000/shoppingcart', checkoutData)
       .then((response) => {
         console.log('Shopping cart data saved successfully:', response.data);
-
-        // Redirect to the checkout page
         navigate('/checkout');
       })
       .catch((error) => {
@@ -91,24 +88,19 @@ const Cart = () => {
                         <div className="col-md-3 col-lg-3 col-xl-3">
                           <h6 className="mb-0">{product.name}</h6>
                         </div>
-                        <div className="col-md-3 col-lg-3 col-xl-2 d-flex">
+                        <div className="col-md-3 col-lg-3 col-xl-2 d-flex align-items-center justify-content-between">
                           <Button
-                            variant="link"
-                            className="px-2 text-dark text-decoration-none"
+                            variant="outline-secondary"
+                            size="sm"
                             onClick={() => handleQuantityChange(product._id, product.quantity - 1)}
+                            disabled={product.quantity <= 1}
                           >
                             -
                           </Button>
-                          <Form.Control
-                            min={1}
-                            value={product.quantity}
-                            type="number"
-                            className="form-control form-control-sm mx-2"
-                            onChange={(e) => handleQuantityChange(product._id, parseInt(e.target.value))}
-                          />
+                          <span className="mx-2">{product.quantity}</span>
                           <Button
-                            variant="link"
-                            className="px-2 text-dark text-decoration-none"
+                            variant="outline-secondary"
+                            size="sm"
                             onClick={() => handleQuantityChange(product._id, product.quantity + 1)}
                           >
                             +
@@ -120,8 +112,9 @@ const Cart = () => {
                         <div className="col-md-1 col-lg-1 col-xl-1 text-end">
                           <Button
                             variant="link"
-                            className="text-dark text-decoration-none"
+                            className="text-danger"
                             onClick={() => handleRemoveConfirmation(product)}
+                            style={{ fontSize: '1.5rem', textDecoration: 'none' }}
                           >
                             ×
                           </Button>
@@ -159,6 +152,25 @@ const Cart = () => {
           </div>
         </div>
       </Container>
+      
+      {/* Confirmation Modal */}
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Removal</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to remove {itemToRemove?.name} from your cart?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmRemove}>
+            Remove
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <MainFooter />
     </section>
   );
