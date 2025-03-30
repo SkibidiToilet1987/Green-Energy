@@ -138,12 +138,10 @@ const Products = () => {
             <Col lg={6}>
               <h1 className="display-4 fw-bold mb-3">Sustainable Energy Solutions</h1>
               <p className="lead mb-4">Transform your home and lifestyle with our cutting-edge green energy products.</p>
-              <Button variant="light" size="lg" className="me-2 btn-rounded">Shop Products</Button>
-              <Button variant="outline-light" size="lg" className="btn-rounded">Our Services</Button>
             </Col>
             <Col lg={6} className="d-none d-lg-block">
               <div className="text-center">
-                <FaLeaf className="display-1 animated-icon" />
+                <FaLeaf className="display-1 pulse-animation" /> {/* Added pulse-animation class */}
               </div>
             </Col>
           </Row>
@@ -155,7 +153,6 @@ const Products = () => {
         <Row className="mb-4">
           <Col>
             <h2 className="fw-bold">Green Energy Products</h2>
-            <p className="text-muted">High-quality sustainable solutions for modern living</p>
           </Col>
         </Row>
 
@@ -262,7 +259,7 @@ const Products = () => {
         <Container>
           <Row>
             <Col md={6} className="mb-4 mb-md-0">
-              <div className="featured-card bg-dark text-white p-4 h-100">
+              <div className="featured-card bg-dark text-white p-4 h-100 text-center">
                 <h3 className="border-bottom pb-2">Consultations & Installations</h3>
                 <p>Our certified technicians ensure proper installation and setup of all our green energy products.</p>
                 <p>We also offer free consultations</p>
@@ -270,7 +267,7 @@ const Products = () => {
               </div>
             </Col>
             <Col md={6}>
-              <div className="featured-card bg-dark text-white p-4 h-100">
+              <div className="featured-card bg-dark text-white p-4 h-100 text-center">
                 <h3 className="border-bottom pb-2">Calculate Your Carbon Footprint</h3>
                 <p>Use our carbon footprint calculator to see how much you can reduce your carbon footprint by switching to green energy solutions.</p>
                 <Button variant="light" className="rounded-pill btn-rounded">Try Calculator</Button>
@@ -295,4 +292,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Products; 

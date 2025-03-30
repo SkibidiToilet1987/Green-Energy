@@ -2,13 +2,12 @@ import React, { useState, useContext } from 'react';
 import { CartContext } from '../../context/CartContext';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
-import { Card, Button, Row, Col, Container, Modal } from 'react-bootstrap';
-import { FaTrash, FaShoppingCart, FaCheck } from 'react-icons/fa';
+import { Button, Container, Modal, Row, Col, Image, Form, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Cart = () => {
-  const { cart, removeFromCart, updateQuantity } = useContext(CartContext);
+  const { cart, removeFromCart, updateCartItemQuantity } = useContext(CartContext);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
   const navigate = useNavigate();
@@ -25,9 +24,16 @@ const Cart = () => {
   // Confirm remove action
   const confirmRemove = () => {
     if (itemToRemove) {
-      removeFromCart(itemToRemove._id);
+      removeFromCart(itemToRemove._id); // Call the remove function from CartContext
       setShowConfirmModal(false);
       setItemToRemove(null);
+    }
+  };
+
+  // Update quantity
+  const handleQuantityChange = (productId, newQuantity) => {
+    if (newQuantity > 0) {
+      updateCartItemQuantity(productId, newQuantity); // Call the update function from CartContext
     }
   };
 
@@ -37,7 +43,6 @@ const Cart = () => {
       cartItems: cart.map((item) => ({
         productId: item._id,
         name: item.name,
-        description: item.description,
         price: item.price,
         image: item.image,
         quantity: item.quantity,
@@ -59,117 +64,103 @@ const Cart = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f4f4f4' }}>
+    <section className="h-100 h-custom" style={{ backgroundColor: '#ffffff' }}>
       <MainNavigation />
+      <Container className="py-5 h-100">
+        <div className="row d-flex justify-content-center align-items-center h-100">
+          <div className="col-12">
+            <Card className="card-registration card-registration-2" style={{ borderRadius: '15px' }}>
+              <Card.Body className="p-0">
+                <Row className="g-0">
+                  <Col lg={8} className="p-5">
+                    <div className="d-flex justify-content-between align-items-center mb-5">
+                      <h1 className="fw-bold mb-0">Shopping Cart</h1>
+                      <h6 className="mb-0 text-muted">{cart.length} items</h6>
+                    </div>
+                    <hr className="my-4" />
 
-      <div style={{ flex: '1', padding: '20px' }}>
-        <Container>
-          <Card className="shadow-lg rounded-3">
-            <Card.Body>
-              <h2 className="text-center mb-4">
-                <FaShoppingCart className="me-2" /> Shopping Cart
-              </h2>
-
-              {cart.length === 0 ? (
-                <div className="text-center py-5">
-                  <p className="text-muted">Your cart is empty</p>
-                  <Button href="/products" variant="dark" className="btn-rounded">
-                    Continue Shopping
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <Row className="g-4 mb-4">
                     {cart.map((product) => (
-                      <Col md={6} lg={4} key={product._id}>
-                        <Card className="product-card h-100 hover-shadow">
-                          <Card.Img
-                            variant="top"
+                      <div key={product._id} className="row mb-4 d-flex justify-content-between align-items-center">
+                        <div className="col-md-2 col-lg-2 col-xl-2">
+                          <Image
                             src={product.image || 'https://via.placeholder.com/300x200'}
-                            className="product-image"
-                            style={{ height: '200px', objectFit: 'cover' }}
+                            className="img-fluid rounded-3"
+                            alt={product.name}
                           />
-                          <Card.Body>
-                            <Card.Title>{product.name}</Card.Title>
-                            <Card.Text>{product.description}</Card.Text>
-                            <div className="d-flex justify-content-between align-items-center mb-3">
-                              <Card.Text className="text-muted mb-0">
-                                £{product.price.toFixed(2)} × {product.quantity}
-                              </Card.Text>
-                              <div className="d-flex align-items-center">
-                                <Button
-                                  variant="outline-secondary"
-                                  size="sm"
-                                  className="me-2"
-                                  onClick={() => updateQuantity(product._id, 'decrement')}
-                                >
-                                  -
-                                </Button>
-                                <span>{product.quantity}</span>
-                                <Button
-                                  variant="outline-secondary"
-                                  size="sm"
-                                  className="ms-2"
-                                  onClick={() => updateQuantity(product._id, 'increment')}
-                                >
-                                  +
-                                </Button>
-                              </div>
-                            </div>
-                            <Button
-                              variant="danger"
-                              className="btn-rounded w-100"
-                              onClick={() => handleRemoveConfirmation(product)}
-                            >
-                              <FaTrash className="me-2" /> Remove Item
-                            </Button>
-                          </Card.Body>
-                        </Card>
-                      </Col>
+                        </div>
+                        <div className="col-md-3 col-lg-3 col-xl-3">
+                          <h6 className="mb-0">{product.name}</h6>
+                        </div>
+                        <div className="col-md-3 col-lg-3 col-xl-2 d-flex">
+                          <Button
+                            variant="link"
+                            className="px-2 text-dark text-decoration-none"
+                            onClick={() => handleQuantityChange(product._id, product.quantity - 1)}
+                          >
+                            -
+                          </Button>
+                          <Form.Control
+                            min={1}
+                            value={product.quantity}
+                            type="number"
+                            className="form-control form-control-sm mx-2"
+                            onChange={(e) => handleQuantityChange(product._id, parseInt(e.target.value))}
+                          />
+                          <Button
+                            variant="link"
+                            className="px-2 text-dark text-decoration-none"
+                            onClick={() => handleQuantityChange(product._id, product.quantity + 1)}
+                          >
+                            +
+                          </Button>
+                        </div>
+                        <div className="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                          <h6 className="mb-0 text-dark">£{(product.price * product.quantity).toFixed(2)}</h6>
+                        </div>
+                        <div className="col-md-1 col-lg-1 col-xl-1 text-end">
+                          <Button
+                            variant="link"
+                            className="text-dark text-decoration-none"
+                            onClick={() => handleRemoveConfirmation(product)}
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      </div>
                     ))}
-                  </Row>
-
-                  {/* Total and Checkout Section */}
-                  <div className="text-center">
-                    <h4 className="mb-3">
-                      Total: <strong>£{totalPrice.toFixed(2)}</strong>
-                    </h4>
-                    <Button
-                      variant="dark"
-                      size="lg"
-                      className="btn-rounded px-5"
-                      onClick={handleCheckout}
-                    >
-                      <FaCheck className="me-2" /> Confirm & Checkout
+                    <hr className="my-4" />
+                    <div className="pt-5">
+                      <h6 className="mb-0">
+                        <a href="/products" className="text-dark text-decoration-none">
+                          <i className="fas fa-long-arrow-alt-left me-2"></i>Back to shop
+                        </a>
+                      </h6>
+                    </div>
+                  </Col>
+                  <Col lg={4} className="bg-light p-5">
+                    <h3 className="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                    <hr className="my-4" />
+                    <div className="d-flex justify-content-between mb-4">
+                      <h5 className="text-uppercase">Items {cart.length}</h5>
+                      <h5>£{totalPrice.toFixed(2)}</h5>
+                    </div>
+                    <hr className="my-4" />
+                    <div className="d-flex justify-content-between mb-5">
+                      <h5 className="text-uppercase">Total price</h5>
+                      <h5>£{totalPrice.toFixed(2)}</h5>
+                    </div>
+                    <Button variant="dark" onClick={handleCheckout} className="btn-lg w-100">
+                      Checkout
                     </Button>
-                  </div>
-                </>
-              )}
-            </Card.Body>
-          </Card>
-        </Container>
-      </div>
-
-      {/* Confirmation Modal */}
-      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Removal</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to remove {itemToRemove?.name} from your cart?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={confirmRemove}>
-            Remove
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </div>
+        </div>
+      </Container>
       <MainFooter />
-    </div>
+    </section>
   );
 };
 
