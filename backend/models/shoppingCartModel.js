@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Define the schema for the shopping cart collection
 const shoppingCartSchema = new mongoose.Schema({
   userId: {
     type: String,
@@ -18,6 +19,7 @@ const shoppingCartSchema = new mongoose.Schema({
   ],
 });
 
-const ShoppingCart = mongoose.model('ShoppingCart', shoppingCartSchema);
+// Explicitly set the collection name to "shoppingcart"
+const ShoppingCart = mongoose.model('ShoppingCart', shoppingCartSchema, 'shoppingcart');
 
 module.exports = ShoppingCart;

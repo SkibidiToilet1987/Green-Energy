@@ -25,8 +25,8 @@ const checkoutSchema = new mongoose.Schema({
   ],
 });
 
-// Create the Checkout model using the schema
-const Checkout = mongoose.model('Checkout', checkoutSchema);
+// Explicitly set the collection name to "checkout"
+const Checkout = mongoose.model('Checkout', checkoutSchema, 'checkout');
 
 // Export the model for use in other parts of the application
 module.exports = Checkout;

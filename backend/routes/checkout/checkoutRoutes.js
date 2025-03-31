@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Checkout = require('../../models/checkoutModel'); // Adjust the path if necessary
+const Checkout = require('../../models/checkoutModel'); // Ensure the model explicitly uses the "checkout" collection
 
 // POST /checkout - Save or update checkout data
 router.post('/', async (req, res) => {
@@ -25,6 +25,7 @@ router.post('/', async (req, res) => {
       checkout.ccv = ccv;
       checkout.phoneNumber = phoneNumber;
       checkout.cartItems = cartItems;
+
       await checkout.save();
       return res.status(200).json({ message: 'Checkout updated successfully', checkout });
     }

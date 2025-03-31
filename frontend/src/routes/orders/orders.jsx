@@ -1,5 +1,5 @@
 import React from 'react'
-import MainNavigation from '../../components/MainNavigation'
+import MainNavigation from '../../components/mainnavigation'
 import MainFooter from '../../components/MainFooter'
 
 const Orders = () => {
