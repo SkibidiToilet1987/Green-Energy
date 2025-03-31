@@ -1,5 +1,5 @@
 import React from 'react'
-import MainNavigation from '../../components/MainNavigation'
+import MainNavigation from '../../components/mainnavigation'
 import MainFooter from '../../components/MainFooter'
 import "../../assets/about.css"
 
@@ -41,8 +41,8 @@ const About = () => {
           <div className="container">
             <div className="hero-wrapper">
               <div className="hero-text">
-                <h1 className="main-heading">About Rolsa</h1>
-                <h1 className="main-heading">Technologies</h1>
+                <h1 className="main-heading" style={{color: 'white'}}>About Rolsa</h1>
+                <h1 className="main-heading" style={{color: 'white'}}>Technologies</h1>
                 <p className="hero-description">
                   Green energy is vital for a sustainable future. We are dedicated to reducing greenhouse gas emissions, conserving natural resources, and leading the fight against climate change.
                 </p>
