@@ -6,7 +6,7 @@ const { MongoClient } = require("mongodb");
 function generateAccessToken(email, remember) {
   dotenv.config();
   if (remember) {
-    return jwt.sign({ email }, process.env.TOKEN_SECRET, { expiresIn: "7d" });
+    return jwt.sign({ email }, process.env.TOKEN_SECRET, { expiresIn: "7 days" });
   } else {
     return jwt.sign({ email }, process.env.TOKEN_SECRET, {
       expiresIn: "1800s",

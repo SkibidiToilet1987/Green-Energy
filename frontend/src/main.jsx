@@ -2,17 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { CookiesProvider } from 'react-cookie';
 import { CartProvider } from './context/CartContext';
-import {
-  createBrowserRouter,
-  RouterProvider
-} from 'react-router-dom';
-import Index from './routes';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.css';
 import Login from './routes/login/login';
 import Register from './routes/register/register';
+import Index from './routes';
 import Products from './routes/products/products';
 import About from './routes/about/about';
 import Cart from './routes/cart/cart';
-import 'bootstrap/dist/css/bootstrap.css';
 import Checkout from './routes/checkout/checkout';
 import Confirm from './routes/checkout/confirm';
 import Orders from './routes/orders/orders';

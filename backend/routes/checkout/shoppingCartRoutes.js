@@ -25,6 +25,7 @@ router.post('/', async (req, res) => {
     // Create a new shopping cart if none exists
     shoppingCart = new ShoppingCart({
       userId,
+      email,
       cartItems,
     });
 

@@ -284,7 +284,7 @@ export default function Register() {
                                         {validationErrors.confirmPassword && <Form.Text className="text-danger">{validationErrors.confirmPassword}</Form.Text>}
                                     </Form.Group>
 
-                                    <Button style={{ width: "100%" }} variant="primary" type="submit">
+                                    <Button style={{ width: "100%" }} variant="dark" type="submit">
                                         Submit
                                     </Button>
                                 </Form>

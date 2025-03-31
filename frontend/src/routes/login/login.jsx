@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
-import { Link } from 'react-router-dom';  // Import Link for navigation
+import { Link } from 'react-router-dom'; // Import Link for navigation
 import '../../assets/login.css';
 
 export default function Login() {
@@ -60,8 +60,15 @@ export default function Login() {
 
             // Handle successful login
             if (res.data.token) {
+                // Store token in cookies
                 setCookies('token', res.data.token, { path: '/' });
-                navigate('/'); // Redirect to home page
+
+                // Store token in localStorage for compatibility with cart.jsx
+                localStorage.setItem('token', res.data.token);
+                console.log("Token stored in localStorage:", res.data.token);
+
+                // Redirect to the cart page
+                navigate('/cart');
             } else {
                 setValidationErrors({ api: "Login failed. Please check your credentials and try again." });
             }
@@ -147,7 +154,7 @@ export default function Login() {
                                     {/* Submit Button */}
                                     <Button
                                         style={{ width: "100%" }}
-                                        variant="primary"
+                                        variant="dark"
                                         type="submit"
                                         disabled={isLoading} // Disable button while loading
                                     >

@@ -12,6 +12,7 @@ var authRouter = require('./routes/auth/index');
 var productRouter = require('./routes/product/productRoutes');
 var checkoutRouter = require('./routes/checkout/checkoutRoutes'); // Checkout route
 var shoppingCartRouter = require('./routes/checkout/shoppingCartRoutes'); // Shopping cart route
+var meRouter = require('./routes/users/@me'); // Import the /me route
 
 var app = express();
 
@@ -29,11 +30,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+
+// Configure CORS to allow credentials
+app.use(cors({
+  origin: 'http://localhost:5173', // Replace with your frontend's URL
+  credentials: true, // Allow cookies to be sent with requests
+}));
 
 // Set up routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/users/me', meRouter); // Register the /me route
 app.use('/auth', authRouter);
 app.use('/products', productRouter);
 app.use('/checkout', checkoutRouter); // Register the checkout route

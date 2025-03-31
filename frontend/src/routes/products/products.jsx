@@ -62,9 +62,9 @@ const Products = () => {
       {/* Fixed Cart Notification */}
       <div className="cart-notification">
         <Button variant="dark" className="cart-button position-relative">
-          <FaShoppingCart size={20} />
+          <FaShoppingCart size={20}/>
           {totalItems > 0 && (
-            <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle">
+            <Badge pill bg="dark" className="position-absolute top-0 start-100 translate-middle">
               {totalItems}
             </Badge>
           )}
@@ -132,16 +132,16 @@ const Products = () => {
       </div>
 
       {/* Hero Section */}
-      <div className="hero-section text-white py-5">
-        <Container>
-          <Row className="align-items-center">
-            <Col lg={6}>
-              <h1 className="display-4 fw-bold mb-3">Sustainable Energy Solutions</h1>
-              <p className="lead mb-4">Transform your home and lifestyle with our cutting-edge green energy products.</p>
-            </Col>
-            <Col lg={6} className="d-none d-lg-block">
-              <div className="text-center">
-                <FaLeaf className="display-1 pulse-animation" /> {/* Added pulse-animation class */}
+        <div className="hero-section text-white py-5">
+          <Container>
+            <Row className="align-items-center">
+          <Col lg={6}>
+            <h1 className="display-4 fw-bold mb-3 text-white">Sustainable Energy Solutions</h1>
+            <p className="lead mb-4 text-white">Transform your home and lifestyle with our cutting-edge green energy products.</p>
+          </Col>
+          <Col lg={6} className="d-none d-lg-block">
+            <div className="text-center">
+              <FaLeaf className="display-1 pulse-animation text-white" /> {/* Added pulse-animation class */}
               </div>
             </Col>
           </Row>
