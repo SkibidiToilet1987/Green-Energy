@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, Button, Spinner } from 'react-bootstrap';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import axios from 'axios';
+import { UserContext } from '../../context/userContext'; // Import UserContext for user data
 
 const Checkout = () => {
+  const userContext = useContext(UserContext); // Fetch user context
+  const user = userContext?.user || {}; // Safely access user data
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
@@ -17,7 +20,7 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Validation logic
@@ -37,55 +40,82 @@ const Checkout = () => {
 
     // If validation passes, make API request
     setIsLoading(true);
-    const cartItems = JSON.parse(localStorage.getItem('cartItems'))?.map((item) => ({
-      productId: item._id, // Ensure `_id` exists in the cart item
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      description: item.description,
-    })) || [];
 
-    if (cartItems.length === 0) {
-      setValidationErrors({ api: 'Your cart is empty. Please add items to your cart before checking out.' });
-      setIsLoading(false);
-      return;
-    }
+    try {
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem('token');
+      console.log("Retrieved token:", token);
 
-    console.log('Submitting checkout data:', {
-      userId: 'user123', // Replace with the actual user ID
-      name,
-      email,
-      address,
-      cardNumber,
-      accountNumber,
-      ccv,
-      phoneNumber,
-      cartItems,
-    });
+      if (!token) {
+        setValidationErrors({ api: 'No token found. Please log in again.' });
+        setIsLoading(false);
+        return;
+      }
 
-    axios
-      .post('http://localhost:3000/checkout', {
-        userId: 'user123', // Replace with the actual user ID
-        name,
-        email,
-        address,
-        cardNumber,
-        accountNumber,
-        ccv,
-        phoneNumber,
-        cartItems,
-      })
-      .then((response) => {
+      console.log("Sending request to /users/me to verify token...");
+
+      // Verify the token and get user details
+      const verifyResponse = await axios.get('http://localhost:3000/users/me', {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+        withCredentials: true, // Include cookies in the request if needed
+      });
+
+      console.log("Response from /users/me:", verifyResponse.data);
+
+      if (verifyResponse.status === 200) {
+        const emailFromBackend = verifyResponse.data.email; // Get the full email address
+        const userId = emailFromBackend.split('@')[0]; // Extract userId from email if needed
+
+        const cartItems = JSON.parse(localStorage.getItem('cartItems'))?.map((item) => ({
+          productId: item._id, // Ensure `_id` exists in the cart item
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          description: item.description,
+        })) || [];
+
+        if (cartItems.length === 0) {
+          setValidationErrors({ api: 'Your cart is empty. Please add items to your cart before checking out.' });
+          setIsLoading(false);
+          return;
+        }
+
+        console.log('Submitting checkout data:', {
+          userId,
+          name,
+          email: emailFromBackend, // Use email from backend
+          address,
+          cardNumber,
+          accountNumber,
+          ccv,
+          phoneNumber,
+          cartItems,
+        });
+
+        // Send checkout data to the backend
+        const response = await axios.post('http://localhost:3000/checkout', {
+          userId,
+          name,
+          email: emailFromBackend, // Use email from backend
+          address,
+          cardNumber,
+          accountNumber,
+          ccv,
+          phoneNumber,
+          cartItems,
+        });
+
         console.log('Checkout data saved successfully:', response.data);
         navigate('/checkout/confirm'); // Navigate to confirmation page
-      })
-      .catch((error) => {
-        console.error('Error saving checkout data:', error);
-        setValidationErrors({ api: 'An error occurred during checkout. Please try again.' });
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      }
+    } catch (error) {
+      console.error('Error during token verification or checkout:', error);
+      setValidationErrors({ api: 'An error occurred during checkout. Please try again.' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
