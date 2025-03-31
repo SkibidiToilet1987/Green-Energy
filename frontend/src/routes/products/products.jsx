@@ -59,7 +59,6 @@ const Products = () => {
     <div className="products-page dark-theme">
       <MainNavigation />
 
-      {/* Fixed Cart Notification */}
       <div className="cart-notification">
         <Button variant="dark" className="cart-button position-relative">
           <FaShoppingCart size={20}/>
@@ -85,7 +84,7 @@ const Products = () => {
                       />
                       <div>
                         <div className="fw-bold">{item.name}</div>
-                        <small>£{item.price}</small> {/* Removed quantity display here */}
+                        <small>£{item.price}</small>
                       </div>
                     </div>
                     <div className="d-flex align-items-center">
@@ -94,9 +93,9 @@ const Products = () => {
                         size="sm"
                         onClick={() => {
                           if (item.quantity === 1) {
-                            removeFromCart(item._id); // Remove the product entirely if quantity is 1
+                            removeFromCart(item._id);
                           } else {
-                            updateQuantity(item._id, 'decrement'); // Decrease quantity otherwise
+                            updateQuantity(item._id, 'decrement');
                           }
                         }}
                         className="ms-2"
@@ -131,7 +130,6 @@ const Products = () => {
         )}
       </div>
 
-      {/* Hero Section */}
         <div className="hero-section text-white py-5">
           <Container>
             <Row className="align-items-center">
@@ -141,14 +139,13 @@ const Products = () => {
           </Col>
           <Col lg={6} className="d-none d-lg-block">
             <div className="text-center">
-              <FaLeaf className="display-1 pulse-animation text-white" /> {/* Added pulse-animation class */}
+              <FaLeaf className="display-1 pulse-animation text-white" />
               </div>
             </Col>
           </Row>
         </Container>
       </div>
 
-      {/* Main Content */}
       <Container className="py-5">
         <Row className="mb-4">
           <Col>
@@ -156,7 +153,6 @@ const Products = () => {
           </Col>
         </Row>
 
-        {/* Mobile Filter Toggle */}
         <div className="d-lg-none mb-3">
           <Button
             variant="outline-secondary"
@@ -168,7 +164,6 @@ const Products = () => {
         </div>
 
         <Row>
-          {/* Filters Sidebar */}
           <Col lg={3} className={`filters-sidebar ${showFilters ? 'd-block' : 'd-none d-lg-block'}`}>
             <Card className="border-0 shadow-sm mb-4">
               <Card.Body>
@@ -212,7 +207,6 @@ const Products = () => {
             </Card>
           </Col>
 
-          {/* Products Grid */}
           <Col lg={9}>
             <Row>
               {sortedProducts.map((product) => (

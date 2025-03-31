@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const CarbonCalculator = require('../../models/calculatorModel'); // Import the model
+const CarbonCalculator = require('../../models/calculatorModel');
 
-// POST /carbonCalculator - Save calculator data to MongoDB
 router.post('/', async (req, res) => {
   try {
     const {
@@ -15,12 +14,10 @@ router.post('/', async (req, res) => {
       totalEmissions,
     } = req.body;
 
-    // Validate required fields
     if (!userId || !email || !transportation || !home) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Create a new document in the carbonCalculator collection
     const calculatorEntry = new CarbonCalculator({
       userId,
       email,
@@ -32,7 +29,6 @@ router.post('/', async (req, res) => {
       createdAt: new Date(),
     });
 
-    // Save to MongoDB
     await calculatorEntry.save();
     res.status(201).json({ message: 'Calculator data saved successfully', calculatorEntry });
   } catch (error) {
@@ -41,7 +37,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET /carbonCalculator - Retrieve all calculator data
 router.get('/', async (req, res) => {
   try {
     const data = await CarbonCalculator.find();
@@ -52,12 +47,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /carbonCalculator/:userId - Retrieve calculator data for a specific user
 router.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Find the calculator data for the specified user
     const data = await CarbonCalculator.find({ userId });
 
     if (!data || data.length === 0) {

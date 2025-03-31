@@ -11,7 +11,6 @@ const Confirm = () => {
   const [orderNumber, setOrderNumber] = useState('');
   const [deliveryTime, setDeliveryTime] = useState('5-7 Business Days');
 
-  // Verify token and redirect if unauthorized
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -39,21 +38,20 @@ const Confirm = () => {
     verifyToken();
   }, [navigate]);
 
-  // Generate a random order number
   useEffect(() => {
     const generateOrderNumber = () => {
-      return Math.floor(Math.random() * 1000000); // Random order number
+      return Math.floor(Math.random() * 1000000);
     };
 
     setOrderNumber(generateOrderNumber());
   }, []);
 
   const handleGoBack = () => {
-    navigate('/products'); // Redirect to products page
+    navigate('/products');
   };
 
   const handleViewOrders = () => {
-    navigate('/orders'); // Redirect to orders page
+    navigate('/orders');
   };
 
   return (

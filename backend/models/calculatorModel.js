@@ -15,6 +15,6 @@ const calculatorSchema = new mongoose.Schema({
   homeEmissions: { type: Number, required: true },
   totalEmissions: { type: Number, required: true },
   createdAt: { type: Date, default: Date.now },
-}, { collection: 'carbonCalculator' }); // Explicitly set the collection name
+}, { collection: 'carbonCalculator' });
 
 module.exports = mongoose.model('CarbonCalculator', calculatorSchema);

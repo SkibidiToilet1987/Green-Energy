@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 
-// Define the schema for the shopping cart collection
 const shoppingCartSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
-    unique: true, // Ensure one cart per user
+    unique: true,
   },
   cartItems: [
     {
@@ -17,10 +16,9 @@ const shoppingCartSchema = new mongoose.Schema({
       description: { type: String, required: true },
     },
   ],
-  createdAt: { type: Date, default: Date.now }, // Automatically set the creation date
+  createdAt: { type: Date, default: Date.now },
 });
 
-// Explicitly set the collection name to "shoppingCart"
 const ShoppingCart = mongoose.model('ShoppingCart', shoppingCartSchema, 'shoppingCart');
 
 module.exports = ShoppingCart;

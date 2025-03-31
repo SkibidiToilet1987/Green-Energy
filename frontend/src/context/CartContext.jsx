@@ -12,7 +12,6 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('cartItems', JSON.stringify(cart));
   }, [cart]);
 
-  // Add a product to the cart
   const addToCart = (product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item._id === product._id);
@@ -25,26 +24,23 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // Remove a product from the cart
   const removeFromCart = (productId) => {
     setCart((prevCart) => prevCart.filter((item) => item._id !== productId));
   };
 
-  // Update the quantity of a product in the cart
   const updateQuantity = (productId, action) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
         item._id === productId
           ? {
-              ...item,
-              quantity: action === 'increment' ? item.quantity + 1 : Math.max(item.quantity - 1, 1),
-            }
+            ...item,
+            quantity: action === 'increment' ? item.quantity + 1 : Math.max(item.quantity - 1, 1),
+          }
           : item
       )
     );
   };
 
-  // Update the quantity of a product directly with a new value
   const updateCartItemQuantity = (productId, newQuantity) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
@@ -53,18 +49,15 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  // Clear the cart
   const clearCart = () => {
-    setCart([]); // Reset the cart to an empty array
-    localStorage.removeItem('cartItems'); // Clear the cart from localStorage
+    setCart([]);
+    localStorage.removeItem('cartItems');
   };
 
-  // Calculate the total number of items in the cart
   const getTotalItems = () => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
-  // Calculate the total price of items in the cart
   const getTotalPrice = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
@@ -77,7 +70,7 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         updateQuantity,
         updateCartItemQuantity,
-        clearCart, // Expose the clearCart method
+        clearCart,
         getTotalItems,
         getTotalPrice,
       }}

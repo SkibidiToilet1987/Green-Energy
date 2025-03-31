@@ -32,7 +32,6 @@ const Calculator = () => {
 
   const navigate = useNavigate();
 
-  // Validate input - only allow positive numbers
   const validateInput = (value, name) => {
     if (value === '') return '';
     if (!/^\d*\.?\d*$/.test(value) || parseFloat(value) < 0) {
@@ -41,7 +40,6 @@ const Calculator = () => {
     return '';
   };
 
-  // Handle input changes for transportation
   const handleTransportationChange = (e) => {
     const { name, value } = e.target;
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -52,7 +50,6 @@ const Calculator = () => {
     setValidationErrors({ ...validationErrors, [name]: errorMessage });
   };
 
-  // Handle input changes for home
   const handleHomeChange = (e) => {
     const { name, value } = e.target;
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -63,7 +60,6 @@ const Calculator = () => {
     setValidationErrors({ ...validationErrors, [name]: errorMessage });
   };
 
-  // Verify token and redirect if unauthorized
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -91,7 +87,6 @@ const Calculator = () => {
     verifyToken();
   }, [navigate]);
 
-  // Calculate carbon footprint and send data to MongoDB
   const calculateFootprint = async () => {
     const hasErrors = Object.values(validationErrors).some((error) => error !== '');
     if (hasErrors) return;
@@ -106,7 +101,6 @@ const Calculator = () => {
       gasTherm: parseFloat(home.gasTherm) || 0,
     };
 
-    // Emission factors (kg CO2e)
     const emissionFactors = {
       carPerMile: 0.404,
       flightPerHour: 90,
@@ -114,7 +108,6 @@ const Calculator = () => {
       gasPerTherm: 5.3,
     };
 
-    // Calculate emissions for each category
     const transportationEmissions =
       transportationValues.carMiles * emissionFactors.carPerMile +
       transportationValues.flightHours * emissionFactors.flightPerHour;
@@ -125,7 +118,6 @@ const Calculator = () => {
 
     const totalEmissions = transportationEmissions + homeEmissions;
 
-    // Update results
     setResults({
       transportationEmissions: Math.round(transportationEmissions * 100) / 100,
       homeEmissions: Math.round(homeEmissions * 100) / 100,
@@ -134,7 +126,6 @@ const Calculator = () => {
     });
 
     try {
-      // Retrieve token and user details
       const token = localStorage.getItem('token');
       const verifyResponse = await axios.get('http://localhost:3000/users/me', {
         headers: {
@@ -146,7 +137,6 @@ const Calculator = () => {
       const email = verifyResponse.data.email;
       const userId = email.split('@')[0];
 
-      // Prepare data to send to MongoDB
       const calculatorData = {
         userId,
         email,
@@ -159,7 +149,6 @@ const Calculator = () => {
 
       console.log('Sending calculator data to backend:', calculatorData);
 
-      // Send data to MongoDB
       await axios.post('http://localhost:3000/carbonCalculator', calculatorData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -173,7 +162,6 @@ const Calculator = () => {
     }
   };
 
-  // Reset form
   const resetForm = () => {
     setTransportation({
       carMiles: '',
@@ -216,7 +204,6 @@ const Calculator = () => {
                     Enter your monthly usage to estimate your carbon footprint
                   </p>
 
-                  {/* Transportation Section */}
                   <Card className="mb-4">
                     <Card.Header className="bg-dark text-white">
                       <h5 className="mb-0">Transportation</h5>
@@ -254,7 +241,6 @@ const Calculator = () => {
                     </Card.Body>
                   </Card>
 
-                  {/* Home Energy Section */}
                   <Card className="mb-4">
                     <Card.Header className="bg-dark text-white">
                       <h5 className="mb-0">Home Energy</h5>
@@ -292,7 +278,6 @@ const Calculator = () => {
                     </Card.Body>
                   </Card>
 
-                  {/* Action Buttons */}
                   <div className="d-flex justify-content-center mb-4">
                     <div className="d-flex w-50 me-1">
                       <Button
@@ -314,7 +299,6 @@ const Calculator = () => {
                     </div>
                   </div>
 
-                  {/* Results Section */}
                   {results.calculated && (
                     <Card className="bg-light">
                       <Card.Header className="bg-dark text-white">

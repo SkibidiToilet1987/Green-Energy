@@ -1,33 +1,30 @@
 import React, { useState, useContext } from 'react';
 import { CartContext } from '../../context/CartContext';
-import { UserContext } from '../../context/userContext'; // Import UserContext for user data
+import { UserContext } from '../../context/userContext';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import { Button, Container, Modal, Row, Col, Image, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa'; // Import arrow icon
+import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 
 const Cart = () => {
   const { cart, removeFromCart, updateCartItemQuantity } = useContext(CartContext);
-  const userContext = useContext(UserContext); // Fetch user context
-  const user = userContext?.user || {}; // Safely access user data
+  const userContext = useContext(UserContext);
+  const user = userContext?.user || {};
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
   const navigate = useNavigate();
 
-  // Calculate total price
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const vat = subtotal * 0.2; // 20% VAT
+  const vat = subtotal * 0.2;
   const totalPrice = subtotal + vat;
 
-  // Confirm removal modal handler
   const handleRemoveConfirmation = (product) => {
     setItemToRemove(product);
     setShowConfirmModal(true);
   };
 
-  // Confirm remove action
   const confirmRemove = () => {
     if (itemToRemove) {
       removeFromCart(itemToRemove._id);
@@ -36,14 +33,12 @@ const Cart = () => {
     }
   };
 
-  // Update quantity
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity > 0) {
       updateCartItemQuantity(productId, newQuantity);
     }
   };
 
-  // Handle checkout
   const handleCheckout = async () => {
     if (cart.length === 0) {
       console.error('Cart is empty. Cannot proceed to checkout.');
@@ -51,7 +46,6 @@ const Cart = () => {
     }
 
     try {
-      // Retrieve the token from localStorage
       const token = localStorage.getItem('token');
       console.log("Retrieved token:", token);
 
@@ -63,24 +57,23 @@ const Cart = () => {
 
       console.log("Sending request to /users/me to verify token...");
 
-      // Verify the token and get user details
       const verifyResponse = await axios.get('http://localhost:3000/users/me', {
         headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          Authorization: `Bearer ${token}`,
         },
-        withCredentials: true, // Include cookies in the request if needed
+        withCredentials: true,
       });
 
       console.log("Response from /users/me:", verifyResponse.data);
 
       if (verifyResponse.status === 200) {
-        const email = verifyResponse.data.email; // Get the full email address
-        const userId = email.split('@')[0]; // Optional: Extract userId from email if needed
+        const email = verifyResponse.data.email;
+        const userId = email.split('@')[0];
 
-        // Prepare checkout data
+
         const checkoutData = {
           userId,
-          email, // Include the full email address
+          email,
           cartItems: cart.map((item) => ({
             productId: item._id,
             name: item.name,
@@ -93,7 +86,6 @@ const Cart = () => {
 
         console.log("Sending checkout data to backend:", checkoutData);
 
-        // Send checkout data to the backend
         const response = await axios.post('http://localhost:3000/shoppingcart', checkoutData, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -122,7 +114,6 @@ const Cart = () => {
     }
   };
 
-  // If cart is empty, show empty cart message
   if (cart.length === 0) {
     return (
       <section className="h-100 h-custom" style={{ backgroundColor: '#ffffff' }}>
@@ -155,7 +146,6 @@ const Cart = () => {
     );
   }
 
-  // Regular cart view with items
   return (
     <section className="h-100 h-custom" style={{ backgroundColor: '#ffffff' }}>
       <MainNavigation />
@@ -252,7 +242,6 @@ const Cart = () => {
         </div>
       </Container>
 
-      {/* Confirmation Modal */}
       <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Removal</Modal.Title>

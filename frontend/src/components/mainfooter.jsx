@@ -6,7 +6,6 @@ const MainFooter = () => {
     return (
         <footer className="bg-dark text-light pt-5 pb-4 mt-5">
             <Container>
-                {/* Logo and Company Name */}
                 <Row className="text-center">
                     <Col>
                         <img 
@@ -20,7 +19,6 @@ const MainFooter = () => {
                     </Col>
                 </Row>
 
-                {/* Quick Links (Horizontal) */}
                 <Row className="text-center mt-3">
                     <Col>
                         <Nav className="justify-content-center">
@@ -46,7 +44,6 @@ const MainFooter = () => {
                     </Col>
                 </Row>
 
-                {/* Footer Bottom (Copyright Info) */}
                 <Row className="text-center mt-4">
                     <Col>
                         <p className="text-light mb-0">&copy; {new Date().getFullYear()} Rolsa Technologies Co. | All Rights Reserved</p>

@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import '../../assets/register.css';
-// Import icons for password visibility toggle - removed unnecessary imports
 
 export default function Register() {
     const [password, setPassword] = useState("");
@@ -16,32 +15,26 @@ export default function Register() {
     const [strengthColor, setStrengthColor] = useState("danger");
     const [validationErrors, setValidationErrors] = useState({});
     const navigate = useNavigate();
-    // Add state for password visibility
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    // Toggle password visibility
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
-    // Toggle confirm password visibility
     const toggleConfirmPasswordVisibility = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
 
-    // Check password strength whenever password changes
     useEffect(() => {
         checkPasswordStrength(password);
     }, [password]);
 
-    // Validate email format
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    // Validate password requirements
     const validatePassword = (password) => {
         const passwordErrors = [];
 
@@ -69,10 +62,8 @@ export default function Register() {
     };
 
     const checkPasswordStrength = (password) => {
-        // Start with a base score
         let strength = 0;
 
-        // Skip strength check if password is empty or too short
         if (!password || password.length < 1) {
             setPasswordStrength(0);
             setStrengthLabel("");
@@ -80,22 +71,16 @@ export default function Register() {
             return;
         }
 
-        // Check length
         if (password.length >= 8) strength += 20;
 
-        // Check for numbers
         if (/\d/.test(password)) strength += 20;
 
-        // Check for lowercase letters
         if (/[a-z]/.test(password)) strength += 20;
 
-        // Check for uppercase letters
         if (/[A-Z]/.test(password)) strength += 20;
 
-        // Check for special characters
         if (/[^A-Za-z0-9]/.test(password)) strength += 20;
 
-        // Set the strength and appropriate label/color
         setPasswordStrength(strength);
 
         if (strength < 40) {
@@ -120,35 +105,29 @@ export default function Register() {
         const firstName = event.target[0].value;
         const lastName = event.target[1].value;
 
-        // Validate empty fields
         if (!firstName.trim()) newErrors.firstName = "First name is required";
         if (!lastName.trim()) newErrors.lastName = "Last name is required";
 
-        // Validate email
         if (!email.trim()) {
             newErrors.email = "Email is required";
         } else if (!validateEmail(email)) {
             newErrors.email = "Please enter a valid email address";
         }
 
-        // Validate password
         const passwordErrors = validatePassword(password);
         if (passwordErrors.length > 0) {
             newErrors.password = passwordErrors;
         }
 
-        // Check if passwords match
         if (password !== confirmPassword) {
             newErrors.confirmPassword = "Passwords do not match";
         }
 
-        // If there are validation errors, show them and stop submission
         if (Object.keys(newErrors).length > 0) {
             setValidationErrors(newErrors);
             return;
         }
 
-        // If validation passes, submit the form
         axios.post('http://localhost:3000/users', {
             email,
             password,

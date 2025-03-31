@@ -15,10 +15,9 @@ const MainNavigation = () => {
           <strong className="ms-2">Rolsa Technologies</strong>
         </Navbar.Brand>
 
-        {/* Toggling button for smaller screens */}
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto"> {/* ms-auto for right alignment */}
+          <Nav className="ms-auto">
             <Nav.Link className="fs-5 text-white" href="/login">
               <Button variant="outline-light" className="me-2">
                 <strong>Login</strong>

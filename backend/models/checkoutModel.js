@@ -1,33 +1,30 @@
 const mongoose = require('mongoose');
 
-// Define the schema for the checkout collection
 const checkoutSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
-    unique: true, // Ensure one checkout document per user
+    unique: true,
   },
-  email: { type: String, required: true }, // User's email
-  name: { type: String, required: true }, // User's name
-  address: { type: String, required: true }, // Shipping address
-  cardNumber: { type: String, required: true }, // Credit card number
-  accountNumber: { type: String, required: true }, // Bank account number
-  ccv: { type: String, required: true }, // Credit card CCV
-  phoneNumber: { type: String, required: true }, // User's phone number
+  email: { type: String, required: true },
+  name: { type: String, required: true },
+  address: { type: String, required: true },
+  cardNumber: { type: String, required: true },
+  accountNumber: { type: String, required: true },
+  ccv: { type: String, required: true },
+  phoneNumber: { type: String, required: true },
   cartItems: [
     {
-      productId: { type: String, required: true }, // Product ID
-      name: { type: String, required: true }, // Product name
-      price: { type: Number, required: true }, // Product price
-      quantity: { type: Number, required: true }, // Quantity of the product
-      description: { type: String, required: true }, // Product description
+      productId: { type: String, required: true },
+      name: { type: String, required: true },
+      price: { type: Number, required: true },
+      quantity: { type: Number, required: true },
+      description: { type: String, required: true },
     },
   ],
-  createdAt: { type: Date, default: Date.now }, // Automatically set the transaction date
+  createdAt: { type: Date, default: Date.now },
 });
 
-// Explicitly set the collection name to "checkout"
 const Checkout = mongoose.model('Checkout', checkoutSchema, 'checkout');
 
-// Export the model for use in other parts of the application
 module.exports = Checkout;

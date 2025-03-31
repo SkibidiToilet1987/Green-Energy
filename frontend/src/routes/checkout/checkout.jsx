@@ -17,7 +17,6 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Verify token and redirect if unauthorized
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -48,49 +47,42 @@ const Checkout = () => {
   const validateInputs = () => {
     const errors = {};
 
-    // Name validation: only letters and spaces
     if (!name.trim()) {
       errors.name = 'Name is required.';
     } else if (!/^[a-zA-Z\s]+$/.test(name)) {
       errors.name = 'Name must contain only letters and spaces.';
     }
 
-    // Email validation
     if (!email.trim()) {
       errors.email = 'Email is required.';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       errors.email = 'Please enter a valid email address.';
     }
 
-    // Address validation: must not be empty
     if (!address.trim()) {
       errors.address = 'Address is required.';
     } else if (address.length < 5) {
       errors.address = 'Address must be at least 5 characters long.';
     }
 
-    // Card number validation: only digits, exactly 16 digits
     if (!cardNumber.trim()) {
       errors.cardNumber = 'Card number is required.';
     } else if (!/^\d{16}$/.test(cardNumber)) {
       errors.cardNumber = 'Card number must be exactly 16 digits.';
     }
 
-    // Account number validation: only digits, exactly 8 digits
     if (!accountNumber.trim()) {
       errors.accountNumber = 'Account number is required.';
     } else if (!/^\d{8}$/.test(accountNumber)) {
       errors.accountNumber = 'Account number must be exactly 8 digits.';
     }
 
-    // CCV validation: only digits, exactly 3 digits
     if (!ccv.trim()) {
       errors.ccv = 'CCV is required.';
     } else if (!/^\d{3}$/.test(ccv)) {
       errors.ccv = 'CCV must be exactly 3 digits.';
     }
 
-    // Phone number validation: only digits, exactly 9 digits
     if (!phoneNumber.trim()) {
       errors.phoneNumber = 'Phone number is required.';
     } else if (!/^\d{9}$/.test(phoneNumber)) {
@@ -103,14 +95,12 @@ const Checkout = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Validate inputs
     const errors = validateInputs();
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
       return;
     }
 
-    // If validation passes, make API request
     setIsLoading(true);
 
     try {

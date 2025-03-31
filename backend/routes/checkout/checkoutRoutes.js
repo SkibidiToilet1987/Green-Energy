@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Checkout = require('../../models/checkoutModel'); // Ensure the model explicitly uses the "checkout" collection
+const Checkout = require('../../models/checkoutModel');
 
-// POST /checkout - Save or update checkout data
 router.post('/', async (req, res) => {
   try {
     const {
@@ -18,7 +17,6 @@ router.post('/', async (req, res) => {
       createdAt,
     } = req.body;
 
-    // Validate required fields
     if (
       !userId ||
       !name ||
@@ -34,11 +32,9 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'All fields are required, and cart items cannot be empty.' });
     }
 
-    // Check if a checkout document already exists for the user
     let checkout = await Checkout.findOne({ userId });
 
     if (checkout) {
-      // Update the existing checkout document
       checkout.name = name;
       checkout.email = email;
       checkout.address = address;
@@ -47,13 +43,12 @@ router.post('/', async (req, res) => {
       checkout.ccv = ccv;
       checkout.phoneNumber = phoneNumber;
       checkout.cartItems = cartItems;
-      checkout.createdAt = createdAt || new Date(); // Update the transaction date
+      checkout.createdAt = createdAt || new Date();
 
       await checkout.save();
       return res.status(200).json({ message: 'Checkout updated successfully', checkout });
     }
 
-    // Create a new checkout document if none exists
     checkout = new Checkout({
       userId,
       email,
@@ -64,7 +59,7 @@ router.post('/', async (req, res) => {
       ccv,
       phoneNumber,
       cartItems,
-      createdAt: createdAt || new Date(), // Add the transaction date
+      createdAt: createdAt || new Date(),
     });
 
     await checkout.save();

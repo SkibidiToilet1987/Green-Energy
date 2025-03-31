@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const ShoppingCart = require('../../models/shoppingCartModel'); // Import the ShoppingCart model
+const ShoppingCart = require('../../models/shoppingCartModel');
 
-// POST /shoppingCart - Save or update cart data in MongoDB
 router.post('/', async (req, res) => {
   try {
-    const { userId, email, cartItems } = req.body; // Extract email and cart items from the request body
+    const { userId, email, cartItems } = req.body;
 
-    // Validate email and cart items
     if (!email) {
       return res.status(400).json({ error: 'Email is required' });
     }
@@ -15,25 +13,21 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Cart items are required' });
     }
 
-    // Check if a shopping cart already exists for the user
     let shoppingCart = await ShoppingCart.findOne({ userId });
 
     if (shoppingCart) {
-      // Update the existing shopping cart
       shoppingCart.cartItems = cartItems;
-      shoppingCart.email = email; // Update the email address
+      shoppingCart.email = email;
       await shoppingCart.save();
       return res.status(200).json({ message: 'Shopping cart updated successfully', shoppingCart });
     }
 
-    // Create a new shopping cart if none exists
     shoppingCart = new ShoppingCart({
       userId,
-      email, // Include the email address
+      email,
       cartItems,
     });
 
-    // Save to database
     await shoppingCart.save();
     res.status(201).json({ message: 'Shopping cart created successfully', shoppingCart });
   } catch (error) {
@@ -42,7 +36,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET /shoppingCart - Retrieve all cart data from MongoDB
 router.get('/', async (req, res) => {
   try {
     const cartData = await ShoppingCart.find();
@@ -53,12 +46,9 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /shoppingCart/:userId - Retrieve cart data for a specific user
 router.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-
-    // Find the shopping cart for the specified user
     const shoppingCart = await ShoppingCart.findOne({ userId });
 
     if (!shoppingCart) {
@@ -72,12 +62,10 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
-// DELETE /shoppingCart/:userId - Delete cart data for a specific user
 router.delete('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Delete the shopping cart for the specified user
     const result = await ShoppingCart.findOneAndDelete({ userId });
 
     if (!result) {

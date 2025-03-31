@@ -5,34 +5,31 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
-import { Link } from 'react-router-dom'; // Import Link for navigation
-import { CartContext } from '../../context/CartContext'; // Import CartContext
+import { Link } from 'react-router-dom';
+import { CartContext } from '../../context/CartContext';
 import '../../assets/login.css';
 
 export default function Login() {
     const [, setCookies] = useCookies(['token']);
-    const [isLoading, setIsLoading] = useState(false); // Controls loading state
-    const [validationErrors, setValidationErrors] = useState({}); // Stores validation errors
+    const [isLoading, setIsLoading] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
     const navigate = useNavigate();
-    const { clearCart } = useContext(CartContext); // Access clearCart from CartContext
+    const { clearCart } = useContext(CartContext);
 
-    // Validate email format
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    // Handle form submission
     const SubmitLogin = async (event) => {
         event.preventDefault();
-        setIsLoading(true); // Start loading
-        setValidationErrors({}); // Clear previous validation errors
+        setIsLoading(true);
+        setValidationErrors({});
 
         const email = event.target[0].value;
         const password = event.target[1].value;
         const remember = event.target[2].checked;
 
-        // Validate inputs
         const newErrors = {};
         if (!email.trim()) {
             newErrors.email = "Email is required. Please enter your email address.";
@@ -45,7 +42,6 @@ export default function Login() {
             newErrors.password = "Password must be at least 8 characters long.";
         }
 
-        // If there are validation errors, stop submission
         if (Object.keys(newErrors).length > 0) {
             setValidationErrors(newErrors);
             setIsLoading(false);
@@ -53,34 +49,27 @@ export default function Login() {
         }
 
         try {
-            // Make API request
             const res = await axios.post('http://localhost:3000/auth', {
                 email,
                 password,
                 remember,
             });
 
-            // Handle successful login
             if (res.data.token) {
-                // Store token in cookies
                 setCookies('token', res.data.token, { path: '/' });
 
-                // Store token in localStorage for compatibility with cart.jsx
                 localStorage.setItem('token', res.data.token);
                 console.log("Token stored in localStorage:", res.data.token);
 
-                // Clear the shopping cart after login
                 clearCart();
 
-                // Redirect to the cart page
                 navigate('/cart');
             } else {
                 setValidationErrors({ api: "Login failed. Please check your credentials and try again." });
             }
         } catch (error) {
-            // Handle API errors
             if (error.response) {
-                if (error.response.status === 401) { // Assuming 401 for invalid credentials
+                if (error.response.status === 401) {
                     setValidationErrors({
                         api: (
                             <>
@@ -96,7 +85,7 @@ export default function Login() {
                 setValidationErrors({ api: "An error occurred. Please check your internet connection and try again." });
             }
         } finally {
-            setIsLoading(false); // Stop loading
+            setIsLoading(false);
         }
     };
 
@@ -110,16 +99,14 @@ export default function Login() {
                             <Card.Body>
                                 <Card.Title className="fs-2 text-center"><strong>Login</strong></Card.Title>
                                 <Form onSubmit={SubmitLogin}>
-                                    {/* Email Field */}
                                     <Form.Group className="mb-3" controlId="formEmail">
                                         <Form.Label>Email Address</Form.Label>
                                         <Form.Control
                                             type="email"
                                             placeholder="Enter Email"
                                             isInvalid={!!validationErrors.email}
-                                            className={validationErrors.email ? 'error-background' : ''} // Add light red background
+                                            className={validationErrors.email ? 'error-background' : ''}
                                         />
-                                        {/* Error Message for Email */}
                                         {validationErrors.email && (
                                             <Form.Control.Feedback type="invalid" className="d-block">
                                                 {validationErrors.email}
@@ -127,16 +114,14 @@ export default function Login() {
                                         )}
                                     </Form.Group>
 
-                                    {/* Password Field */}
                                     <Form.Group className="mb-3" controlId="formPassword">
                                         <Form.Label>Password</Form.Label>
                                         <Form.Control
                                             type="password"
                                             placeholder="Password"
                                             isInvalid={!!validationErrors.password}
-                                            className={validationErrors.password ? 'error-background' : ''} // Add light red background
+                                            className={validationErrors.password ? 'error-background' : ''}
                                         />
-                                        {/* Error Message for Password */}
                                         {validationErrors.password && (
                                             <Form.Control.Feedback type="invalid" className="d-block">
                                                 {validationErrors.password}
@@ -144,24 +129,21 @@ export default function Login() {
                                         )}
                                     </Form.Group>
 
-                                    {/* Remember Me Checkbox */}
                                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
                                         <Form.Check type="checkbox" label="Remember Me" />
                                     </Form.Group>
 
-                                    {/* API Error Message (Inline) */}
                                     {validationErrors.api && (
                                         <div className="text-danger mb-3">
                                             {validationErrors.api}
                                         </div>
                                     )}
 
-                                    {/* Submit Button */}
                                     <Button
                                         style={{ width: "100%" }}
                                         variant="dark"
                                         type="submit"
-                                        disabled={isLoading} // Disable button while loading
+                                        disabled={isLoading}
                                     >
                                         {isLoading ? (
                                             <Spinner
