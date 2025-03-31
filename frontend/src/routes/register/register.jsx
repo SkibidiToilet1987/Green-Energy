@@ -1,10 +1,13 @@
-import { Card, Col, Container, Row, Form, Button, ProgressBar } from 'react-bootstrap';
+import { Card, Col, Container, Row, Form, Button, ProgressBar, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MainNavigation from '../../components/MainNavigation';
+import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import '../../assets/register.css';
+// Import icons for password visibility toggle
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 export default function Register() {
     const [password, setPassword] = useState("");
@@ -15,6 +18,19 @@ export default function Register() {
     const [strengthColor, setStrengthColor] = useState("danger");
     const [validationErrors, setValidationErrors] = useState({});
     const navigate = useNavigate();
+    // Add state for password visibility
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    // Toggle password visibility
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    // Toggle confirm password visibility
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
 
     // Check password strength whenever password changes
     useEffect(() => {
@@ -191,13 +207,27 @@ export default function Register() {
 
                                     <Form.Group className="mb-3" controlId="formPassword">
                                         <Form.Label>Password</Form.Label>
-                                        <Form.Control
-                                            type="password"
-                                            placeholder="Password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            isInvalid={!!validationErrors.password}
-                                        />
+                                        <InputGroup>
+                                            <Form.Control
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="Password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                isInvalid={!!validationErrors.password}
+                                            />
+                                            <Button 
+                                                variant="link"
+                                                onClick={togglePasswordVisibility}
+                                                style={{ 
+                                                    borderColor: validationErrors.password ? '#dc3545' : '#ced4da',
+                                                    color: '#212529',
+                                                    boxShadow: 'none',
+                                                    borderLeft: 'none'
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                                            </Button>
+                                        </InputGroup>
                                         {validationErrors.password && (
                                             <Form.Text className="text-danger">
                                                 <ul className="ps-3 mb-0">
@@ -230,13 +260,27 @@ export default function Register() {
 
                                     <Form.Group className="mb-3" controlId="formConfirmPassword">
                                         <Form.Label>Confirm Password</Form.Label>
-                                        <Form.Control
-                                            type="password"
-                                            placeholder="Confirm your password"
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            isInvalid={!!validationErrors.confirmPassword}
-                                        />
+                                        <InputGroup>
+                                            <Form.Control
+                                                type={showConfirmPassword ? "text" : "password"}
+                                                placeholder="Confirm your password"
+                                                value={confirmPassword}
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                                isInvalid={!!validationErrors.confirmPassword}
+                                            />
+                                            <Button 
+                                                variant="link"
+                                                onClick={toggleConfirmPasswordVisibility}
+                                                style={{ 
+                                                    borderColor: validationErrors.confirmPassword ? '#dc3545' : '#ced4da',
+                                                    color: '#212529',
+                                                    boxShadow: 'none',
+                                                    borderLeft: 'none'
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
+                                            </Button>
+                                        </InputGroup>
                                         {validationErrors.confirmPassword && <Form.Text className="text-danger">{validationErrors.confirmPassword}</Form.Text>}
                                     </Form.Group>
 

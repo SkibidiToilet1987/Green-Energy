@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MainNavigation from '../../components/MainNavigation';
+import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import { Link } from 'react-router-dom';  // Import Link for navigation
 import '../../assets/login.css';

@@ -12,6 +12,7 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('cartItems', JSON.stringify(cart));
   }, [cart]);
 
+  // Add a product to the cart
   const addToCart = (product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item._id === product._id);
@@ -24,27 +25,54 @@ export const CartProvider = ({ children }) => {
     });
   };
 
+  // Remove a product from the cart
   const removeFromCart = (productId) => {
     setCart((prevCart) => prevCart.filter((item) => item._id !== productId));
   };
 
-  const updateCartItemQuantity = (productId, newQuantity) => {
-    if (newQuantity < 1) return;
-    
+  // Update the quantity of a product in the cart
+  const updateQuantity = (productId, action) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item._id === productId ? { ...item, quantity: newQuantity } : item
+        item._id === productId
+          ? {
+              ...item,
+              quantity: action === 'increment' ? item.quantity + 1 : Math.max(item.quantity - 1, 1),
+            }
+          : item
       )
     );
   };
 
+  // Update the quantity of a product directly with a new value
+  const updateCartItemQuantity = (productId, newQuantity) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item._id === productId ? { ...item, quantity: Math.max(newQuantity, 1) } : item
+      )
+    );
+  };
+
+  // Calculate the total number of items in the cart
+  const getTotalItems = () => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  // Calculate the total price of items in the cart
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
   return (
-    <CartContext.Provider 
-      value={{ 
-        cart, 
-        addToCart, 
-        removeFromCart, 
-        updateCartItemQuantity 
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        updateCartItemQuantity,
+        getTotalItems,
+        getTotalPrice,
       }}
     >
       {children}

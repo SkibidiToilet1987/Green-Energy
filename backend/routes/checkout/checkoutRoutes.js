@@ -1,27 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const Checkout = require('../../models/checkoutModel'); // Import the Checkout model
+const Checkout = require('../../models/checkoutModel'); // Adjust the path if necessary
 
-// POST /checkout - Save checkout form data to MongoDB
+// POST /checkout - Save or update checkout data
 router.post('/', async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      address,
-      cardNumber,
-      accountNumber,
-      ccv,
-      phoneNumber,
-    } = req.body;
+    const { userId, name, email, address, cardNumber, accountNumber, ccv, phoneNumber, cartItems } = req.body;
 
     // Validate required fields
-    if (!name || !email || !address || !cardNumber || !accountNumber || !ccv || !phoneNumber) {
-      return res.status(400).json({ error: 'All fields are required' });
+    if (!userId || !name || !email || !address || !cardNumber || !accountNumber || !ccv || !phoneNumber || !cartItems || cartItems.length === 0) {
+      return res.status(400).json({ error: 'All fields are required, and cart items cannot be empty.' });
     }
 
-    // Create a new checkout entry
-    const checkout = new Checkout({
+    // Check if a checkout document already exists for the user
+    let checkout = await Checkout.findOne({ userId });
+
+    if (checkout) {
+      // Update the existing checkout document
+      checkout.name = name;
+      checkout.email = email;
+      checkout.address = address;
+      checkout.cardNumber = cardNumber;
+      checkout.accountNumber = accountNumber;
+      checkout.ccv = ccv;
+      checkout.phoneNumber = phoneNumber;
+      checkout.cartItems = cartItems;
+      await checkout.save();
+      return res.status(200).json({ message: 'Checkout updated successfully', checkout });
+    }
+
+    // Create a new checkout document if none exists
+    checkout = new Checkout({
+      userId,
       name,
       email,
       address,
@@ -29,13 +39,13 @@ router.post('/', async (req, res) => {
       accountNumber,
       ccv,
       phoneNumber,
+      cartItems,
     });
 
-    // Save to database
     await checkout.save();
-    res.status(201).json({ message: 'Checkout data saved successfully' });
+    res.status(201).json({ message: 'Checkout created successfully', checkout });
   } catch (error) {
-    console.error('Error saving checkout data:', error.message);
+    console.error('Error saving checkout data:', error.message, error.stack);
     res.status(500).json({ error: 'Failed to save checkout data' });
   }
 });

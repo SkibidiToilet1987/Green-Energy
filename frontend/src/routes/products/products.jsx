@@ -85,7 +85,7 @@ const Products = () => {
                       />
                       <div>
                         <div className="fw-bold">{item.name}</div>
-                        <small>£{item.price} × {item.quantity}</small>
+                        <small>£{item.price}</small> {/* Removed quantity display here */}
                       </div>
                     </div>
                     <div className="d-flex align-items-center">
@@ -121,7 +121,7 @@ const Products = () => {
                   Total: £{totalPrice.toFixed(2)}
                 </span>
                 <Link to="/cart">
-                  <Button variant="success" size="sm">
+                  <Button variant="outline-secondary" size="sm">
                     Checkout
                   </Button>
                 </Link>
@@ -292,4 +292,4 @@ const Products = () => {
   );
 };
 
-export default Products; 
+export default Products;

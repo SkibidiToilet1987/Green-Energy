@@ -37,8 +37,35 @@ const Checkout = () => {
 
     // If validation passes, make API request
     setIsLoading(true);
+    const cartItems = JSON.parse(localStorage.getItem('cartItems'))?.map((item) => ({
+      productId: item._id, // Ensure `_id` exists in the cart item
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      description: item.description,
+    })) || [];
+
+    if (cartItems.length === 0) {
+      setValidationErrors({ api: 'Your cart is empty. Please add items to your cart before checking out.' });
+      setIsLoading(false);
+      return;
+    }
+
+    console.log('Submitting checkout data:', {
+      userId: 'user123', // Replace with the actual user ID
+      name,
+      email,
+      address,
+      cardNumber,
+      accountNumber,
+      ccv,
+      phoneNumber,
+      cartItems,
+    });
+
     axios
       .post('http://localhost:3000/checkout', {
+        userId: 'user123', // Replace with the actual user ID
         name,
         email,
         address,
@@ -46,7 +73,7 @@ const Checkout = () => {
         accountNumber,
         ccv,
         phoneNumber,
-        cartItems: JSON.parse(localStorage.getItem('cartItems')), // Retrieve cart items from localStorage
+        cartItems,
       })
       .then((response) => {
         console.log('Checkout data saved successfully:', response.data);
@@ -54,7 +81,7 @@ const Checkout = () => {
       })
       .catch((error) => {
         console.error('Error saving checkout data:', error);
-        setValidationErrors({ api: 'An error occurred during checkout.' });
+        setValidationErrors({ api: 'An error occurred during checkout. Please try again.' });
       })
       .finally(() => {
         setIsLoading(false);
@@ -181,7 +208,7 @@ const Checkout = () => {
 
                   <Button
                     style={{ width: '100%' }}
-                    variant="primary"
+                    variant="dark"
                     type="submit"
                     disabled={isLoading}
                   >

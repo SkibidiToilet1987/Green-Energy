@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { CartContext } from '../../context/CartContext';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
-import { Button, Container, Modal, Row, Col, Image, Form, Card } from 'react-bootstrap';
+import { Button, Container, Modal, Row, Col, Image, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -13,7 +13,9 @@ const Cart = () => {
   const navigate = useNavigate();
 
   // Calculate total price
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const vat = subtotal * 0.2; // 20% VAT
+  const totalPrice = subtotal + vat;
 
   // Confirm removal modal handler
   const handleRemoveConfirmation = (product) => {
@@ -40,17 +42,19 @@ const Cart = () => {
   // Handle checkout
   const handleCheckout = () => {
     const checkoutData = {
+      userId: 'user123', // Replace with the actual user ID
       cartItems: cart.map((item) => ({
         productId: item._id,
         name: item.name,
         price: item.price,
         image: item.image,
         quantity: item.quantity,
+        description: item.description,
       })),
     };
-
+  
     axios
-      .post('http://localhost:3000/shoppingcart', checkoutData)
+      .post('http://localhost:3000/shoppingcart', checkoutData) // Use POST or PUT based on your backend logic
       .then((response) => {
         console.log('Shopping cart data saved successfully:', response.data);
         navigate('/checkout');
@@ -76,76 +80,96 @@ const Cart = () => {
                     </div>
                     <hr className="my-4" />
 
-                    {cart.map((product) => (
-                      <div key={product._id} className="row mb-4 d-flex justify-content-between align-items-center">
-                        <div className="col-md-2 col-lg-2 col-xl-2">
-                          <Image
-                            src={product.image || 'https://via.placeholder.com/300x200'}
-                            className="img-fluid rounded-3"
-                            alt={product.name}
-                          />
-                        </div>
-                        <div className="col-md-3 col-lg-3 col-xl-3">
-                          <h6 className="mb-0">{product.name}</h6>
-                        </div>
-                        <div className="col-md-3 col-lg-3 col-xl-2 d-flex align-items-center justify-content-between">
-                          <Button
-                            variant="outline-secondary"
-                            size="sm"
-                            onClick={() => handleQuantityChange(product._id, product.quantity - 1)}
-                            disabled={product.quantity <= 1}
-                          >
-                            -
-                          </Button>
-                          <span className="mx-2">{product.quantity}</span>
-                          <Button
-                            variant="outline-secondary"
-                            size="sm"
-                            onClick={() => handleQuantityChange(product._id, product.quantity + 1)}
-                          >
-                            +
-                          </Button>
-                        </div>
-                        <div className="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                          <h6 className="mb-0 text-dark">£{(product.price * product.quantity).toFixed(2)}</h6>
-                        </div>
-                        <div className="col-md-1 col-lg-1 col-xl-1 text-end">
-                          <Button
-                            variant="link"
-                            className="text-danger"
-                            onClick={() => handleRemoveConfirmation(product)}
-                            style={{ fontSize: '1.5rem', textDecoration: 'none' }}
-                          >
-                            ×
-                          </Button>
-                        </div>
+                    {cart.length === 0 ? (
+                      <div className="text-center">
+                        <h3 className="mb-4">Your Cart is Empty</h3>
+                        <Button
+                          variant="dark"
+                          size="lg"
+                          onClick={() => navigate('/products')}
+                        >
+                          Browse Products
+                        </Button>
                       </div>
-                    ))}
+                    ) : (
+                      cart.map((product) => (
+                        <div key={product._id} className="row mb-4 d-flex justify-content-between align-items-center">
+                          <div className="col-md-2 col-lg-2 col-xl-2">
+                            <Image
+                              src={product.image || 'https://via.placeholder.com/300x200'}
+                              className="img-fluid rounded-3"
+                              alt={product.name}
+                            />
+                          </div>
+                          <div className="col-md-3 col-lg-3 col-xl-3">
+                            <h6 className="mb-0">{product.name}</h6>
+                          </div>
+                          <div className="col-md-3 col-lg-3 col-xl-2 d-flex align-items-center justify-content-between">
+                            <Button
+                              variant="outline-secondary"
+                              size="sm"
+                              onClick={() => handleQuantityChange(product._id, product.quantity - 1)}
+                              disabled={product.quantity <= 1}
+                            >
+                              -
+                            </Button>
+                            <span className="mx-2">{product.quantity}</span>
+                            <Button
+                              variant="outline-secondary"
+                              size="sm"
+                              onClick={() => handleQuantityChange(product._id, product.quantity + 1)}
+                            >
+                              +
+                            </Button>
+                          </div>
+                          <div className="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                            <h6 className="mb-0 text-dark">£{(product.price * product.quantity).toFixed(2)}</h6>
+                          </div>
+                          <div className="col-md-1 col-lg-1 col-xl-1 text-end">
+                            <span
+                              className="text-dark"
+                              style={{ cursor: 'pointer', fontSize: '1rem' }}
+                              onClick={() => handleRemoveConfirmation(product)}
+                            >
+                              X
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    )}
                     <hr className="my-4" />
-                    <div className="pt-5">
-                      <h6 className="mb-0">
-                        <a href="/products" className="text-dark text-decoration-none">
-                          <i className="fas fa-long-arrow-alt-left me-2"></i>Back to shop
-                        </a>
-                      </h6>
-                    </div>
+                    {cart.length > 0 && (
+                      <div className="pt-5">
+                        <h6 className="mb-0">
+                          <a href="/products" className="text-dark text-decoration-none">
+                            <i className="fas fa-arrow-left me-2"></i>Continue Shopping
+                          </a>
+                        </h6>
+                      </div>
+                    )}
                   </Col>
-                  <Col lg={4} className="bg-light p-5">
-                    <h3 className="fw-bold mb-5 mt-2 pt-1">Summary</h3>
-                    <hr className="my-4" />
-                    <div className="d-flex justify-content-between mb-4">
-                      <h5 className="text-uppercase">Items {cart.length}</h5>
-                      <h5>£{totalPrice.toFixed(2)}</h5>
-                    </div>
-                    <hr className="my-4" />
-                    <div className="d-flex justify-content-between mb-5">
-                      <h5 className="text-uppercase">Total price</h5>
-                      <h5>£{totalPrice.toFixed(2)}</h5>
-                    </div>
-                    <Button variant="dark" onClick={handleCheckout} className="btn-lg w-100">
-                      Checkout
-                    </Button>
-                  </Col>
+                  {cart.length > 0 && (
+                    <Col lg={4} className="bg-light p-5">
+                      <h3 className="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                      <hr className="my-4" />
+                      <div className="d-flex justify-content-between mb-4">
+                        <h6 className="text-uppercase">Subtotal</h6>
+                        <h6>£{subtotal.toFixed(2)}</h6>
+                      </div>
+                      <div className="d-flex justify-content-between mb-4">
+                        <h6 className="text-uppercase">VAT (20%)</h6>
+                        <h6>£{vat.toFixed(2)}</h6>
+                      </div>
+                      <hr className="my-4" />
+                      <div className="d-flex justify-content-between mb-5">
+                        <h6 className="text-uppercase">Total</h6>
+                        <h6>£{totalPrice.toFixed(2)}</h6>
+                      </div>
+                      <Button variant="dark" onClick={handleCheckout} className="btn-lg w-100">
+                        Checkout
+                      </Button>
+                    </Col>
+                  )}
                 </Row>
               </Card.Body>
             </Card>
@@ -165,7 +189,7 @@ const Cart = () => {
           <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={confirmRemove}>
+          <Button variant="dark" onClick={confirmRemove}>
             Remove
           </Button>
         </Modal.Footer>
