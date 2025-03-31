@@ -1,5 +1,5 @@
 import { Card, Col, Container, Row } from 'react-bootstrap';
-import MainNavigation from '../components/MainNavigation';
+import MainNavigation from '../components/mainnavigation';
 import MainFooter from '../components/MainFooter';
 
 
