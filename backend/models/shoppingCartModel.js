@@ -17,9 +17,10 @@ const shoppingCartSchema = new mongoose.Schema({
       description: { type: String, required: true },
     },
   ],
+  createdAt: { type: Date, default: Date.now }, // Automatically set the creation date
 });
 
-// Explicitly set the collection name to "shoppingcart"
-const ShoppingCart = mongoose.model('ShoppingCart', shoppingCartSchema, 'shoppingcart');
+// Explicitly set the collection name to "shoppingCart"
+const ShoppingCart = mongoose.model('ShoppingCart', shoppingCartSchema, 'shoppingCart');
 
 module.exports = ShoppingCart;

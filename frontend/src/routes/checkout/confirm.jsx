@@ -3,12 +3,41 @@ import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Confirm = () => {
   const navigate = useNavigate();
 
   const [orderNumber, setOrderNumber] = useState('');
   const [deliveryTime, setDeliveryTime] = useState('5-7 Business Days');
+
+  // Verify token and redirect if unauthorized
+  useEffect(() => {
+    const verifyToken = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No token found. Redirecting to login...');
+          navigate('/login', { state: { from: '/checkout/confirm' } });
+          return;
+        }
+
+        const response = await axios.get('http://localhost:3000/users/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+
+        console.log('Token verified. User:', response.data);
+      } catch (error) {
+        console.error('Token verification failed. Redirecting to login...', error);
+        navigate('/login', { state: { from: '/checkout/confirm' } });
+      }
+    };
+
+    verifyToken();
+  }, [navigate]);
 
   // Generate a random order number
   useEffect(() => {

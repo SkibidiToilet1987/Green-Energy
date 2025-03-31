@@ -23,6 +23,7 @@ const checkoutSchema = new mongoose.Schema({
       description: { type: String, required: true }, // Product description
     },
   ],
+  createdAt: { type: Date, default: Date.now }, // Automatically set the transaction date
 });
 
 // Explicitly set the collection name to "checkout"

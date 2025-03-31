@@ -17,7 +17,7 @@ import Bookings from './routes/booking/bookings';
 import Consultations from './routes/booking/consultations/consultations';
 import Installations from './routes/booking/installations/installations';
 import Calculator from './routes/calculator/calculator';
-import EnergyUsage from './routes/checkout/energyUsage/energyUsage';
+import EnergyUsage from './routes/energyUsage/energyUsage';
 
 const router = createBrowserRouter([
   {

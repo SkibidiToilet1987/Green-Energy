@@ -53,6 +53,12 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  // Clear the cart
+  const clearCart = () => {
+    setCart([]); // Reset the cart to an empty array
+    localStorage.removeItem('cartItems'); // Clear the cart from localStorage
+  };
+
   // Calculate the total number of items in the cart
   const getTotalItems = () => {
     return cart.reduce((total, item) => total + item.quantity, 0);
@@ -71,6 +77,7 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         updateQuantity,
         updateCartItemQuantity,
+        clearCart, // Expose the clearCart method
         getTotalItems,
         getTotalPrice,
       }}

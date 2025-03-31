@@ -5,10 +5,32 @@ const Checkout = require('../../models/checkoutModel'); // Ensure the model expl
 // POST /checkout - Save or update checkout data
 router.post('/', async (req, res) => {
   try {
-    const { userId, name, email, address, cardNumber, accountNumber, ccv, phoneNumber, cartItems } = req.body;
+    const {
+      userId,
+      name,
+      email,
+      address,
+      cardNumber,
+      accountNumber,
+      ccv,
+      phoneNumber,
+      cartItems,
+      createdAt,
+    } = req.body;
 
     // Validate required fields
-    if (!userId || !name || !email || !address || !cardNumber || !accountNumber || !ccv || !phoneNumber || !cartItems || cartItems.length === 0) {
+    if (
+      !userId ||
+      !name ||
+      !email ||
+      !address ||
+      !cardNumber ||
+      !accountNumber ||
+      !ccv ||
+      !phoneNumber ||
+      !cartItems ||
+      cartItems.length === 0
+    ) {
       return res.status(400).json({ error: 'All fields are required, and cart items cannot be empty.' });
     }
 
@@ -25,6 +47,7 @@ router.post('/', async (req, res) => {
       checkout.ccv = ccv;
       checkout.phoneNumber = phoneNumber;
       checkout.cartItems = cartItems;
+      checkout.createdAt = createdAt || new Date(); // Update the transaction date
 
       await checkout.save();
       return res.status(200).json({ message: 'Checkout updated successfully', checkout });
@@ -41,6 +64,7 @@ router.post('/', async (req, res) => {
       ccv,
       phoneNumber,
       cartItems,
+      createdAt: createdAt || new Date(), // Add the transaction date
     });
 
     await checkout.save();

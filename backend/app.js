@@ -12,6 +12,7 @@ var authRouter = require('./routes/auth/index');
 var productRouter = require('./routes/product/productRoutes');
 var checkoutRouter = require('./routes/checkout/checkoutRoutes'); // Checkout route
 var shoppingCartRouter = require('./routes/checkout/shoppingCartRoutes'); // Shopping cart route
+var calculatorRouter = require('./routes/checkout/calculatorRoutes'); // Import the calculator routes
 var meRouter = require('./routes/users/@me'); // Import the /me route
 
 var app = express();
@@ -45,6 +46,7 @@ app.use('/auth', authRouter);
 app.use('/products', productRouter);
 app.use('/checkout', checkoutRouter); // Register the checkout route
 app.use('/shoppingcart', shoppingCartRouter); // Register the shopping cart route
+app.use('/carbonCalculator', calculatorRouter); // Register the calculator route
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {

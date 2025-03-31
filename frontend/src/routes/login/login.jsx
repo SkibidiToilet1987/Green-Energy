@@ -1,11 +1,12 @@
 import { Card, Col, Container, Row, Form, Button, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import { Link } from 'react-router-dom'; // Import Link for navigation
+import { CartContext } from '../../context/CartContext'; // Import CartContext
 import '../../assets/login.css';
 
 export default function Login() {
@@ -13,6 +14,7 @@ export default function Login() {
     const [isLoading, setIsLoading] = useState(false); // Controls loading state
     const [validationErrors, setValidationErrors] = useState({}); // Stores validation errors
     const navigate = useNavigate();
+    const { clearCart } = useContext(CartContext); // Access clearCart from CartContext
 
     // Validate email format
     const validateEmail = (email) => {
@@ -66,6 +68,9 @@ export default function Login() {
                 // Store token in localStorage for compatibility with cart.jsx
                 localStorage.setItem('token', res.data.token);
                 console.log("Token stored in localStorage:", res.data.token);
+
+                // Clear the shopping cart after login
+                clearCart();
 
                 // Redirect to the cart page
                 navigate('/cart');

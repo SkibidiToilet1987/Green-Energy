@@ -1,14 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, Button, Spinner } from 'react-bootstrap';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import axios from 'axios';
-import { UserContext } from '../../context/userContext'; // Import UserContext for user data
 
 const Checkout = () => {
-  const userContext = useContext(UserContext); // Fetch user context
-  const user = userContext?.user || {}; // Safely access user data
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
@@ -20,21 +17,96 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Verify token and redirect if unauthorized
+  useEffect(() => {
+    const verifyToken = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No token found. Redirecting to login...');
+          navigate('/login', { state: { from: '/checkout' } });
+          return;
+        }
+
+        const response = await axios.get('http://localhost:3000/users/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+
+        console.log('Token verified. User:', response.data);
+      } catch (error) {
+        console.error('Token verification failed. Redirecting to login...', error);
+        navigate('/login', { state: { from: '/checkout' } });
+      }
+    };
+
+    verifyToken();
+  }, [navigate]);
+
+  const validateInputs = () => {
+    const errors = {};
+
+    // Name validation: only letters and spaces
+    if (!name.trim()) {
+      errors.name = 'Name is required.';
+    } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+      errors.name = 'Name must contain only letters and spaces.';
+    }
+
+    // Email validation
+    if (!email.trim()) {
+      errors.email = 'Email is required.';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Please enter a valid email address.';
+    }
+
+    // Address validation: must not be empty
+    if (!address.trim()) {
+      errors.address = 'Address is required.';
+    } else if (address.length < 5) {
+      errors.address = 'Address must be at least 5 characters long.';
+    }
+
+    // Card number validation: only digits, exactly 16 digits
+    if (!cardNumber.trim()) {
+      errors.cardNumber = 'Card number is required.';
+    } else if (!/^\d{16}$/.test(cardNumber)) {
+      errors.cardNumber = 'Card number must be exactly 16 digits.';
+    }
+
+    // Account number validation: only digits, exactly 8 digits
+    if (!accountNumber.trim()) {
+      errors.accountNumber = 'Account number is required.';
+    } else if (!/^\d{8}$/.test(accountNumber)) {
+      errors.accountNumber = 'Account number must be exactly 8 digits.';
+    }
+
+    // CCV validation: only digits, exactly 3 digits
+    if (!ccv.trim()) {
+      errors.ccv = 'CCV is required.';
+    } else if (!/^\d{3}$/.test(ccv)) {
+      errors.ccv = 'CCV must be exactly 3 digits.';
+    }
+
+    // Phone number validation: only digits, exactly 9 digits
+    if (!phoneNumber.trim()) {
+      errors.phoneNumber = 'Phone number is required.';
+    } else if (!/^\d{9}$/.test(phoneNumber)) {
+      errors.phoneNumber = 'Phone number must be exactly 9 digits.';
+    }
+
+    return errors;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Validation logic
-    const newErrors = {};
-    if (!name) newErrors.name = 'Name is required';
-    if (!email || !/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Please enter a valid email address';
-    if (!address) newErrors.address = 'Address is required';
-    if (cardNumber.length !== 16) newErrors.cardNumber = 'Card number must be exactly 16 digits';
-    if (accountNumber.length !== 8) newErrors.accountNumber = 'Account number must be exactly 8 digits';
-    if (ccv.length !== 3) newErrors.ccv = 'CCV must be exactly 3 digits';
-    if (phoneNumber.length !== 9) newErrors.phoneNumber = 'Phone number must be exactly 9 digits';
-
-    if (Object.keys(newErrors).length > 0) {
-      setValidationErrors(newErrors);
+    // Validate inputs
+    const errors = validateInputs();
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
       return;
     }
 
@@ -42,34 +114,26 @@ const Checkout = () => {
     setIsLoading(true);
 
     try {
-      // Retrieve the token from localStorage
       const token = localStorage.getItem('token');
-      console.log("Retrieved token:", token);
-
       if (!token) {
         setValidationErrors({ api: 'No token found. Please log in again.' });
         setIsLoading(false);
         return;
       }
 
-      console.log("Sending request to /users/me to verify token...");
-
-      // Verify the token and get user details
       const verifyResponse = await axios.get('http://localhost:3000/users/me', {
         headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          Authorization: `Bearer ${token}`,
         },
-        withCredentials: true, // Include cookies in the request if needed
+        withCredentials: true,
       });
 
-      console.log("Response from /users/me:", verifyResponse.data);
-
       if (verifyResponse.status === 200) {
-        const emailFromBackend = verifyResponse.data.email; // Get the full email address
-        const userId = emailFromBackend.split('@')[0]; // Extract userId from email if needed
+        const emailFromBackend = verifyResponse.data.email;
+        const userId = emailFromBackend.split('@')[0];
 
         const cartItems = JSON.parse(localStorage.getItem('cartItems'))?.map((item) => ({
-          productId: item._id, // Ensure `_id` exists in the cart item
+          productId: item._id,
           name: item.name,
           price: item.price,
           quantity: item.quantity,
@@ -82,33 +146,30 @@ const Checkout = () => {
           return;
         }
 
-        console.log('Submitting checkout data:', {
+        const checkoutData = {
           userId,
           name,
-          email: emailFromBackend, // Use email from backend
+          email: emailFromBackend,
           address,
           cardNumber,
           accountNumber,
           ccv,
           phoneNumber,
           cartItems,
-        });
+          createdAt: new Date().toISOString(),
+        };
 
-        // Send checkout data to the backend
-        const response = await axios.post('http://localhost:3000/checkout', {
-          userId,
-          name,
-          email: emailFromBackend, // Use email from backend
-          address,
-          cardNumber,
-          accountNumber,
-          ccv,
-          phoneNumber,
-          cartItems,
+        console.log('Submitting checkout data:', checkoutData);
+
+        const response = await axios.post('http://localhost:3000/checkout', checkoutData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
         });
 
         console.log('Checkout data saved successfully:', response.data);
-        navigate('/checkout/confirm'); // Navigate to confirmation page
+        navigate('/checkout/confirm');
       }
     } catch (error) {
       console.error('Error during token verification or checkout:', error);

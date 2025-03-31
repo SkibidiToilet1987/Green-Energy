@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const ShoppingCart = require('../../models/shoppingCartModel'); // Import the ShoppingCart model
 
-// POST /shoppingcart - Save or update cart data in MongoDB
+// POST /shoppingCart - Save or update cart data in MongoDB
 router.post('/', async (req, res) => {
   try {
-    const { userId, email, cartItems } = req.body; // Extract email from the request body
+    const { userId, email, cartItems } = req.body; // Extract email and cart items from the request body
 
     // Validate email and cart items
     if (!email) {
@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET /shoppingcart - Retrieve cart data from MongoDB
+// GET /shoppingCart - Retrieve all cart data from MongoDB
 router.get('/', async (req, res) => {
   try {
     const cartData = await ShoppingCart.find();
@@ -53,7 +53,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /shoppingcart/:userId - Retrieve cart data for a specific user
+// GET /shoppingCart/:userId - Retrieve cart data for a specific user
 router.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
@@ -72,7 +72,7 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
-// DELETE /shoppingcart/:userId - Delete cart data for a specific user
+// DELETE /shoppingCart/:userId - Delete cart data for a specific user
 router.delete('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
