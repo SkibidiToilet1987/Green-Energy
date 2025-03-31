@@ -7,8 +7,8 @@ const checkoutSchema = new mongoose.Schema({
     required: true,
     unique: true, // Ensure one checkout document per user
   },
-  name: { type: String, required: true }, // User's name
   email: { type: String, required: true }, // User's email
+  name: { type: String, required: true }, // User's name
   address: { type: String, required: true }, // Shipping address
   cardNumber: { type: String, required: true }, // Credit card number
   accountNumber: { type: String, required: true }, // Bank account number

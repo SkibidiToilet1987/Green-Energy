@@ -51,9 +51,9 @@ const Cart = () => {
     }
 
     try {
-      // Retrieve the token from localStorage or cookies
-      const token = localStorage.getItem('token'); // Adjust this if you're using cookies instead
-      console.log("Retrieved token:", token); // Debugging: Log the token
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem('token');
+      console.log("Retrieved token:", token);
 
       if (!token) {
         console.error('No token found. Redirecting to login...');
@@ -63,6 +63,7 @@ const Cart = () => {
 
       console.log("Sending request to /users/me to verify token...");
 
+      // Verify the token and get user details
       const verifyResponse = await axios.get('http://localhost:3000/users/me', {
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
@@ -73,12 +74,13 @@ const Cart = () => {
       console.log("Response from /users/me:", verifyResponse.data);
 
       if (verifyResponse.status === 200) {
-        const email = verifyResponse.data.email;
-        const userId = email.split('@')[0];
+        const email = verifyResponse.data.email; // Get the full email address
+        const userId = email.split('@')[0]; // Optional: Extract userId from email if needed
 
+        // Prepare checkout data
         const checkoutData = {
           userId,
-          email,
+          email, // Include the full email address
           cartItems: cart.map((item) => ({
             productId: item._id,
             name: item.name,
@@ -91,11 +93,12 @@ const Cart = () => {
 
         console.log("Sending checkout data to backend:", checkoutData);
 
+        // Send checkout data to the backend
         const response = await axios.post('http://localhost:3000/shoppingcart', checkoutData, {
           headers: {
-            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+            Authorization: `Bearer ${token}`,
           },
-          withCredentials: true, // Include cookies in the request if needed
+          withCredentials: true,
         });
 
         console.log('Shopping cart data saved successfully:', response.data);

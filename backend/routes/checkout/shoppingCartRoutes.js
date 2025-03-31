@@ -5,9 +5,12 @@ const ShoppingCart = require('../../models/shoppingCartModel'); // Import the Sh
 // POST /shoppingcart - Save or update cart data in MongoDB
 router.post('/', async (req, res) => {
   try {
-    const { userId, cartItems } = req.body;
+    const { userId, email, cartItems } = req.body; // Extract email from the request body
 
-    // Validate cart items
+    // Validate email and cart items
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
     if (!cartItems || cartItems.length === 0) {
       return res.status(400).json({ error: 'Cart items are required' });
     }
@@ -18,6 +21,7 @@ router.post('/', async (req, res) => {
     if (shoppingCart) {
       // Update the existing shopping cart
       shoppingCart.cartItems = cartItems;
+      shoppingCart.email = email; // Update the email address
       await shoppingCart.save();
       return res.status(200).json({ message: 'Shopping cart updated successfully', shoppingCart });
     }
@@ -25,7 +29,7 @@ router.post('/', async (req, res) => {
     // Create a new shopping cart if none exists
     shoppingCart = new ShoppingCart({
       userId,
-      email,
+      email, // Include the email address
       cartItems,
     });
 
@@ -46,6 +50,44 @@ router.get('/', async (req, res) => {
   } catch (error) {
     console.error('Error retrieving shopping cart data:', error.message);
     res.status(500).json({ error: 'Failed to retrieve shopping cart data' });
+  }
+});
+
+// GET /shoppingcart/:userId - Retrieve cart data for a specific user
+router.get('/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find the shopping cart for the specified user
+    const shoppingCart = await ShoppingCart.findOne({ userId });
+
+    if (!shoppingCart) {
+      return res.status(404).json({ error: 'Shopping cart not found for this user' });
+    }
+
+    res.status(200).json(shoppingCart);
+  } catch (error) {
+    console.error('Error retrieving shopping cart data for user:', error.message);
+    res.status(500).json({ error: 'Failed to retrieve shopping cart data for user' });
+  }
+});
+
+// DELETE /shoppingcart/:userId - Delete cart data for a specific user
+router.delete('/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Delete the shopping cart for the specified user
+    const result = await ShoppingCart.findOneAndDelete({ userId });
+
+    if (!result) {
+      return res.status(404).json({ error: 'Shopping cart not found for this user' });
+    }
+
+    res.status(200).json({ message: 'Shopping cart deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting shopping cart data:', error.message);
+    res.status(500).json({ error: 'Failed to delete shopping cart data' });
   }
 });
 

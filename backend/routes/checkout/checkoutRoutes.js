@@ -33,8 +33,8 @@ router.post('/', async (req, res) => {
     // Create a new checkout document if none exists
     checkout = new Checkout({
       userId,
-      name,
       email,
+      name,
       address,
       cardNumber,
       accountNumber,
