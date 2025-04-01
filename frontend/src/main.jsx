@@ -20,6 +20,7 @@ import Calculator from './routes/calculator/calculator';
 import EnergyUsage from './routes/energyUsage/energyUsage';
 import ConsultationConfirm from './routes/booking/consultations/consultationConfirm';
 import InstallationConfirm from './routes/booking/installations/installationsConfirm';
+import EnergyUsageCalculator from './routes/energyUsage/energyUsageCalculator';
 
 const router = createBrowserRouter([
   {
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
   {
     path: "/energy-usage",
     element: <EnergyUsage/>
+  },
+  {
+    path: "/energy-usage/calculator",
+    element: <EnergyUsageCalculator/>
   }
 ]);
 
