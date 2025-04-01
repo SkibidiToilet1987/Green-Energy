@@ -40,7 +40,7 @@ const router = createBrowserRouter([
     element: <Products />
   },
   {
-    path: "/about",
+    path: "/about-us",
     element: <About />
   },
   {
@@ -52,7 +52,7 @@ const router = createBrowserRouter([
     element: <Checkout/>
   },
   {
-    path:"/checkout/confirm",
+    path:"shoppingcart/checkout/confirm",
     element: <Confirm/>
   },
   {

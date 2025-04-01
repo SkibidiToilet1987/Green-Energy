@@ -48,8 +48,15 @@ router.get("/", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    delete me.password;
-    res.status(200).json(me);
+    // Include the user's ID in the response
+    const userResponse = {
+      id: me._id, // MongoDB ObjectId
+      email: me.email,
+      name: me.name, // Include other fields as needed
+    };
+
+    console.log("User details retrieved successfully:", userResponse);
+    res.status(200).json(userResponse);
   } catch (error) {
     console.log("Error in /me endpoint:", error);
     res.status(500).json({

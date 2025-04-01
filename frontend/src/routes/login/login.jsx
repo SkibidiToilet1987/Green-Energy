@@ -63,7 +63,8 @@ export default function Login() {
 
                 clearCart();
 
-                navigate('/cart');
+                // Redirect to the home page
+                navigate('/');
             } else {
                 setValidationErrors({ api: "Login failed. Please check your credentials and try again." });
             }

@@ -16,15 +16,20 @@ var calculatorRouter = require('./routes/checkout/calculatorRoutes');
 var meRouter = require('./routes/users/@me');
 var consultationRouter = require('./routes/booking/consultationRoutes');
 var installationRouter = require('./routes/booking/installationRoutes');
+var energyUsageRouter = require('./routes/energyUsage/energyUsageRoutes');
+
 var app = express();
 
+// Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/ISL')
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log('Error connecting to MongoDB:', err));
 
+// Set views directory and view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// Middleware
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -36,6 +41,7 @@ app.use(cors({
   credentials: true,
 }));
 
+// Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/users/me', meRouter);
@@ -46,11 +52,14 @@ app.use('/shoppingcart', shoppingCartRouter);
 app.use('/carbonCalculator', calculatorRouter);
 app.use('/consultations', consultationRouter);
 app.use('/installations', installationRouter);
+app.use('/energy-usage', energyUsageRouter); // Add energy usage routes
 
+// Catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
+// Error handler
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

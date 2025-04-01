@@ -1,9 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const ShoppingCart = require('../../models/shoppingCartModel');
+const ShoppingCart = require('../models/shoppingCartModel');
 
-// POST /shoppingcart - Create or update a shopping cart
-router.post('/', async (req, res) => {
+// Create or update a shopping cart
+exports.createOrUpdateCart = async (req, res) => {
   try {
     const { userId, email, cartItems } = req.body;
 
@@ -42,21 +40,21 @@ router.post('/', async (req, res) => {
     console.error('Error saving shopping cart data:', error.message);
     res.status(500).json({ error: 'Failed to save shopping cart data' });
   }
-});
+};
 
-// GET /shoppingcart - Retrieve all shopping carts
-router.get('/', async (req, res) => {
+// Retrieve all shopping carts
+exports.getAllCarts = async (req, res) => {
   try {
-    const cartData = await ShoppingCart.find();
-    res.status(200).json(cartData);
+    const carts = await ShoppingCart.find();
+    res.status(200).json(carts);
   } catch (error) {
-    console.error('Error retrieving shopping cart data:', error.message);
-    res.status(500).json({ error: 'Failed to retrieve shopping cart data' });
+    console.error('Error retrieving shopping carts:', error.message);
+    res.status(500).json({ error: 'Failed to retrieve shopping carts' });
   }
-});
+};
 
-// GET /shoppingcart/:userId - Retrieve a shopping cart for a specific user
-router.get('/:userId', async (req, res) => {
+// Retrieve a shopping cart by user ID
+exports.getCartByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
     const shoppingCart = await ShoppingCart.findOne({ userId });
@@ -67,13 +65,13 @@ router.get('/:userId', async (req, res) => {
 
     res.status(200).json(shoppingCart);
   } catch (error) {
-    console.error('Error retrieving shopping cart data for user:', error.message);
-    res.status(500).json({ error: 'Failed to retrieve shopping cart data for user' });
+    console.error('Error retrieving shopping cart:', error.message);
+    res.status(500).json({ error: 'Failed to retrieve shopping cart' });
   }
-});
+};
 
-// DELETE /shoppingcart/:userId - Delete a shopping cart for a specific user
-router.delete('/:userId', async (req, res) => {
+// Delete a shopping cart by user ID
+exports.deleteCartByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
 
@@ -85,9 +83,7 @@ router.delete('/:userId', async (req, res) => {
 
     res.status(200).json({ message: 'Shopping cart deleted successfully' });
   } catch (error) {
-    console.error('Error deleting shopping cart data:', error.message);
-    res.status(500).json({ error: 'Failed to delete shopping cart data' });
+    console.error('Error deleting shopping cart:', error.message);
+    res.status(500).json({ error: 'Failed to delete shopping cart' });
   }
-});
-
-module.exports = router;
+};

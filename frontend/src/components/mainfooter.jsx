@@ -23,22 +23,16 @@ const MainFooter = () => {
                     <Col>
                         <Nav className="justify-content-center">
                             <Nav.Item>
-                                <Nav.Link as={Link} to="/login" className="text-light">Login</Nav.Link>
+                                <Nav.Link as={Link} to="/products" className="text-light">Browse our products</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to="/register" className="text-light">Register</Nav.Link>
+                                <Nav.Link as={Link} to="/energy-usage" className="text-light">Find your energy usage</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to="/about" className="text-light">About Us</Nav.Link>
+                                <Nav.Link as={Link} to="/carbon-footprint" className="text-light">Learn to reduce carbon footprint</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to="/carbon-footprint/calculator" className="text-light">Carbon Footprint</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="/energy-usage" className="text-light">Energy Usage</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="/products" className="text-light">Green Products</Nav.Link>
+                                <Nav.Link as={Link} to="/bookings" className="text-light">Learn more about consultations & installations </Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Col>
