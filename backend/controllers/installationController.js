@@ -1,6 +1,5 @@
-const Installation = require('../models/installationModel'); // Ensure the model exists
+const Installation = require('../models/installationModel');
 
-// Create a new installation
 exports.createInstallation = async (req, res) => {
   try {
     const installation = new Installation(req.body);
@@ -12,7 +11,6 @@ exports.createInstallation = async (req, res) => {
   }
 };
 
-// Get all installations (optional, for admin or debugging purposes)
 exports.getInstallations = async (req, res) => {
   try {
     const installations = await Installation.find();

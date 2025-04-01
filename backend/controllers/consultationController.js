@@ -1,6 +1,5 @@
 const Consultation = require('../models/consultationModel');
 
-// Create a new consultation
 exports.createConsultation = async (req, res) => {
   try {
     const consultation = new Consultation(req.body);
@@ -12,7 +11,6 @@ exports.createConsultation = async (req, res) => {
   }
 };
 
-// Get all consultations (optional, for admin or debugging purposes)
 exports.getConsultations = async (req, res) => {
   try {
     const consultations = await Consultation.find();
@@ -23,7 +21,6 @@ exports.getConsultations = async (req, res) => {
   }
 };
 
-// Get a single consultation by ID (optional)
 exports.getConsultationById = async (req, res) => {
   try {
     const consultation = await Consultation.findById(req.params.id);
@@ -37,7 +34,6 @@ exports.getConsultationById = async (req, res) => {
   }
 };
 
-// Update a consultation by ID (optional)
 exports.updateConsultation = async (req, res) => {
   try {
     const consultation = await Consultation.findByIdAndUpdate(req.params.id, req.body, {
@@ -54,7 +50,6 @@ exports.updateConsultation = async (req, res) => {
   }
 };
 
-// Delete a consultation by ID (optional)
 exports.deleteConsultation = async (req, res) => {
   try {
     const consultation = await Consultation.findByIdAndDelete(req.params.id);

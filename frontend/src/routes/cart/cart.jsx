@@ -10,8 +10,6 @@ import axios from 'axios';
 
 const Cart = () => {
   const { cart, removeFromCart, updateCartItemQuantity } = useContext(CartContext);
-  const userContext = useContext(UserContext);
-  const user = userContext?.user || {};
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
   const navigate = useNavigate();

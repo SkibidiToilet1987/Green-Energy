@@ -32,7 +32,7 @@ const Calculator = () => {
 
   const navigate = useNavigate();
 
-  const validateInput = (value, name) => {
+  const validateInput = (value) => {
     if (value === '') return '';
     if (!/^\d*\.?\d*$/.test(value) || parseFloat(value) < 0) {
       return 'Please enter a positive number';
@@ -46,7 +46,7 @@ const Calculator = () => {
       setTransportation({ ...transportation, [name]: value });
     }
 
-    const errorMessage = validateInput(value, name);
+    const errorMessage = validateInput(value);
     setValidationErrors({ ...validationErrors, [name]: errorMessage });
   };
 

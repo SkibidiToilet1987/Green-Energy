@@ -14,9 +14,8 @@ var checkoutRouter = require('./routes/checkout/checkoutRoutes');
 var shoppingCartRouter = require('./routes/checkout/shoppingCartRoutes');
 var calculatorRouter = require('./routes/checkout/calculatorRoutes');
 var meRouter = require('./routes/users/@me');
-var consultationRouter = require('./routes/booking/consultationRoutes'); // Added consultation routes
-var installationRouter = require('./routes/booking/installationRoutes'); // Added installation routes
-
+var consultationRouter = require('./routes/booking/consultationRoutes');
+var installationRouter = require('./routes/booking/installationRoutes');
 var app = express();
 
 mongoose.connect('mongodb://localhost:27017/ISL')
@@ -45,8 +44,8 @@ app.use('/products', productRouter);
 app.use('/checkout', checkoutRouter);
 app.use('/shoppingcart', shoppingCartRouter);
 app.use('/carbonCalculator', calculatorRouter);
-app.use('/consultations', consultationRouter); // Added consultations route
-app.use('/installations', installationRouter); // Added installations route
+app.use('/consultations', consultationRouter);
+app.use('/installations', installationRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));

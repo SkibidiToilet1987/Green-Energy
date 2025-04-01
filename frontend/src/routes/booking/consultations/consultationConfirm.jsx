@@ -11,7 +11,6 @@ const ConsultationConfirm = () => {
   const [requestNumber, setRequestNumber] = useState('');
   const [responseTime] = useState('Within 2 Business Days');
 
-  // Verify token and restrict access
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -39,7 +38,6 @@ const ConsultationConfirm = () => {
     verifyToken();
   }, [navigate]);
 
-  // Generate a random request number
   useEffect(() => {
     const generateRequestNumber = () => {
       return Math.floor(Math.random() * 1000000);

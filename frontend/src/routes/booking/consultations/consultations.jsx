@@ -16,7 +16,6 @@ const Consultations = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Verify token and restrict access
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -35,7 +34,7 @@ const Consultations = () => {
         });
 
         console.log('Token verified. User:', response.data);
-        setEmail(response.data.email); // Pre-fill email from user data
+        setEmail(response.data.email);
       } catch (error) {
         console.error('Token verification failed. Redirecting to login...', error);
         navigate('/login', { state: { from: '/consultations' } });
@@ -45,7 +44,6 @@ const Consultations = () => {
     verifyToken();
   }, [navigate]);
 
-  // Validate form inputs
   const validateInputs = () => {
     const errors = {};
     const currentDate = new Date();
@@ -84,7 +82,6 @@ const Consultations = () => {
     return errors;
   };
 
-  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -134,7 +131,6 @@ const Consultations = () => {
     }
   };
 
-  // Format date to YYYY-MM-DD for date input
   const formatDateForInput = (date) => {
     const d = new Date(date);
     const year = d.getFullYear();
@@ -143,7 +139,6 @@ const Consultations = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Get min date (today) for date inputs
   const getMinDate = () => {
     return formatDateForInput(new Date());
   };
