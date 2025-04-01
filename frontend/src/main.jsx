@@ -18,6 +18,8 @@ import Consultations from './routes/booking/consultations/consultations';
 import Installations from './routes/booking/installations/installations';
 import Calculator from './routes/calculator/calculator';
 import EnergyUsage from './routes/energyUsage/energyUsage';
+import ConsultationConfirm from './routes/booking/consultations/consultationConfirm';
+import InstallationConfirm from './routes/booking/installations/installationsConfirm';
 
 const router = createBrowserRouter([
   {
@@ -63,10 +65,17 @@ const router = createBrowserRouter([
   {
     path: "/bookings/installations",
     element: <Installations/>
+  },{
+    path: "/bookings/installations/confirm",
+    element: <InstallationConfirm/>
   },
   {
     path: "/bookings/consultations",
     element: <Consultations/>
+  },
+  {
+    path: "bookings/consultations/confirm",
+    element: <ConsultationConfirm/>
   },
   {
     path: "/carbon-footprint/calculator",
