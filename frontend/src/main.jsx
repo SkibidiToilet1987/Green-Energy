@@ -22,6 +22,8 @@ import InstallationConfirm from './routes/booking/installations/installationsCon
 import EnergyUsageCalculator from './routes/energyUsage/energyUsageCalculator';
 import CarbonFootprintCalculator from './routes/carbonFootprint/carbonFootprintCalculator';
 import CarbonFootprint from './routes/carbonFootprint/carbonFootPrint';
+import ContactForm from './routes/contactForm/contactForm';
+import ContactFormConfirm from './routes/contactForm/contactFormConfirm';
 
 const router = createBrowserRouter([
   {
@@ -94,6 +96,14 @@ const router = createBrowserRouter([
   {
     path: "/energy-usage/calculator",
     element: <EnergyUsageCalculator/>
+  },
+  {
+    path: "/contact",
+    element: <ContactForm/>
+  },
+  {
+    path: "/contact/confirm",
+    element: <ContactFormConfirm/>
   }
 ]);
 

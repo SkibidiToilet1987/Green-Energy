@@ -1,0 +1,121 @@
+/* Additional styles for Bookings page */
+.installation-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 1.5rem 0;
+  }
+  
+  .installation-list li {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .installation-list .icon {
+    margin-right: 10px;
+    color: #2c3e50;
+  }
+  
+  .products-link {
+    display: inline-block;
+    margin: 1rem 0;
+    color: #212529;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .products-link:hover {
+    color: #0d1116;
+    text-decoration: underline;
+  }
+  
+  .calculator-button {
+    background-color: #212529;
+    color: #ffffff;
+    padding: 0.9rem 2.2rem;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    text-align: center;
+  }
+  
+  .calculator-button:hover {
+    background-color: #0d1116;
+    transform: translateY(-2px);
+  }
+
+  /* Additional styles for Bookings page */
+.installation-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 1.5rem 0;
+  }
+  
+  .installation-list li {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .installation-list .icon {
+    margin-right: 10px;
+    color: #2c3e50;
+  }
+  
+  .products-button {
+    display: inline-block;
+    background-color: #212529;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    margin: 1rem 0;
+  }
+  
+  .products-button:hover {
+    background-color: #0d1116;
+    transform: translateY(-2px);
+  }
+  
+  .dual-button-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .schedule-button {
+    background-color: #212529;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    text-align: center;
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .schedule-button:hover {
+    background-color: #0d1116;
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    .dual-button-container {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .schedule-button {
+      width: 100%;
+    }
+  }
