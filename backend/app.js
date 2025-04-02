@@ -18,6 +18,7 @@ var consultationRouter = require('./routes/booking/consultationRoutes');
 var installationRouter = require('./routes/booking/installationRoutes');
 var energyUsageRouter = require('./routes/energyUsage/energyUsageRoutes');
 var cookieConsentRouter = require('./routes/cookies/cookieConsent'); // Add cookie consent route
+var contactFormRouter = require('./routes/contactForm/contactFormRoutes'); // Add contact form routes
 
 var app = express();
 
@@ -55,6 +56,7 @@ app.use('/consultations', consultationRouter);
 app.use('/installations', installationRouter);
 app.use('/energy-usage', energyUsageRouter); // Add energy usage routes
 app.use('/api/cookies', cookieConsentRouter); // Add cookie consent route
+app.use('/api/contactForm', contactFormRouter); // Add contact form routes
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {

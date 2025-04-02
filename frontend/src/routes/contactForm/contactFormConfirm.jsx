@@ -3,11 +3,39 @@ import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ContactFormConfirm = () => {
   const navigate = useNavigate();
   const [requestNumber, setRequestNumber] = useState('');
   const [responseTime] = useState('Within 2 Business Days');
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          console.error('No token found. Redirecting to login...');
+          navigate('/login', { state: { from: '/contact/confirm' } });
+          return;
+        }
+
+        const response = await axios.get('http://localhost:3000/users/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+
+        console.log('Token verified. User:', response.data);
+      } catch (error) {
+        console.error('Token verification failed. Redirecting to login...', error);
+        navigate('/login', { state: { from: '/contact/confirm' } });
+      }
+    };
+
+    verifyToken();
+  }, [navigate]);
 
   useEffect(() => {
     const generateRequestNumber = () => {

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Form, Button, Spinner } from 'react-bootstrap';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ContactForm = () => {
@@ -11,6 +12,35 @@ const ContactForm = () => {
   const [message, setMessage] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          console.error('No token found. Redirecting to login...');
+          navigate('/login', { state: { from: '/contact' } });
+          return;
+        }
+
+        const response = await axios.get('http://localhost:3000/users/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+
+        console.log('Token verified. User:', response.data);
+        setEmail(response.data.email); // Set user email from the token response
+      } catch (error) {
+        console.error('Token verification failed. Redirecting to login...', error);
+        navigate('/login', { state: { from: '/contact' } });
+      }
+    };
+
+    verifyToken();
+  }, [navigate]);
 
   const validateInputs = () => {
     const errors = {};
@@ -39,12 +69,26 @@ const ContactForm = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/contact', { name, email, phoneNumber, message });
-      console.log('Message sent:', response.data);
+      const token = localStorage.getItem('authToken');
+      const response = await axios.post(
+        'http://localhost:3000/api/contactForm', // Backend endpoint to handle saving to MongoDB
+        {
+          name,
+          email,
+          phoneNumber,
+          message,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log('Message sent and saved to MongoDB:', response.data);
       alert('Your message has been sent successfully!');
       // Clear form fields after successful submission
       setName('');
-      setEmail('');
       setPhoneNumber('');
       setMessage('');
       setValidationErrors({});
@@ -88,6 +132,7 @@ const ContactForm = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       isInvalid={!!validationErrors.email}
+                      disabled // Email is pre-filled and cannot be changed
                     />
                     {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                   </Form.Group>
