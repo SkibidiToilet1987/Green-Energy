@@ -94,7 +94,11 @@ const ContactForm = () => {
       setValidationErrors({});
     } catch (error) {
       console.error('Error sending message:', error);
-      setValidationErrors({ api: 'An error occurred while sending your message. Please try again.' });
+      if (error.response) {
+        setValidationErrors({ api: error.response.data.error || 'An error occurred while sending your message.' });
+      } else {
+        setValidationErrors({ api: 'Unable to connect to the server. Please try again later.' });
+      }
     } finally {
       setIsLoading(false);
     }

@@ -1,5 +1,6 @@
 const Consultation = require('../models/consultationModel');
 
+// Controller to create a new consultation
 exports.createConsultation = async (req, res) => {
   try {
     const consultation = new Consultation(req.body);
@@ -11,6 +12,7 @@ exports.createConsultation = async (req, res) => {
   }
 };
 
+// Controller to retrieve all consultations
 exports.getConsultations = async (req, res) => {
   try {
     const consultations = await Consultation.find();
@@ -21,6 +23,7 @@ exports.getConsultations = async (req, res) => {
   }
 };
 
+// Controller to retrieve a consultation by ID
 exports.getConsultationById = async (req, res) => {
   try {
     const consultation = await Consultation.findById(req.params.id);
@@ -34,6 +37,7 @@ exports.getConsultationById = async (req, res) => {
   }
 };
 
+// Controller to update a consultation by ID
 exports.updateConsultation = async (req, res) => {
   try {
     const consultation = await Consultation.findByIdAndUpdate(req.params.id, req.body, {
@@ -50,6 +54,7 @@ exports.updateConsultation = async (req, res) => {
   }
 };
 
+// Controller to delete a consultation by ID
 exports.deleteConsultation = async (req, res) => {
   try {
     const consultation = await Consultation.findByIdAndDelete(req.params.id);
@@ -61,4 +66,4 @@ exports.deleteConsultation = async (req, res) => {
     console.error('Error deleting consultation:', error);
     res.status(500).json({ message: 'Failed to delete consultation', error });
   }
-};
+};  q
