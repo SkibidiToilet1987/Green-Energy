@@ -13,8 +13,13 @@ export default function Login() {
     const [, setCookies] = useCookies(['token']);
     const [isLoading, setIsLoading] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const { clearCart } = useContext(CartContext);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -118,7 +123,7 @@ export default function Login() {
                                     <Form.Group className="mb-3" controlId="formPassword">
                                         <Form.Label>Password</Form.Label>
                                         <Form.Control
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             placeholder="Password"
                                             isInvalid={!!validationErrors.password}
                                             className={validationErrors.password ? 'error-background' : ''}

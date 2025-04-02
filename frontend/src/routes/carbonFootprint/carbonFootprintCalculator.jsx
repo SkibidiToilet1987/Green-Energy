@@ -5,7 +5,7 @@ import MainFooter from '../../components/MainFooter';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Calculator = () => {
+const CarbonFootprintCalculator = () => {
   const [transportation, setTransportation] = useState({
     carMiles: '',
     flightHours: '',
@@ -337,4 +337,4 @@ const Calculator = () => {
   );
 };
 
-export default Calculator;
+export default CarbonFootprintCalculator;

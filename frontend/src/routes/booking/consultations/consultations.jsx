@@ -122,7 +122,7 @@ const Consultations = () => {
       });
 
       console.log('Consultation request saved successfully:', response.data);
-      navigate('/consultations/confirm');
+      navigate('/bookings/consultations/confirm');
     } catch (error) {
       console.error('Error during consultation request:', error);
       setValidationErrors({ api: 'An error occurred while submitting your consultation request. Please try again.' });

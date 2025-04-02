@@ -33,7 +33,7 @@ const MainNavigation = () => {
                 <strong>Products</strong>
               </Button>
             </Nav.Link>
-            <Nav.Link className="fs-5 text-white" href="/about">
+            <Nav.Link className="fs-5 text-white" href="/about-us">
               <Button variant="outline-light">
                 <strong>About Us</strong>
               </Button>

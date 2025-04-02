@@ -159,7 +159,7 @@ const Checkout = () => {
         });
 
         console.log('Checkout data saved successfully:', response.data);
-        navigate('/checkout/confirm');
+        navigate('/cart/checkout/confirm'); // Redirect to /checkout/confirm
       }
     } catch (error) {
       console.error('Error during token verification or checkout:', error);

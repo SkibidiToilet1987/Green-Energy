@@ -68,7 +68,6 @@ const Cart = () => {
         const email = verifyResponse.data.email;
         const userId = email.split('@')[0];
 
-
         const checkoutData = {
           userId,
           email,
@@ -92,7 +91,7 @@ const Cart = () => {
         });
 
         console.log('Shopping cart data saved successfully:', response.data);
-        navigate('/checkout');
+        navigate('/cart/checkout'); // Redirect to /cart/checkout
       }
     } catch (error) {
       console.error('Error during token verification or checkout:', error);

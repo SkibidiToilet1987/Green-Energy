@@ -17,6 +17,7 @@ var meRouter = require('./routes/users/@me');
 var consultationRouter = require('./routes/booking/consultationRoutes');
 var installationRouter = require('./routes/booking/installationRoutes');
 var energyUsageRouter = require('./routes/energyUsage/energyUsageRoutes');
+var cookieConsentRouter = require('./routes/cookies/cookieConsent'); // Add cookie consent route
 
 var app = express();
 
@@ -53,6 +54,7 @@ app.use('/carbonCalculator', calculatorRouter);
 app.use('/consultations', consultationRouter);
 app.use('/installations', installationRouter);
 app.use('/energy-usage', energyUsageRouter); // Add energy usage routes
+app.use('/api/cookies', cookieConsentRouter); // Add cookie consent route
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
