@@ -1,7 +1,7 @@
 import React from 'react';
 import CookieConsent, { Cookies } from 'react-cookie-consent';
 import axios from 'axios';
-import '../assets/cookie.css';
+import '../assets/cookie.css'; // Import the CSS file for styling
 
 const CookieConsentBanner = () => {
   const userId = '12345'; // Replace with actual user ID if available

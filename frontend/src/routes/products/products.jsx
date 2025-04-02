@@ -130,16 +130,15 @@ const Products = () => {
         )}
       </div>
 
-        <div className="hero-section text-white py-5">
-          <Container>
-            <Row className="align-items-center">
-          <Col lg={6}>
-            <h1 className="display-4 fw-bold mb-3 text-white">Sustainable Energy Solutions</h1>
-            <p className="lead mb-4 text-white">Transform your home and lifestyle with our cutting-edge green energy products.</p>
-          </Col>
-          <Col lg={6} className="d-none d-lg-block">
-            <div className="text-center">
-              <FaLeaf className="display-1 pulse-animation text-white" />
+      <div className="hero-section text-white" style={{ minHeight: '350px' }}>
+        <Container className="h-100">
+          <Row className="align-items-center h-100">
+            <Col lg={6} style={{ textAlign: 'left', marginLeft: '-20px' }}>
+              <h1 className="display-3 fw-bold text-white">Sustainable Energy Solutions</h1>
+            </Col>
+            <Col lg={6} className="d-none d-lg-block">
+              <div className="text-center">
+                <FaLeaf className="display-1 pulse-animation text-white" />
               </div>
             </Col>
           </Row>
