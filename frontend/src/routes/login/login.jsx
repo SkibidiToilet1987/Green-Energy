@@ -150,6 +150,13 @@ export default function Login() {
                                         )}
                                     </Form.Group>
 
+                                    {/* Forgotten Password Link */}
+                                    <div className="mb-3">
+                                        <Link to="/register" style={{ color: '#212529', textDecoration: 'none', fontWeight: 'bold' }}>
+                                            Forgotten your password?
+                                        </Link>
+                                    </div>
+
                                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
                                         <Form.Check type="checkbox" label="Remember Me" />
                                     </Form.Group>
@@ -175,7 +182,7 @@ export default function Login() {
                                                 aria-hidden="true"
                                             />
                                         ) : (
-                                            "Submit"
+                                            "Sign In"
                                         )}
                                     </Button>
                                 </Form>
