@@ -7,7 +7,8 @@ import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../../context/CartContext';
-import '../../assets/login.css';
+import '../../assets/login.css'; // Import the updated CSS file
+import { FaSignInAlt } from 'react-icons/fa'; // Import an icon for the hero section
 
 export default function Login() {
     const [, setCookies] = useCookies(['token']);
@@ -98,6 +99,19 @@ export default function Login() {
     return (
         <>
             <MainNavigation />
+            {/* Hero Section */}
+            <section className="hero-section" style={{ minHeight: '350px' }}>
+                <div className="container h-100">
+                    <div className="row align-items-center h-100">
+                        <div className="col-lg-6 text-center text-lg-start">
+                            <h1 className="display-3 fw-bold mb-3">Sign in to your account</h1>
+                        </div>
+                        <div className="col-lg-6 text-center">
+                            <FaSignInAlt className="display-1 pulse-animation" />
+                        </div>
+                    </div>
+                </div>
+            </section>
             <Container className="vh-100 d-flex justify-content-center align-items-center">
                 <Row className="w-50 justify-content-center">
                     <Col md={10} style={{ paddingTop: "40px" }}>

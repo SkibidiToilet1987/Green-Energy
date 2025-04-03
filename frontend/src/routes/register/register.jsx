@@ -1,10 +1,11 @@
-import { Card, Col, Container, Row, Form, Button, ProgressBar, InputGroup } from 'react-bootstrap';
+import { Card, Col, Container, Row, Form, Button, ProgressBar } from 'react-bootstrap';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
-import '../../assets/register.css';
+import '../../assets/register.css'; // Import the updated CSS file
+import { FaUserPlus } from 'react-icons/fa'; // Import an icon for the hero section
 
 export default function Register() {
     const [password, setPassword] = useState("");
@@ -143,6 +144,20 @@ export default function Register() {
     return (
         <>
             <MainNavigation />
+            {/* Hero Section */}
+            <section className="hero-section" style={{ minHeight: '350px' }}>
+                <div className="container h-100">
+                    <div className="row align-items-center h-100">
+                        <div className="col-lg-6 text-center text-lg-start">
+                            <h1 className="display-3 fw-bold mb-3">Sign up to</h1>
+                            <h1 className="display-3 fw-bold mb-3">New Account</h1>
+                        </div>
+                        <div className="col-lg-6 text-center">
+                            <FaUserPlus className="display-1 pulse-animation" />
+                        </div>
+                    </div>
+                </div>
+            </section>
             <Container fluid="true" className="vh-100 d-flex justify-content-center align-items-center">
                 <Row className="w-50 justify-content-center">
                     <Col md={7} style={{ paddingTop: "40px" }}>
@@ -155,7 +170,7 @@ export default function Register() {
                                         <Form.Control
                                             type="text"
                                             placeholder="Enter First Name"
-                                            isInvalid={!!validationErrors.firstName}
+                                            className={validationErrors.firstName ? "error-background" : ""}
                                         />
                                         {validationErrors.firstName && <Form.Text className="text-danger">{validationErrors.firstName}</Form.Text>}
                                     </Form.Group>
@@ -165,7 +180,7 @@ export default function Register() {
                                         <Form.Control
                                             type="text"
                                             placeholder="Enter Last Name"
-                                            isInvalid={!!validationErrors.lastName}
+                                            className={validationErrors.lastName ? "error-background" : ""}
                                         />
                                         {validationErrors.lastName && <Form.Text className="text-danger">{validationErrors.lastName}</Form.Text>}
                                     </Form.Group>
@@ -177,7 +192,7 @@ export default function Register() {
                                             placeholder="Enter email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            isInvalid={!!validationErrors.email}
+                                            className={validationErrors.email ? "error-background" : ""}
                                         />
                                         {validationErrors.email && <Form.Text className="text-danger">{validationErrors.email}</Form.Text>}
                                     </Form.Group>
@@ -189,7 +204,7 @@ export default function Register() {
                                             placeholder="Password"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            isInvalid={!!validationErrors.password}
+                                            className={validationErrors.password ? "error-background" : ""}
                                         />
                                         {validationErrors.password && (
                                             <Form.Text className="text-danger">
@@ -200,25 +215,6 @@ export default function Register() {
                                                 </ul>
                                             </Form.Text>
                                         )}
-                                        {password.length > 0 && (
-                                            <div className="mt-2">
-                                                <div className="d-flex justify-content-between mb-1">
-                                                    <small>Password Strength:</small>
-                                                    <small>{strengthLabel}</small>
-                                                </div>
-                                                <ProgressBar
-                                                    now={passwordStrength}
-                                                    variant={strengthColor}
-                                                    style={{ height: '8px' }}
-                                                />
-                                                <div className="mt-1">
-                                                    <small className="text-muted">
-                                                        Password must be at least 8 characters long and contain uppercase, lowercase,
-                                                        numbers, and special characters.
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        )}
                                     </Form.Group>
 
                                     <Form.Group className="mb-3" controlId="formConfirmPassword">
@@ -228,7 +224,7 @@ export default function Register() {
                                             placeholder="Confirm your password"
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            isInvalid={!!validationErrors.confirmPassword}
+                                            className={validationErrors.confirmPassword ? "error-background" : ""}
                                         />
                                         {validationErrors.confirmPassword && <Form.Text className="text-danger">{validationErrors.confirmPassword}</Form.Text>}
                                     </Form.Group>

@@ -99,10 +99,12 @@ const Bookings = () => {
                   <li><FaTint className="icon" /> Smart water heating systems</li>
                   <li><FaChargingStation className="icon" /> EV charging stations</li>
                 </ul>
-                <div className="cta-container">
-                  <Link to="/products" className="btn-dark">
-                    Browse our Products
-                  </Link>
+                <div className="cta-container d-flex justify-content-start">
+                  <button className="btn btn-dark">
+                    <Link to="/products" style={{ color: 'white', textDecoration: 'none' }}>
+                      Browse our Products
+                    </Link>
+                  </button>
                 </div>
                 <p className="section-text">
                   Our process includes site assessment, customized planning, professional installation, 
@@ -142,16 +144,20 @@ const Bookings = () => {
               <p className="section-text">
                 Ready to explore green energy solutions for your home or business? We offer quick and easy scheduling for both consultations and installations.
               </p>
-              <div className="dual-button-container">
-                <Link to="/bookings/consultations" className="btn-dark">
-                  Schedule consultation in under 2 minutes
-                </Link>
-                <Link to="/bookings/installations" className="btn-dark">
-                  Schedule installation in under 2 minutes
-                </Link>
+              <div className="dual-button-container d-flex justify-content-start" style={{ gap: '15px' }}>
+                <button className="btn btn-dark">
+                  <Link to="/bookings/consultations" style={{ color: 'white', textDecoration: 'none' }}>
+                    Schedule Consultation
+                  </Link>
+                </button>
+                <button className="btn btn-dark ">
+                  <Link to="/bookings/installations" style={{ color: 'white', textDecoration: 'none' }}>
+                    Schedule Installation
+                  </Link>
+                </button>
               </div>
               <p className="section-text" style={{marginTop: '2rem'}}>
-                Have questions? Contact us through our <Link to="/contact">contact form</Link> or call 
+                Have questions? Contact us through our <Link to="/contact" style={{ color: '#212529', fontWeight: 'bold', textDecoration: 'none' }}>contact form</Link> or call 
                 us at (555) 123-4567.
               </p>
             </div>
