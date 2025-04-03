@@ -10,6 +10,7 @@ const ContactForm = () => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [message, setMessage] = useState('');
+  const [userId, setUserId] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -33,8 +34,14 @@ const ContactForm = () => {
 
         console.log('Token verified. User:', response.data);
         setEmail(response.data.email); // Set user email from the token response
+        setUserId(response.data.id); // Set user ID from the token response
       } catch (error) {
         console.error('Token verification failed. Redirecting to login...', error);
+
+        // Redirect to login if the token is invalid or expired
+        if (error.response && error.response.status === 401) {
+          console.error('Invalid or expired token. Redirecting to login...');
+        }
         navigate('/login', { state: { from: '/contact' } });
       }
     };
@@ -46,9 +53,6 @@ const ContactForm = () => {
     const errors = {};
     if (!name.trim() || !/^[a-zA-Z\s]+$/.test(name)) {
       errors.name = 'Full name is required and must contain only letters and spaces.';
-    }
-    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
-      errors.email = 'Valid email is required.';
     }
     if (!phoneNumber.trim() || !/^\d+$/.test(phoneNumber)) {
       errors.phoneNumber = 'Phone number must contain only numbers.';
@@ -70,35 +74,52 @@ const ContactForm = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.post(
-        'http://localhost:3000/api/contactForm', // Backend endpoint to handle saving to MongoDB
-        {
+      if (!token) {
+        setValidationErrors({ api: 'No token found. Please log in again.' });
+        setIsLoading(false);
+        return;
+      }
+
+      const verifyResponse = await axios.get('http://localhost:3000/users/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      if (verifyResponse.status === 200) {
+        const emailFromBackend = verifyResponse.data.email;
+        const userIdFromBackend = verifyResponse.data.id;
+
+        const contactFormData = {
+          userId: userIdFromBackend,
           name,
-          email,
+          email: emailFromBackend,
           phoneNumber,
           message,
-        },
-        {
+          createdAt: new Date().toISOString(),
+        };
+
+        console.log('Submitting contact form data:', contactFormData);
+
+        const response = await axios.post('http://localhost:3000/api/contactForm', contactFormData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
+          withCredentials: true,
+        });
 
-      console.log('Message sent and saved to MongoDB:', response.data);
-      alert('Your message has been sent successfully!');
-      // Clear form fields after successful submission
-      setName('');
-      setPhoneNumber('');
-      setMessage('');
-      setValidationErrors({});
+        console.log('Contact form data saved successfully:', response.data);
+        alert('Your message has been sent successfully!');
+        // Clear form fields after successful submission
+        setName('');
+        setPhoneNumber('');
+        setMessage('');
+        setValidationErrors({});
+      }
     } catch (error) {
       console.error('Error sending message:', error);
-      if (error.response) {
-        setValidationErrors({ api: error.response.data.error || 'An error occurred while sending your message.' });
-      } else {
-        setValidationErrors({ api: 'Unable to connect to the server. Please try again later.' });
-      }
+      setValidationErrors({ api: 'An error occurred while sending your message. Please try again.' });
     } finally {
       setIsLoading(false);
     }

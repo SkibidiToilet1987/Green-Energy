@@ -6,6 +6,7 @@ var logger = require('morgan');
 var cors = require('cors');
 var mongoose = require('mongoose');
 
+// Import routes
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users/index');
 var authRouter = require('./routes/auth/index');
@@ -18,6 +19,7 @@ var consultationRouter = require('./routes/booking/consultationRoutes');
 var installationRouter = require('./routes/booking/installationRoutes');
 var energyUsageRouter = require('./routes/energyUsage/energyUsageRoutes');
 var cookieConsentRouter = require('./routes/cookies/cookieConsent');
+var contactFormRouter = require('./routes/contactForm/contactFormRoutes'); // Add contact form routes
 
 var app = express();
 
@@ -38,7 +40,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:5173', // Frontend URL
   credentials: true,
 }));
 
@@ -55,6 +57,7 @@ app.use('/consultations', consultationRouter);
 app.use('/installations', installationRouter);
 app.use('/energy-usage', energyUsageRouter); // Add energy usage routes
 app.use('/api/cookies', cookieConsentRouter); // Add cookie consent route
+app.use('/api/contactForm', contactFormRouter); // Add contact form routes
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
