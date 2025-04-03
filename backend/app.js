@@ -17,7 +17,7 @@ var meRouter = require('./routes/users/@me');
 var consultationRouter = require('./routes/booking/consultationRoutes');
 var installationRouter = require('./routes/booking/installationRoutes');
 var energyUsageRouter = require('./routes/energyUsage/energyUsageRoutes');
-var cookieConsentRouter = require('./routes/cookies/cookieConsent'); // Add cookie consent route
+var cookieConsentRouter = require('./routes/cookies/cookieConsent');
 
 var app = express();
 

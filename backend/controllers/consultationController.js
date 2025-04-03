@@ -66,4 +66,4 @@ exports.deleteConsultation = async (req, res) => {
     console.error('Error deleting consultation:', error);
     res.status(500).json({ message: 'Failed to delete consultation', error });
   }
-};  q
+};
