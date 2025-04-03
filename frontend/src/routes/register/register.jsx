@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import '../../assets/register.css'; // Import the updated CSS file
-import { FaUserPlus } from 'react-icons/fa'; // Import an icon for the hero section
+import { FaUserPlus, FaEye, FaEyeSlash } from 'react-icons/fa'; // Import icons for the hero section and password visibility
 
 export default function Register() {
     const [password, setPassword] = useState("");
@@ -144,20 +144,6 @@ export default function Register() {
     return (
         <>
             <MainNavigation />
-            {/* Hero Section */}
-            <section className="hero-section" style={{ minHeight: '350px' }}>
-                <div className="container h-100">
-                    <div className="row align-items-center h-100">
-                        <div className="col-lg-6 text-center text-lg-start">
-                            <h1 className="display-3 fw-bold mb-3">Sign up to</h1>
-                            <h1 className="display-3 fw-bold mb-3">new account</h1>
-                        </div>
-                        <div className="col-lg-6 text-center">
-                            <FaUserPlus className="display-1 pulse-animation" />
-                        </div>
-                    </div>
-                </div>
-            </section>
             <Container fluid="true" className="vh-100 d-flex justify-content-center align-items-center">
                 <Row className="w-50 justify-content-center">
                     <Col md={7} style={{ paddingTop: "40px" }}>
@@ -199,13 +185,28 @@ export default function Register() {
 
                                     <Form.Group className="mb-3" controlId="formPassword">
                                         <Form.Label>Password</Form.Label>
-                                        <Form.Control
-                                            type={showPassword ? "text" : "password"}
-                                            placeholder="Password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            className={validationErrors.password ? "error-background" : ""}
-                                        />
+                                        <div className="position-relative">
+                                            <Form.Control
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="Password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                className={validationErrors.password ? "error-background" : ""}
+                                            />
+                                            {showPassword ? (
+                                                <FaEyeSlash
+                                                    className="position-absolute top-50 end-0 translate-middle-y me-3 text-dark"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={togglePasswordVisibility}
+                                                />
+                                            ) : (
+                                                <FaEye
+                                                    className="position-absolute top-50 end-0 translate-middle-y me-3 text-dark"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={togglePasswordVisibility}
+                                                />
+                                            )}
+                                        </div>
                                         {validationErrors.password && (
                                             <Form.Text className="text-danger">
                                                 <ul className="ps-3 mb-0">
@@ -215,17 +216,51 @@ export default function Register() {
                                                 </ul>
                                             </Form.Text>
                                         )}
+                                        {password.length > 0 && (
+                                            <div className="mt-2">
+                                                <div className="d-flex justify-content-between mb-1">
+                                                    <small>Password Strength:</small>
+                                                    <small>{strengthLabel}</small>
+                                                </div>
+                                                <ProgressBar
+                                                    now={passwordStrength}
+                                                    variant={strengthColor}
+                                                    style={{ height: '8px' }}
+                                                />
+                                                <div className="mt-1">
+                                                    <small className="text-muted">
+                                                        Password must be at least 8 characters long and contain uppercase, lowercase,
+                                                        numbers, and special characters.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        )}
                                     </Form.Group>
 
                                     <Form.Group className="mb-3" controlId="formConfirmPassword">
                                         <Form.Label>Confirm Password</Form.Label>
-                                        <Form.Control
-                                            type={showConfirmPassword ? "text" : "password"}
-                                            placeholder="Confirm your password"
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className={validationErrors.confirmPassword ? "error-background" : ""}
-                                        />
+                                        <div className="position-relative">
+                                            <Form.Control
+                                                type={showConfirmPassword ? "text" : "password"}
+                                                placeholder="Confirm your password"
+                                                value={confirmPassword}
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                                className={validationErrors.confirmPassword ? "error-background" : ""}
+                                            />
+                                            {showConfirmPassword ? (
+                                                <FaEyeSlash
+                                                    className="position-absolute top-50 end-0 translate-middle-y me-3 text-dark"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={toggleConfirmPasswordVisibility}
+                                                />
+                                            ) : (
+                                                <FaEye
+                                                    className="position-absolute top-50 end-0 translate-middle-y me-3 text-dark"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={toggleConfirmPasswordVisibility}
+                                                />
+                                            )}
+                                        </div>
                                         {validationErrors.confirmPassword && <Form.Text className="text-danger">{validationErrors.confirmPassword}</Form.Text>}
                                     </Form.Group>
 

@@ -8,7 +8,7 @@ import MainFooter from '../../components/MainFooter';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../../context/CartContext';
 import '../../assets/login.css'; // Import the updated CSS file
-import { FaSignInAlt } from 'react-icons/fa'; // Import an icon for the hero section
+import { FaSignInAlt, FaEye, FaEyeSlash } from 'react-icons/fa'; // Import icons for the hero section and password visibility
 
 export default function Login() {
     const [, setCookies] = useCookies(['token']);
@@ -137,12 +137,27 @@ export default function Login() {
 
                                     <Form.Group className="mb-3" controlId="formPassword">
                                         <Form.Label>Password</Form.Label>
-                                        <Form.Control
-                                            type={showPassword ? "text" : "password"}
-                                            placeholder="Password"
-                                            isInvalid={!!validationErrors.password}
-                                            className={validationErrors.password ? 'error-background' : ''}
-                                        />
+                                        <div className="position-relative">
+                                            <Form.Control
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="Password"
+                                                isInvalid={!!validationErrors.password}
+                                                className={validationErrors.password ? 'error-background' : ''}
+                                            />
+                                            {showPassword ? (
+                                                <FaEyeSlash
+                                                    className="position-absolute top-50 end-0 translate-middle-y me-3 text-dark"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={togglePasswordVisibility}
+                                                />
+                                            ) : (
+                                                <FaEye
+                                                    className="position-absolute top-50 end-0 translate-middle-y me-3 text-dark"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={togglePasswordVisibility}
+                                                />
+                                            )}
+                                        </div>
                                         {validationErrors.password && (
                                             <Form.Control.Feedback type="invalid" className="d-block">
                                                 {validationErrors.password}
