@@ -10,7 +10,7 @@ router.get("/@me", (req, res) => getMe(req, res));
 
 router.post("/", async function (req, res) {
   try {
-    var email = req.body.email;
+    var email = req.body.email.trim().toLowerCase(); // Normalize email to lowercase
     var password = crypto.SHA512(req.body.password).toString();
     var sname = req.body.sname;
     var fname = req.body.fname;
@@ -18,11 +18,12 @@ router.post("/", async function (req, res) {
     var database = client.db("ISL");
     var collection = database.collection("users");
 
+    // Check if email exists (case-insensitive)
     if (await UserFunctions.CheckEmailExists(email)) {
       res.status(500).json({ message: "Email already in use" });
     } else {
       var newUser = await collection.insertOne({
-        email,
+        email, // Store email in lowercase
         password,
         fname,
         sname,
@@ -33,7 +34,7 @@ router.post("/", async function (req, res) {
       } else {
         res
           .status(500)
-          .json({ message: "An error occured and could not create new user" });
+          .json({ message: "An error occurred and could not create new user" });
       }
     }
   } catch (error) {

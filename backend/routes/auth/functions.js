@@ -47,13 +47,23 @@ async function getIDFromAuth(authHeader) {
   }
 
   if (jwt.verify(token, process.env.TOKEN_SECRET)) {
-    const email = jwt.decode(token).email;
+    const email = jwt.decode(token).email.trim().toLowerCase(); // Normalize email to lowercase
     const client = new MongoClient(url);
     await client.connect(); // Ensure the client is connected
     const database = client.db("ISL");
     const collection = database.collection("users");
-    const user = await collection.findOne({ email });
+
+    // Perform a case-insensitive email match
+    const user = await collection.findOne({
+      email: { $regex: `^${email}$`, $options: "i" }, // Case-insensitive match
+    });
+
     await client.close(); // Close the connection after the query
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     return user._id;
   } else {
     throw new Error("Invalid token");

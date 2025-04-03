@@ -32,32 +32,57 @@ const CarbonFootprintCalculator = () => {
 
   const navigate = useNavigate();
 
-  const validateInput = (value) => {
-    if (value === '') return '';
-    if (!/^\d*\.?\d*$/.test(value) || parseFloat(value) < 0) {
-      return 'Please enter a positive number';
+  const validateInput = (name, value) => {
+    if (value.trim() === '') {
+      return 'This field is required';
     }
+    
+    // Check for any non-digit characters except decimal point
+    if (!/^\d*\.?\d*$/.test(value)) {
+      return 'Only numbers and decimal point allowed';
+    }
+    
+    // Check for negative numbers
+    if (parseFloat(value) < 0) {
+      return 'Must be a positive number';
+    }
+    
+    // Check for empty spaces in the middle
+    if (value.includes(' ')) {
+      return 'Spaces are not allowed';
+    }
+    
     return '';
   };
 
   const handleTransportationChange = (e) => {
     const { name, value } = e.target;
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      setTransportation({ ...transportation, [name]: value });
+    
+    // Remove any spaces from the input
+    const sanitizedValue = value.replace(/\s/g, '');
+    
+    // Only allow numbers and decimal point
+    if (sanitizedValue === '' || /^\d*\.?\d*$/.test(sanitizedValue)) {
+      setTransportation(prev => ({ ...prev, [name]: sanitizedValue }));
     }
 
-    const errorMessage = validateInput(value);
-    setValidationErrors({ ...validationErrors, [name]: errorMessage });
+    const errorMessage = validateInput(name, sanitizedValue);
+    setValidationErrors(prev => ({ ...prev, [name]: errorMessage }));
   };
 
   const handleHomeChange = (e) => {
     const { name, value } = e.target;
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      setHome({ ...home, [name]: value });
+    
+    // Remove any spaces from the input
+    const sanitizedValue = value.replace(/\s/g, '');
+    
+    // Only allow numbers and decimal point
+    if (sanitizedValue === '' || /^\d*\.?\d*$/.test(sanitizedValue)) {
+      setHome(prev => ({ ...prev, [name]: sanitizedValue }));
     }
 
-    const errorMessage = validateInput(value, name);
-    setValidationErrors({ ...validationErrors, [name]: errorMessage });
+    const errorMessage = validateInput(name, sanitizedValue);
+    setValidationErrors(prev => ({ ...prev, [name]: errorMessage }));
   };
 
   useEffect(() => {
@@ -88,8 +113,21 @@ const CarbonFootprintCalculator = () => {
   }, [navigate]);
 
   const calculateFootprint = async () => {
-    const hasErrors = Object.values(validationErrors).some((error) => error !== '');
-    if (hasErrors) return;
+    // Validate all fields before calculation
+    const newValidationErrors = {
+      carMiles: validateInput('carMiles', transportation.carMiles),
+      flightHours: validateInput('flightHours', transportation.flightHours),
+      electricityKwh: validateInput('electricityKwh', home.electricityKwh),
+      gasTherm: validateInput('gasTherm', home.gasTherm),
+    };
+    
+    setValidationErrors(newValidationErrors);
+    
+    // Check if any errors exist
+    const hasErrors = Object.values(newValidationErrors).some(error => error !== '');
+    if (hasErrors) {
+      return;
+    }
 
     const transportationValues = {
       carMiles: parseFloat(transportation.carMiles) || 0,
@@ -160,32 +198,6 @@ const CarbonFootprintCalculator = () => {
     } catch (error) {
       console.error('Error saving calculator data:', error);
     }
-  };
-
-  const resetForm = () => {
-    setTransportation({
-      carMiles: '',
-      flightHours: '',
-    });
-
-    setHome({
-      electricityKwh: '',
-      gasTherm: '',
-    });
-
-    setValidationErrors({
-      carMiles: '',
-      flightHours: '',
-      electricityKwh: '',
-      gasTherm: '',
-    });
-
-    setResults({
-      transportationEmissions: 0,
-      homeEmissions: 0,
-      totalEmissions: 0,
-      calculated: false,
-    });
   };
 
   return (
@@ -279,24 +291,14 @@ const CarbonFootprintCalculator = () => {
                   </Card>
 
                   <div className="d-flex justify-content-center mb-4">
-                    <div className="d-flex w-50 me-1">
-                      <Button
-                        variant="dark"
-                        onClick={calculateFootprint}
-                        className="w-100 py-2"
-                      >
-                        Calculate
-                      </Button>
-                    </div>
-                    <div className="d-flex w-50 ms-1">
-                      <Button
-                        variant="outline-dark"
-                        onClick={resetForm}
-                        className="w-100 py-2"
-                      >
-                        Reset
-                      </Button>
-                    </div>
+                    <Button
+                      variant="dark"
+                      onClick={calculateFootprint}
+                      className="w-100 py-2"
+                      disabled={Object.values(validationErrors).some(error => error !== '')}
+                    >
+                      Calculate
+                    </Button>
                   </div>
 
                   {results.calculated && (

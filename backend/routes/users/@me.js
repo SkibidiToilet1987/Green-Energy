@@ -35,7 +35,7 @@ router.get("/", async (req, res) => {
     // Extract the email from the token
     let email;
     try {
-      email = getEmailFromAuth(authHeader);
+      email = getEmailFromAuth(authHeader).trim().toLowerCase(); // Normalize email to lowercase
       console.log("Email extracted from token:", email);
     } catch (err) {
       console.error("Failed to extract email from token:", err.message);
@@ -60,8 +60,11 @@ router.get("/", async (req, res) => {
     const database = client.db(dbName);
     const collection = database.collection("users");
 
-    // Find the user in the database
-    const me = await collection.findOne({ email });
+    // Find the user in the database (case-insensitive match)
+    const me = await collection.findOne({
+      email: { $regex: `^${email}$`, $options: "i" }, // Case-insensitive match
+    });
+
     if (!me) {
       console.log("User not found in database");
       return res.status(404).json({ message: "User not found" });

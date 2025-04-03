@@ -108,7 +108,7 @@ const CarbonFootprint = () => {
               </p>
               
               <div className="cta-container">
-                <Link to="/energy-usage/calculator" className="calculator-button">
+                <Link to="/carbon-footprint/calculator" className="calculator-button">
                   Calculate in 2 minutes!
                 </Link>
               </div>

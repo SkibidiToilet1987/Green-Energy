@@ -32,12 +32,13 @@ export default function Login() {
         setIsLoading(true);
         setValidationErrors({});
 
-        const email = event.target[0].value;
+        // Normalize the email to lowercase
+        const email = event.target[0].value.trim().toLowerCase();
         const password = event.target[1].value;
         const remember = event.target[2].checked;
 
         const newErrors = {};
-        if (!email.trim()) {
+        if (!email) {
             newErrors.email = "Email is required. Please enter your email address.";
         } else if (!validateEmail(email)) {
             newErrors.email = "Please enter a valid email address (e.g., example@domain.com).";
