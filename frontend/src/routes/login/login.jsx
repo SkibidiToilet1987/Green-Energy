@@ -104,7 +104,8 @@ export default function Login() {
                 <div className="container h-100">
                     <div className="row align-items-center h-100">
                         <div className="col-lg-6 text-center text-lg-start">
-                            <h1 className="display-3 fw-bold mb-3">Sign in to your account</h1>
+                            <h1 className="display-3 fw-bold mb-3">Sign in to</h1>
+                            <h1 className="display-3 fw-bold mb-3">your account</h1>
                         </div>
                         <div className="col-lg-6 text-center">
                             <FaSignInAlt className="display-1 pulse-animation" />

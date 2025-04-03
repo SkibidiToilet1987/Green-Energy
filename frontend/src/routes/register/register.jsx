@@ -150,7 +150,7 @@ export default function Register() {
                     <div className="row align-items-center h-100">
                         <div className="col-lg-6 text-center text-lg-start">
                             <h1 className="display-3 fw-bold mb-3">Sign up to</h1>
-                            <h1 className="display-3 fw-bold mb-3">New Account</h1>
+                            <h1 className="display-3 fw-bold mb-3">new account</h1>
                         </div>
                         <div className="col-lg-6 text-center">
                             <FaUserPlus className="display-1 pulse-animation" />
