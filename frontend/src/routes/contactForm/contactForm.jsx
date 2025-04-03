@@ -15,10 +15,11 @@ const ContactForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Verify token and fetch user details
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem('token'); // Use the same key as in /checkout
         if (!token) {
           console.error('No token found. Redirecting to login...');
           navigate('/login', { state: { from: '/contact' } });
@@ -37,11 +38,6 @@ const ContactForm = () => {
         setUserId(response.data.id); // Set user ID from the token response
       } catch (error) {
         console.error('Token verification failed. Redirecting to login...', error);
-
-        // Redirect to login if the token is invalid or expired
-        if (error.response && error.response.status === 401) {
-          console.error('Invalid or expired token. Redirecting to login...');
-        }
         navigate('/login', { state: { from: '/contact' } });
       }
     };
@@ -49,6 +45,7 @@ const ContactForm = () => {
     verifyToken();
   }, [navigate]);
 
+  // Validate form inputs
   const validateInputs = () => {
     const errors = {};
     if (!name.trim() || !/^[a-zA-Z\s]+$/.test(name)) {
@@ -63,6 +60,7 @@ const ContactForm = () => {
     return errors;
   };
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errors = validateInputs();
@@ -73,50 +71,34 @@ const ContactForm = () => {
 
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('token'); // Use the same key as in /checkout
       if (!token) {
         setValidationErrors({ api: 'No token found. Please log in again.' });
         setIsLoading(false);
         return;
       }
 
-      const verifyResponse = await axios.get('http://localhost:3000/users/me', {
+      const contactFormData = {
+        userId,
+        name,
+        email,
+        phoneNumber,
+        message,
+        createdAt: new Date().toISOString(),
+      };
+
+      console.log('Submitting contact form data:', contactFormData);
+
+      // Submit contact form data to the backend
+      const response = await axios.post('http://localhost:3000/api/contactForm', contactFormData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
       });
 
-      if (verifyResponse.status === 200) {
-        const emailFromBackend = verifyResponse.data.email;
-        const userIdFromBackend = verifyResponse.data.id;
-
-        const contactFormData = {
-          userId: userIdFromBackend,
-          name,
-          email: emailFromBackend,
-          phoneNumber,
-          message,
-          createdAt: new Date().toISOString(),
-        };
-
-        console.log('Submitting contact form data:', contactFormData);
-
-        const response = await axios.post('http://localhost:3000/api/contactForm', contactFormData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
-
-        console.log('Contact form data saved successfully:', response.data);
-        alert('Your message has been sent successfully!');
-        // Clear form fields after successful submission
-        setName('');
-        setPhoneNumber('');
-        setMessage('');
-        setValidationErrors({});
-      }
+      console.log('Contact form data saved successfully:', response.data);
+      navigate('/contact/confirm'); // Redirect to /contact/confirm after successful submission
     } catch (error) {
       console.error('Error sending message:', error);
       setValidationErrors({ api: 'An error occurred while sending your message. Please try again.' });

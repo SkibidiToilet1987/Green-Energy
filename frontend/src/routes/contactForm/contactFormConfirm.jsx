@@ -13,7 +13,7 @@ const ContactFormConfirm = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem('token'); // Use the same key as in /checkout
         if (!token) {
           console.error('No token found. Redirecting to login...');
           navigate('/login', { state: { from: '/contact/confirm' } });

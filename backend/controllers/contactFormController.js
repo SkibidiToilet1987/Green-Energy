@@ -1,23 +1,23 @@
-const ContactForm = require('../models/contactFormModel'); // Ensure this path is correct
+const ContactForm = require('../models/contactFormModel'); // Import the model
 
 exports.saveContactForm = async (req, res) => {
   try {
     console.log('Request body:', req.body); // Log the incoming request body
-    console.log('Authenticated user:', req.user); // Log the authenticated user
 
-    const { name, phoneNumber, message } = req.body;
+    const { userId, name, email, phoneNumber, message } = req.body;
 
     // Validate required fields
-    if (!name || !phoneNumber || !message) {
+    if (!userId || !name || !email || !phoneNumber || !message) {
       console.error('Validation error: Missing required fields');
       return res.status(400).json({ error: 'All fields are required.' });
     }
 
-    // Save the contact form data to the existing "contactForm" collection
+    // Save the contact form data to the database
     const contactForm = new ContactForm({
-      userId: req.user.id, // User ID from the token
-      userEmail: req.user.email, // User email from the token
+      userId,
+      userEmail: email, // Map the email to the userEmail field
       name,
+      email, // Optional: Keep this if your schema includes `email` separately
       phoneNumber,
       message,
     });
