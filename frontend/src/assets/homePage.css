@@ -14,6 +14,8 @@
     --dark-text: #e0e0e0;
     --hero-bg: #212529;
     /* Adding specific hero background */
+    --navbar-bg: #212529; /* Fixed navbar background */
+    --footer-bg: #212529; /* Fixed footer background */
 }
 
 .home-page-container {
@@ -83,24 +85,34 @@
     color: var(--dark-text);
 }
 
-/* Hero Section - Always keep the same color regardless of theme */
-.hero-section {
-    background-color: var(--hero-bg);
-    padding: 100px 0;
-    color: var(--light-color);
-    margin-bottom: 0;
-    transition: var(--transition);
+/* Navbar - Keep Original Styling Regardless of Theme */
+.main-navigation {
+    background-color: var(--navbar-bg) !important;
+    color: var(--light-color) !important;
 }
 
-/* This ensures hero section stays the same color in dark mode */
-.dark-mode .hero-section {
-    background-color: var(--hero-bg);
+.main-navigation a,
+.main-navigation .nav-link {
+    color: var(--light-color) !important;
+}
+
+/* Hero Section - Always keep the same color regardless of theme */
+.hero-section {
+    background-color: var(--hero-bg) !important;
+    padding: 100px 0;
+    color: var(--light-color) !important;
+    margin-bottom: 0;
+}
+
+.hero-section h1,
+.hero-section p {
+    color: var(--light-color) !important;
 }
 
 .hero-icon {
     font-size: 10rem;
     animation: pulse 2s infinite;
-    color: var(--light-color);
+    color: var(--light-color) !important;
 }
 
 @keyframes pulse {
@@ -126,7 +138,7 @@
 }
 
 .dark-mode .products-section {
-    background-color: #1a1a1a;
+    background-color: var(--dark-bg);
 }
 
 .product-card {
@@ -219,8 +231,6 @@
 .dark-mode .power-difference-image {
     background-color: #2a2a2a;
 }
-
-/* Existing styles... */
 
 .image-placeholder {
     width: 100%;
@@ -394,13 +404,13 @@
 }
 
 .logo-placeholder {
-    width: 120px;
-    height: 60px;
+    width: 160px;
+    height: 80px;
     background-color: #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: #666;
     border-radius: 5px;
     border: 1px dashed #ccc;
@@ -433,6 +443,7 @@
 .expert-carousel {
     display: flex;
     animation: scrollLogos 30s linear infinite;
+    width: fit-content;
 }
 
 /* Reviews Section */
@@ -483,11 +494,9 @@
 /* CTA Section */
 .cta-section {
     padding: 80px 0 0 0;
-    /* Remove bottom padding */
     background-color: var(--light-color);
     transition: var(--transition);
     margin-bottom: 0;
-    /* Ensure no space between CTA and footer */
 }
 
 .dark-mode .cta-section {
@@ -500,9 +509,7 @@
     flex-wrap: wrap;
     gap: 15px;
     margin-bottom: 0;
-    /* Remove any bottom margin */
     padding-bottom: 120px;
-    /* UPDATED: Increased padding from 80px to 120px */
 }
 
 .consultation-button {
@@ -546,88 +553,83 @@
     transform: translateY(-2px);
 }
 
-/* Footer styles to ensure proper connection with CTA section */
-/* Create a direct connection between sections and footer */
-.home-page-container footer,
+/* Footer - Keep Original Styling Regardless of Theme */
 .main-footer,
 footer.footer {
+    background-color: var(--footer-bg) !important;
+    color: var(--light-color) !important;
     margin-top: 0 !important;
     padding-top: 15px !important;
-    /* UPDATED: Added 15px top padding to footer */
 }
 
-/* Special fix for main-footer to ensure it connects */
-.home-page-container .main-footer {
-    margin-top: 0 !important;
-    padding-top: 15px !important;
-    /* UPDATED: Added 15px top padding to MainFooter */
+/* Footer links and text should stay light */
+.main-footer a,
+footer.footer a,
+.main-footer p,
+footer.footer p,
+.main-footer h1,
+.main-footer h2,
+.main-footer h3,
+.main-footer h4,
+.main-footer h5,
+.main-footer h6,
+footer.footer h1,
+footer.footer h2,
+footer.footer h3,
+footer.footer h4,
+footer.footer h5,
+footer.footer h6 {
+    color: var(--light-color) !important;
 }
 
 /* Ensure container divs don't add margins */
-.home-page-container>div:last-of-type {
+.home-page-container > div:last-of-type {
     margin-bottom: 0 !important;
 }
 
 /* Make sure there's no gap in the DOM flow */
-.home-page-container section:last-of-type+footer,
-.home-page-container section:last-of-type+.main-footer,
-.home-page-container section:last-of-type+div>footer,
-.home-page-container section:last-of-type+div>.main-footer {
+.home-page-container section:last-of-type + footer,
+.home-page-container section:last-of-type + .main-footer,
+.home-page-container section:last-of-type + div > footer,
+.home-page-container section:last-of-type + div > .main-footer {
     margin-top: 0 !important;
     padding-top: 15px !important;
-    /* UPDATED: Added 15px top padding */
-}
-
-/* Add specific footer background to match theme */
-.light-mode footer,
-.light-mode .main-footer {
-    background-color: var(--light-color);
-}
-
-.dark-mode footer,
-.dark-mode .main-footer {
-    background-color: var(--dark-bg);
 }
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
     .button-group {
         padding-bottom: 100px;
-        /* UPDATED: Increased padding for mobile from 60px to 100px */
     }
 
     .cta-section {
         padding: 70px 0 0 0;
     }
+    
+    .section-title {
+        font-size: 2.5rem;
+    }
 }
 
-@keyframes scrollLogos {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  
-  .expert-carousel {
-    display: flex;
-    animation: scrollLogos 30s linear infinite;
-    width: fit-content;
-  }
-  
-  .expert-logo {
-    padding: 10px;
-    min-width: 200px;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .logo-placeholder {
-    width: 160px;
-    height: 80px;
-    background-color: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    color: #666;
-    border-radius: 5px;
-    border: 1px dashed #ccc;
-  }
+/* Prevent theme toggle from affecting the navbar and footer styling */
+.dark-mode .main-navigation,
+.light-mode .main-navigation {
+    background-color: var(--navbar-bg) !important;
+}
+
+.dark-mode .main-footer,
+.light-mode .main-footer,
+.dark-mode footer.footer,
+.light-mode footer.footer {
+    background-color: var(--footer-bg) !important;
+}
+
+/* Fix for navbar-dark class which might be toggled in JS */
+.navbar-dark {
+    background-color: var(--navbar-bg) !important;
+}
+
+/* Fix for footer-dark class which might be toggled in JS */
+.footer-dark {
+    background-color: var(--footer-bg) !important;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   FaSolarPanel, 
@@ -32,6 +32,30 @@ import '.././assets/HomePage.css';
 const HomePage = () => {
   // State for theme toggle
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Effect to apply theme class to document on mount and update
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark-mode');
+      document.documentElement.classList.remove('light-mode');
+      
+      // Make sure navbar and footer styling is preserved
+      const navbar = document.querySelector('.main-navigation');
+      const footer = document.querySelector('.main-footer');
+      
+      if (navbar) navbar.classList.add('navbar-dark');
+      if (footer) footer.classList.add('footer-dark');
+    } else {
+      document.documentElement.classList.add('light-mode');
+      document.documentElement.classList.remove('dark-mode');
+      
+      const navbar = document.querySelector('.main-navigation');
+      const footer = document.querySelector('.main-footer');
+      
+      if (navbar) navbar.classList.remove('navbar-dark');
+      if (footer) footer.classList.remove('footer-dark');
+    }
+  }, [isDarkMode]);
 
   // Toggle theme function
   const toggleTheme = () => {
@@ -308,7 +332,6 @@ const HomePage = () => {
       {/* Recommended by Experts Section */}
       <section className="experts-section" style={{
         padding: '60px 0',
-        backgroundColor: 'white',
         overflow: 'hidden',
         width: '100vw',
         position: 'relative',
@@ -352,16 +375,6 @@ const HomePage = () => {
             </div>
           </div>
         </Container>
-
-        {/* Add the animation style */}
-        <style>
-          {`
-            @keyframes scrollLogos {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
-          `}
-        </style>
       </section>
 
       {/* Reviews Section */}
