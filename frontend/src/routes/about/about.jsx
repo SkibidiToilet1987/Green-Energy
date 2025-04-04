@@ -73,7 +73,7 @@ const About = () => {
       title: "25 Years of Expertise",
       description: "From initial consultation to installation and tariff setup, we provide comprehensive support every step of the way. With over 25 years of renewable energy experience and B Corp certification for our environmental commitment, you're in capable hands."
     }
-  ];
+  ]; 
 
   // Added expert companies
   const expertCompanies = [
@@ -193,7 +193,7 @@ const About = () => {
           marginLeft: '-50vw',
           marginRight: '-50vw'
         }}>
-          <div style={{ width: '100%', textAlign: 'center' }}>
+          <div>
             <h2 className="section-title" style={{ marginBottom: '40px' }}>Recommended by the Experts</h2>
 
             <div className="expert-carousel-container" style={{ overflow: 'hidden', width: '100%', position: 'relative' }}>

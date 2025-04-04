@@ -330,44 +330,15 @@ const HomePage = () => {
       </section>
 
       {/* Recommended by Experts Section */}
-      <section className="experts-section" style={{
-        padding: '60px 0',
-        overflow: 'hidden',
-        width: '100vw',
-        position: 'relative',
-        left: '50%',
-        right: '50%',
-        marginLeft: '-50vw',
-        marginRight: '-50vw'
-      }}>
+      <section className="experts-section">
         <Container className="text-center">
           <h2 className="section-title mb-5" style={{ fontSize: '3rem' }}>Recommended by the Experts</h2>
           
-          <div className="expert-carousel-container" style={{ overflow: 'hidden', width: '100%', position: 'relative' }}>
-            <div className="expert-carousel" style={{ 
-              display: 'flex', 
-              animation: 'scrollLogos 30s linear infinite',
-              width: 'fit-content'
-            }}>
+          <div className="expert-carousel-container">
+            <div className="expert-carousel">
               {expertCompanies.map((company, index) => (
-                <div className="expert-logo" key={index} style={{ 
-                  padding: '10px',
-                  minWidth: '200px',
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}>
-                  <div className="logo-placeholder" style={{
-                    width: '160px',
-                    height: '80px',
-                    backgroundColor: '#f0f0f0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.9rem',
-                    color: '#666',
-                    borderRadius: '5px',
-                    border: '1px dashed #ccc'
-                  }}>
+                <div className="expert-logo" key={index}>
+                  <div className="logo-placeholder">
                     {company}
                   </div>
                 </div>

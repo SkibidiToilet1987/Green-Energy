@@ -14,8 +14,10 @@
     --dark-text: #e0e0e0;
     --hero-bg: #212529;
     /* Adding specific hero background */
-    --navbar-bg: #212529; /* Fixed navbar background */
-    --footer-bg: #212529; /* Fixed footer background */
+    --navbar-bg: #212529;
+    /* Fixed navbar background */
+    --footer-bg: #212529;
+    /* Fixed footer background */
 }
 
 .home-page-container {
@@ -377,7 +379,6 @@
 .experts-section {
     padding: 60px 0;
     background-color: var(--light-color);
-    overflow: hidden;
     transition: var(--transition);
 }
 
@@ -385,22 +386,26 @@
     background-color: var(--dark-bg);
 }
 
-.experts-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
+.expert-carousel-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
     margin: 0 auto;
-    max-width: 1000px;
+}
+
+.expert-carousel {
+    display: flex;
+    width: max-content;
+    animation: scrollLogos 30s linear infinite;
+    will-change: transform;
 }
 
 .expert-logo {
     padding: 10px;
-    transition: var(--transition);
-}
-
-.expert-logo:hover {
-    transform: translateY(-5px);
+    min-width: 200px;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .logo-placeholder {
@@ -423,7 +428,6 @@
     border-color: #444;
 }
 
-/* Expert carousel */
 @keyframes scrollLogos {
     0% {
         transform: translateX(0);
@@ -583,15 +587,15 @@ footer.footer h6 {
 }
 
 /* Ensure container divs don't add margins */
-.home-page-container > div:last-of-type {
+.home-page-container>div:last-of-type {
     margin-bottom: 0 !important;
 }
 
 /* Make sure there's no gap in the DOM flow */
-.home-page-container section:last-of-type + footer,
-.home-page-container section:last-of-type + .main-footer,
-.home-page-container section:last-of-type + div > footer,
-.home-page-container section:last-of-type + div > .main-footer {
+.home-page-container section:last-of-type+footer,
+.home-page-container section:last-of-type+.main-footer,
+.home-page-container section:last-of-type+div>footer,
+.home-page-container section:last-of-type+div>.main-footer {
     margin-top: 0 !important;
     padding-top: 15px !important;
 }
@@ -605,7 +609,7 @@ footer.footer h6 {
     .cta-section {
         padding: 70px 0 0 0;
     }
-    
+
     .section-title {
         font-size: 2.5rem;
     }
