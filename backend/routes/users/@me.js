@@ -70,11 +70,12 @@ router.get("/", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Include the user's ID and other details in the response
+    // Include the user's ID, first name, surname, and email in the response
     const userResponse = {
       id: me._id, // MongoDB ObjectId
       email: me.email,
-      name: me.name, // Include other fields as needed
+      fname: me.fname || "N/A", // First name
+      sname: me.sname || "N/A", // Surname
     };
 
     console.log("User details retrieved successfully:", userResponse);

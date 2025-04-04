@@ -54,6 +54,33 @@ exports.updateConsultation = async (req, res) => {
   }
 };
 
+// Controller to update the consultation date
+exports.updateConsultationDate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date } = req.body;
+
+    if (!date) {
+      return res.status(400).json({ message: 'New date is required' });
+    }
+
+    const updatedConsultation = await Consultation.findByIdAndUpdate(
+      id,
+      { consultationDate: date },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedConsultation) {
+      return res.status(404).json({ message: 'Consultation not found' });
+    }
+
+    res.status(200).json({ message: 'Consultation date updated successfully', updatedConsultation });
+  } catch (error) {
+    console.error('Error updating consultation date:', error);
+    res.status(500).json({ message: 'Failed to update consultation date', error });
+  }
+};
+
 // Controller to delete a consultation by ID
 exports.deleteConsultation = async (req, res) => {
   try {

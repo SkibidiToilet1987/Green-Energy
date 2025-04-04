@@ -50,7 +50,7 @@ const ContactFormConfirm = () => {
   };
 
   const handleViewProfile = () => {
-    navigate('/profile');
+    navigate('/account');
   };
 
   return (
@@ -83,7 +83,7 @@ const ContactFormConfirm = () => {
                     className="me-3"
                     style={{ backgroundColor: '#212529', borderColor: '#212529' }}
                   >
-                    View Profile
+                    View Account
                   </Button>
                   <Button
                     variant="dark"

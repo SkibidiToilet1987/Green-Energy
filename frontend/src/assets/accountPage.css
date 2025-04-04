@@ -1,56 +1,5 @@
-/* Ensure the content container spans the full width */
-.content-container {
-    width: 100%;
-    padding: 20px 0;
-    margin: 0 auto;
-  }
-  
-  /* Ensure the content card spans 50% of the width */
-  .content-card {
+.account-card {
+    min-height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    padding: 20px;
-    background-color: #f8f9fa; /* Light background for contrast */
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
-  /* Left section for the icon */
-  .card-left {
-    flex: 0 0 auto;
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Right section for the text */
-  .card-right {
-    flex: 1;
-  }
-  
-  /* Center the text inside the content card */
-  .content-card .section-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .content-card .section-text {
-    font-size: 1.2rem;
-    line-height: 1.6;
-    margin: 0;
-  }
-  
-  /* Hero section styling */
-  .hero-section {
-    background-color: #e9ecef; /* Light gray background */
-    padding: 50px 0;
-  }
-  
-  .hero-section h1 {
-    color: #212529; /* Dark text color */
+    flex-direction: column;
   }

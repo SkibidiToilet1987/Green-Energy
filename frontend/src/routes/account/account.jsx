@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { FaUserCircle, FaInfoCircle } from 'react-icons/fa';
+import { FaUserCircle, FaInfoCircle, FaCalendarAlt } from 'react-icons/fa';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import axios from 'axios';
-import '../../assets/accountPage.css'; // Reuse the same CSS for styling
+import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 const AccountPage = () => {
   const [localPart, setLocalPart] = useState('');
-  const [userInfo, setUserInfo] = useState({ fname: '', lname: '', email: '' });
+  const [userInfo, setUserInfo] = useState({ fname: '', sname: '', email: '' });
+  const [consultations, setConsultations] = useState([]);
+  const [installations, setInstallations] = useState([]);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [itemToReschedule, setItemToReschedule] = useState(null);
+  const [newDate, setNewDate] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,19 +28,36 @@ const AccountPage = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:3000/users/me', {
+        // Fetch user info
+        const userResponse = await axios.get('http://localhost:3000/users/me', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         });
 
-        const { email, fname, lname } = response.data;
+        const { email, fname, sname } = userResponse.data;
         const localPartOfEmail = email.split('@')[0]; // Extract the local part of the email
         setLocalPart(localPartOfEmail);
-        setUserInfo({ fname, lname, email });
+        setUserInfo({ fname, sname, email });
+
+        // Fetch consultations
+        const consultationsResponse = await axios.get('http://localhost:3000/consultations', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setConsultations(consultationsResponse.data);
+
+        // Fetch installations
+        const installationsResponse = await axios.get('http://localhost:3000/installations', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setInstallations(installationsResponse.data);
       } catch (error) {
-        console.error('Failed to fetch user data. Redirecting to login...', error);
+        console.error('Failed to fetch data:', error);
         navigate('/login', { state: { from: '/account' } });
       }
     };
@@ -41,70 +65,333 @@ const AccountPage = () => {
     fetchUserData();
   }, [navigate]);
 
+  const handleReschedule = (type, id) => {
+    setItemToReschedule({ type, id });
+    setShowRescheduleModal(true);
+  };
+
+  const confirmReschedule = async () => {
+    if (!itemToReschedule || !newDate) return;
+
+    const { type, id } = itemToReschedule;
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found. User is not authenticated.');
+        return;
+      }
+
+      console.log(`Rescheduling ${type} with ID: ${id} to new date: ${newDate}`);
+
+      const response = await axios.put(
+        `http://localhost:3000/${type}/${id}`,
+        { date: newDate },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log(`${type} with ID: ${id} rescheduled successfully.`);
+
+        // Update the state to reflect the new date
+        if (type === 'consultations') {
+          setConsultations((prev) =>
+            prev.map((item) =>
+              item._id === id ? { ...item, consultationDate: newDate } : item
+            )
+          );
+        } else if (type === 'installations') {
+          setInstallations((prev) =>
+            prev.map((item) =>
+              item._id === id ? { ...item, installationDate: newDate } : item
+            )
+          );
+        }
+      } else {
+        console.error(`Failed to reschedule ${type} with ID: ${id}. Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(`Error rescheduling ${type} with ID: ${id}`, error.response || error.message);
+    } finally {
+      setShowRescheduleModal(false);
+      setItemToReschedule(null);
+      setNewDate('');
+    }
+  };
+
+  const handleDeleteConfirmation = (type, id) => {
+    setItemToDelete({ type, id });
+    setShowConfirmModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (!itemToDelete) return;
+
+    const { type, id } = itemToDelete;
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found. User is not authenticated.');
+        return;
+      }
+
+      console.log(`Attempting to delete ${type} with ID: ${id}`);
+
+      const response = await axios.delete(`http://localhost:3000/${type}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        console.log(`${type} with ID: ${id} deleted successfully from the database.`);
+
+        // Update the state to remove the deleted item
+        if (type === 'consultations') {
+          setConsultations((prev) => prev.filter((item) => item._id !== id));
+        } else if (type === 'installations') {
+          setInstallations((prev) => prev.filter((item) => item._id !== id));
+        }
+      } else {
+        console.error(`Failed to delete ${type} with ID: ${id}. Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(`Error deleting ${type} with ID: ${id}`, error.response || error.message);
+    } finally {
+      setShowConfirmModal(false);
+      setItemToDelete(null);
+    }
+  };
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Format as HH:MM
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(); // Format as MM/DD/YYYY
+  };
+
   return (
-    <div className="carbon-footprint-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="carbon-footprint-container">
       <MainNavigation />
 
-      <main className="carbon-main" style={{ flex: 1 }}>
+      <main className="carbon-main">
         {/* Hero Section */}
         <section className="hero-section">
-          <div className="container h-100">
-            <div className="row align-items-center h-100">
-              <div className="col-lg-6 text-center text-lg-start">
+          <Container>
+            <Row className="align-items-center">
+              <Col lg={6} className="text-center text-lg-start">
                 <h1 className="display-3 fw-bold mb-3">Welcome</h1>
                 <h1 className="display-3 fw-bold mb-3">{localPart} to your account overview</h1>
-              </div>
-              <div className="col-lg-6 text-center">
+              </Col>
+              <Col lg={6} className="text-center">
                 <FaUserCircle className="display-1 pulse-animation" />
-              </div>
-            </div>
-          </div>
+              </Col>
+            </Row>
+          </Container>
         </section>
 
         {/* Content Section */}
-        <div className="content-container">
-          <div className="row">
-            {/* Account Overview Card */}
-            <div className="col-md-6 d-flex">
-              <section className="content-card flex-grow-1">
-                <div className="card-left">
-                  <FaUserCircle className="section-icon" size={60} />
-                </div>
-                <div className="card-right">
-                  <h2 className="section-title">Account Overview</h2>
-                  <p className="section-text">
-                    This is your account dashboard where you can view and manage your personal information, track your carbon footprint, and explore ways to reduce your environmental impact.
-                  </p>
-                  <p className="section-text">
-                    Use the navigation bar to access different sections of your account, including your carbon footprint calculator and other tools.
-                  </p>
-                </div>
-              </section>
-            </div>
+        <section className="account-section">
+          <Container>
+            <Row className="gx-4 gy-4">
+              {/* Account Overview Card */}
+              <Col md={6} className="d-flex">
+                <Card className="account-card flex-grow-1">
+                  <Card.Body className="p-4 d-flex flex-column">
+                    <h3 className="mb-3 text-center">
+                      <FaUserCircle className="icon" /> Account Overview
+                    </h3>
+                    <Card.Text className="flex-grow-1">
+                      This is your account dashboard where you can view and manage your personal information, track your carbon footprint, and explore ways to reduce your environmental impact.
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
 
-            {/* Personal Information Card */}
-            <div className="col-md-6 d-flex">
-              <section className="content-card flex-grow-1">
-                <div className="card-left">
-                  <FaInfoCircle className="section-icon" size={60} />
-                </div>
-                <div className="card-right">
-                  <h2 className="section-title">Personal Information</h2>
-                  <p className="section-text">
-                    <strong>First Name:</strong> {userInfo.fname || 'N/A'}
-                  </p>
-                  <p className="section-text">
-                    <strong>Last Name:</strong> {userInfo.lname || 'N/A'}
-                  </p>
-                  <p className="section-text">
-                    <strong>Email:</strong> {userInfo.email || 'N/A'}
-                  </p>
-                </div>
-              </section>
-            </div>
-          </div>
-        </div>
+              {/* Personal Information Card */}
+              <Col md={6} className="d-flex">
+                <Card className="account-card flex-grow-1">
+                  <Card.Body className="p-4 d-flex flex-column">
+                    <h3 className="mb-3 text-center">
+                      <FaInfoCircle className="icon" /> Personal Information
+                    </h3>
+                    <div className="flex-grow-1">
+                      <Card.Text><strong>First Name:</strong> {userInfo.fname || 'N/A'}</Card.Text>
+                      <Card.Text><strong>Surname:</strong> {userInfo.sname || 'N/A'}</Card.Text>
+                      <Card.Text><strong>Email:</strong> {userInfo.email || 'N/A'}</Card.Text>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+
+            {/* Bookings Section */}
+            <Row className="gx-4 mt-4">
+              {/* Consultations */}
+              <Col md={6}>
+                <Card className="account-card w-100">
+                  <Card.Body>
+                    <h3 className="mb-3 text-center">
+                      <FaCalendarAlt className="icon" /> Consultations
+                    </h3>
+                    <Row>
+                      {consultations.length > 0 ? (
+                        consultations.map((consultation) => (
+                          <Col xs={12} key={consultation._id}>
+                            <Card className="mb-3 w-100">
+                              <Card.Body>
+                                <p><strong>ID:</strong> {consultation._id}</p>
+                                <p><strong>Name:</strong> {consultation.name || 'N/A'}</p>
+                                <p><strong>Email:</strong> {consultation.email || 'N/A'}</p>
+                                <p><strong>Phone Number:</strong> {consultation.phoneNumber || 'N/A'}</p>
+                                <p><strong>Address:</strong> {consultation.address || 'N/A'}</p>
+                                <p><strong>Consultation Date:</strong> {consultation.consultationDate ? formatDate(consultation.consultationDate) : 'N/A'}</p>
+                                <p><strong>Additional Notes:</strong> {consultation.notes || 'N/A'}</p>
+                                <p><strong>Status:</strong> {consultation.status || 'N/A'}</p>
+                                <p><strong>Date Created:</strong> {formatDate(consultation.createdAt)}</p>
+                                <p><strong>Time Created:</strong> {formatTime(consultation.createdAt)}</p>
+                                <Button
+                                  variant="primary"
+                                  size="sm"
+                                  onClick={() => handleReschedule('consultations', consultation._id)}
+                                >
+                                  Reschedule
+                                </Button>{' '}
+                                <Button
+                                  variant="danger"
+                                  size="sm"
+                                  onClick={() => handleDeleteConfirmation('consultations', consultation._id)}
+                                >
+                                  Delete
+                                </Button>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                        ))
+                      ) : (
+                        <div className="text-center">
+                          <p>No consultations booked.</p>
+                          <Button variant="primary" onClick={() => navigate('/bookings/consultations')}>
+                            Book a Consultation
+                          </Button>
+                        </div>
+                      )}
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Col>
+
+              {/* Installations */}
+              <Col md={6}>
+                <Card className="account-card w-100">
+                  <Card.Body>
+                    <h3 className="mb-3 text-center">
+                      <FaCalendarAlt className="icon" /> Installations
+                    </h3>
+                    <Row>
+                      {installations.length > 0 ? (
+                        installations.map((installation) => (
+                          <Col xs={12} key={installation._id}>
+                            <Card className="mb-3 w-100">
+                              <Card.Body>
+                                <p><strong>ID:</strong> {installation._id}</p>
+                                <p><strong>Name:</strong> {installation.name || 'N/A'}</p>
+                                <p><strong>Email:</strong> {installation.email || 'N/A'}</p>
+                                <p><strong>Phone Number:</strong> {installation.phoneNumber || 'N/A'}</p>
+                                <p><strong>Address:</strong> {installation.address || 'N/A'}</p>
+                                <p><strong>Installation Date:</strong> {installation.installationDate || 'N/A'}</p>
+                                <p><strong>Additional Notes:</strong> {installation.notes || 'N/A'}</p>
+                                <p><strong>Status:</strong> {installation.status || 'N/A'}</p>
+                                <p><strong>Date Created:</strong> {formatDate(installation.createdAt)}</p>
+                                <p><strong>Time Created:</strong> {formatTime(installation.createdAt)}</p>
+                                <Button
+                                  variant="primary"
+                                  size="sm"
+                                  onClick={() => handleReschedule('installations', installation._id)}
+                                >
+                                  Reschedule
+                                </Button>{' '}
+                                <Button
+                                  variant="danger"
+                                  size="sm"
+                                  onClick={() => handleDeleteConfirmation('installations', installation._id)}
+                                >
+                                  Delete
+                                </Button>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                        ))
+                      ) : (
+                        <div className="text-center">
+                          <p>No installations booked.</p>
+                          <Button variant="primary" onClick={() => navigate('/bookings/installations')}>
+                            Book an Installation
+                          </Button>
+                        </div>
+                      )}
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Container>
+        </section>
       </main>
+
+      {/* Confirmation Modal */}
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this {itemToDelete?.type === 'consultations' ? 'consultation' : 'installation'}?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Reschedule Modal */}
+      <Modal show={showRescheduleModal} onHide={() => setShowRescheduleModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Reschedule</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="newDate">
+              <Form.Label>Select a new date</Form.Label>
+              <Form.Control
+                type="date"
+                min={new Date().toISOString().split('T')[0]} // Restrict to today or future dates
+                value={newDate}
+                onChange={(e) => setNewDate(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowRescheduleModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={confirmReschedule}>
+            Confirm
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <MainFooter />
     </div>

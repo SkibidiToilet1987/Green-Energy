@@ -51,7 +51,7 @@ const InstallationConfirm = () => {
   };
 
   const handleViewInstallations = () => {
-    navigate('/profile');
+    navigate('/account');
   };
 
   return (
@@ -84,7 +84,7 @@ const InstallationConfirm = () => {
                     className="me-3"
                     style={{ backgroundColor: '#212529', borderColor: '#212529' }}
                   >
-                    View Profile
+                    View Account
                   </Button>
                   <Button
                     variant="dark"

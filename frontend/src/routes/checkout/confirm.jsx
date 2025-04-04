@@ -51,7 +51,7 @@ const Confirm = () => {
   };
 
   const handleViewOrders = () => {
-    navigate('/orders');
+    navigate('/account');
   };
 
   return (
