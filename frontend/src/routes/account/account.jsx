@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { FaUserCircle, FaInfoCircle, FaCalendarAlt } from 'react-icons/fa';
+import { FaUserCircle, FaInfoCircle, FaCalendarAlt, FaChartBar } from 'react-icons/fa';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import axios from 'axios';
 import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { Line } from 'react-chartjs-2';
+import 'chart.js/auto';
 
 const AccountPage = () => {
   const [localPart, setLocalPart] = useState('');
   const [userInfo, setUserInfo] = useState({ fname: '', sname: '', email: '' });
   const [consultations, setConsultations] = useState([]);
   const [installations, setInstallations] = useState([]);
+  const [energyUsage, setEnergyUsage] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [itemToReschedule, setItemToReschedule] = useState(null);
   const [newDate, setNewDate] = useState('');
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,7 +41,7 @@ const AccountPage = () => {
         });
 
         const { email, fname, sname } = userResponse.data;
-        const localPartOfEmail = email.split('@')[0]; // Extract the local part of the email
+        const localPartOfEmail = email.split('@')[0];
         setLocalPart(localPartOfEmail);
         setUserInfo({ fname, sname, email });
 
@@ -56,9 +60,22 @@ const AccountPage = () => {
           },
         });
         setInstallations(installationsResponse.data);
+
+        // Fetch energy usage
+        const energyUsageResponse = await axios.get('http://localhost:3000/energyUsage', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setEnergyUsage(energyUsageResponse.data);
       } catch (error) {
-        console.error('Failed to fetch data:', error);
-        navigate('/login', { state: { from: '/account' } });
+        if (error.response && error.response.status === 401) {
+          console.error('Unauthorized. Redirecting to login...');
+          navigate('/login', { state: { from: '/account' } });
+        } else {
+          console.error('Failed to fetch data:', error);
+          setError('Failed to load data. Please try again later.');
+        }
       }
     };
 
@@ -85,7 +102,7 @@ const AccountPage = () => {
       console.log(`Rescheduling ${type} with ID: ${id} to new date: ${newDate}`);
 
       const response = await axios.put(
-        `http://localhost:3000/${type}/${id}`,
+        `http://localhost:3000/${type}/${id}/date`,
         { date: newDate },
         {
           headers: {
@@ -97,7 +114,6 @@ const AccountPage = () => {
       if (response.status === 200) {
         console.log(`${type} with ID: ${id} rescheduled successfully.`);
 
-        // Update the state to reflect the new date
         if (type === 'consultations') {
           setConsultations((prev) =>
             prev.map((item) =>
@@ -151,7 +167,6 @@ const AccountPage = () => {
       if (response.status === 200) {
         console.log(`${type} with ID: ${id} deleted successfully from the database.`);
 
-        // Update the state to remove the deleted item
         if (type === 'consultations') {
           setConsultations((prev) => prev.filter((item) => item._id !== id));
         } else if (type === 'installations') {
@@ -170,12 +185,25 @@ const AccountPage = () => {
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Format as HH:MM
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(); // Format as MM/DD/YYYY
+    return date.toLocaleDateString();
+  };
+
+  const energyUsageGraphData = {
+    labels: energyUsage.map((usage) => formatDate(usage.createdAt)),
+    datasets: [
+      {
+        label: 'Energy Usage Per Day (kWh)',
+        data: energyUsage.map((usage) => usage.energyUsage.perDay),
+        borderColor: '#007bff',
+        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+        fill: true,
+      },
+    ],
   };
 
   return (
@@ -183,7 +211,6 @@ const AccountPage = () => {
       <MainNavigation />
 
       <main className="carbon-main">
-        {/* Hero Section */}
         <section className="hero-section">
           <Container>
             <Row className="align-items-center">
@@ -198,11 +225,14 @@ const AccountPage = () => {
           </Container>
         </section>
 
-        {/* Content Section */}
         <section className="account-section">
           <Container>
+            {error && (
+              <div className="alert alert-danger text-center" role="alert">
+                {error}
+              </div>
+            )}
             <Row className="gx-4 gy-4">
-              {/* Account Overview Card */}
               <Col md={6} className="d-flex">
                 <Card className="account-card flex-grow-1">
                   <Card.Body className="p-4 d-flex flex-column">
@@ -216,7 +246,6 @@ const AccountPage = () => {
                 </Card>
               </Col>
 
-              {/* Personal Information Card */}
               <Col md={6} className="d-flex">
                 <Card className="account-card flex-grow-1">
                   <Card.Body className="p-4 d-flex flex-column">
@@ -233,9 +262,7 @@ const AccountPage = () => {
               </Col>
             </Row>
 
-            {/* Bookings Section */}
             <Row className="gx-4 mt-4">
-              {/* Consultations */}
               <Col md={6}>
                 <Card className="account-card w-100">
                   <Card.Body>
@@ -259,7 +286,7 @@ const AccountPage = () => {
                                 <p><strong>Date Created:</strong> {formatDate(consultation.createdAt)}</p>
                                 <p><strong>Time Created:</strong> {formatTime(consultation.createdAt)}</p>
                                 <Button
-                                  variant="primary"
+                                  variant="dark"
                                   size="sm"
                                   onClick={() => handleReschedule('consultations', consultation._id)}
                                 >
@@ -279,7 +306,7 @@ const AccountPage = () => {
                       ) : (
                         <div className="text-center">
                           <p>No consultations booked.</p>
-                          <Button variant="primary" onClick={() => navigate('/bookings/consultations')}>
+                          <Button variant="dark" onClick={() => navigate('/bookings/consultations')}>
                             Book a Consultation
                           </Button>
                         </div>
@@ -289,7 +316,6 @@ const AccountPage = () => {
                 </Card>
               </Col>
 
-              {/* Installations */}
               <Col md={6}>
                 <Card className="account-card w-100">
                   <Card.Body>
@@ -313,7 +339,7 @@ const AccountPage = () => {
                                 <p><strong>Date Created:</strong> {formatDate(installation.createdAt)}</p>
                                 <p><strong>Time Created:</strong> {formatTime(installation.createdAt)}</p>
                                 <Button
-                                  variant="primary"
+                                  variant="dark"
                                   size="sm"
                                   onClick={() => handleReschedule('installations', installation._id)}
                                 >
@@ -333,7 +359,7 @@ const AccountPage = () => {
                       ) : (
                         <div className="text-center">
                           <p>No installations booked.</p>
-                          <Button variant="primary" onClick={() => navigate('/bookings/installations')}>
+                          <Button variant="dark" onClick={() => navigate('/bookings/installations')}>
                             Book an Installation
                           </Button>
                         </div>
@@ -343,55 +369,50 @@ const AccountPage = () => {
                 </Card>
               </Col>
             </Row>
+
+            <Row className="gx-4 mt-4">
+              <Col md={12}>
+                <Card className="account-card w-100">
+                  <Card.Body>
+                    <h3 className="mb-3 text-center">
+                      <FaChartBar className="icon" /> Energy Usage
+                    </h3>
+                    {energyUsage.length > 0 ? (
+                      <>
+                        <Row>
+                          <Col md={6}>
+                            <p><strong>Watts Per Day:</strong> {energyUsage[0].wattsPerDay || 'N/A'}</p>
+                            <p><strong>Hours Per Day:</strong> {energyUsage[0].hoursPerDay || 'N/A'}</p>
+                            <p><strong>Days Per Month:</strong> {energyUsage[0].daysPerMonth || 'N/A'}</p>
+                            <p><strong>Cost Per kWh:</strong> {energyUsage[0].costPerKWh || 'N/A'}</p>
+                          </Col>
+                          <Col md={6}>
+                            <p><strong>Energy Usage Per Day:</strong> {energyUsage[0].energyUsage.perDay || 'N/A'} kWh</p>
+                            <p><strong>Energy Usage Per Month:</strong> {energyUsage[0].energyUsage.perMonth || 'N/A'} kWh</p>
+                            <p><strong>Energy Usage Per Year:</strong> {energyUsage[0].energyUsage.perYear || 'N/A'} kWh</p>
+                            <p><strong>Cost Per Day:</strong> ${energyUsage[0].cost.perDay || 'N/A'}</p>
+                            <p><strong>Cost Per Month:</strong> ${energyUsage[0].cost.perMonth || 'N/A'}</p>
+                            <p><strong>Cost Per Year:</strong> ${energyUsage[0].cost.perYear || 'N/A'}</p>
+                            <p><strong>Date Created:</strong> {formatDate(energyUsage[0].createdAt)}</p>
+                            <p><strong>Time Created:</strong> {formatTime(energyUsage[0].createdAt)}</p>
+                          </Col>
+                        </Row>
+                        <div className="mt-4">
+                          <Line data={energyUsageGraphData} />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center">
+                        <p>No energy usage data available.</p>
+                      </div>
+                    )}
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
           </Container>
         </section>
       </main>
-
-      {/* Confirmation Modal */}
-      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Deletion</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete this {itemToDelete?.type === 'consultations' ? 'consultation' : 'installation'}?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* Reschedule Modal */}
-      <Modal show={showRescheduleModal} onHide={() => setShowRescheduleModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Reschedule</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="newDate">
-              <Form.Label>Select a new date</Form.Label>
-              <Form.Control
-                type="date"
-                min={new Date().toISOString().split('T')[0]} // Restrict to today or future dates
-                value={newDate}
-                onChange={(e) => setNewDate(e.target.value)}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowRescheduleModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={confirmReschedule}>
-            Confirm
-          </Button>
-        </Modal.Footer>
-      </Modal>
 
       <MainFooter />
     </div>
