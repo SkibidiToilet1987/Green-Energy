@@ -10,7 +10,7 @@ import 'chart.js/auto';
 
 const AccountPage = () => {
   const [localPart, setLocalPart] = useState('');
-  const [userInfo, setUserInfo] = useState({ fname: '', sname: '', email: '' });
+  const [userInfo, setUserInfo] = useState({ fname: '', sname: '', email: '', _id: '' });
   const [consultations, setConsultations] = useState([]);
   const [installations, setInstallations] = useState([]);
   const [energyUsage, setEnergyUsage] = useState([]);
@@ -40,10 +40,10 @@ const AccountPage = () => {
           withCredentials: true,
         });
 
-        const { email, fname, sname } = userResponse.data;
+        const { email, fname, sname, _id } = userResponse.data;
         const localPartOfEmail = email.split('@')[0];
         setLocalPart(localPartOfEmail);
-        setUserInfo({ fname, sname, email });
+        setUserInfo({ fname, sname, email, _id });
 
         // Fetch consultations
         const consultationsResponse = await axios.get('http://localhost:3000/consultations', {
@@ -61,16 +61,15 @@ const AccountPage = () => {
         });
         setInstallations(installationsResponse.data);
 
-        // Fetch energy usage with email included
-        const energyUsageResponse = await axios.get('http://localhost:3000/energy-usage', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            email: email
-          }
-        });
-        setEnergyUsage(energyUsageResponse.data);
+        // Fetch energy usage with userId
+        if (_id) {
+          const energyUsageResponse = await axios.get(`http://localhost:3000/energy-usage/${_id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setEnergyUsage(energyUsageResponse.data);
+        }
       } catch (error) {
         if (error.response && error.response.status === 404) {
           console.error('Energy usage data not found.');
@@ -110,7 +109,7 @@ const AccountPage = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.put(
-        `http://localhost:3000/${type}/${id}`,
+        `http://localhost:3000/${type}/${id}/date`,
         { date: newDate },
         {
           headers: {
@@ -177,7 +176,7 @@ const AccountPage = () => {
   };
 
   const energyUsageGraphData = {
-    labels: energyUsage.map((usage) => formatDate(usage.createdAt)),
+    labels: energyUsage.map((usage, index) => `Entry ${index + 1}`),
     datasets: [
       {
         label: 'Energy Usage Per Day (kWh)',
@@ -264,7 +263,7 @@ const AccountPage = () => {
                                 <p><strong>Phone Number:</strong> {consultation.phoneNumber || 'N/A'}</p>
                                 <p><strong>Address:</strong> {consultation.address || 'N/A'}</p>
                                 <p><strong>Consultation Date:</strong> {consultation.consultationDate ? formatDate(consultation.consultationDate) : 'N/A'}</p>
-                                <p><strong>Additional Notes:</strong> {consultation.notes || 'N/A'}</p>
+                                <p><strong>Additional Notes:</strong> {consultation.additionalNotes || 'No additional notes provided'}</p>
                                 <p><strong>Status:</strong> {consultation.status || 'N/A'}</p>
                                 <p><strong>Date Created:</strong> {formatDate(consultation.createdAt)}</p>
                                 <p><strong>Time Created:</strong> {formatTime(consultation.createdAt)}</p>
@@ -316,8 +315,8 @@ const AccountPage = () => {
                                 <p><strong>Email:</strong> {installation.email || 'N/A'}</p>
                                 <p><strong>Phone Number:</strong> {installation.phoneNumber || 'N/A'}</p>
                                 <p><strong>Address:</strong> {installation.address || 'N/A'}</p>
-                                <p><strong>Installation Date:</strong> {installation.installationDate || 'N/A'}</p>
-                                <p><strong>Additional Notes:</strong> {installation.notes || 'N/A'}</p>
+                                <p><strong>Installation Date:</strong> {installation.installationDate ? formatDate(installation.installationDate) : 'N/A'}</p>
+                                <p><strong>Additional Notes:</strong> {installation.additionalNotes || 'No additional notes provided'}</p>
                                 <p><strong>Status:</strong> {installation.status || 'N/A'}</p>
                                 <p><strong>Date Created:</strong> {formatDate(installation.createdAt)}</p>
                                 <p><strong>Time Created:</strong> {formatTime(installation.createdAt)}</p>
@@ -364,18 +363,18 @@ const AccountPage = () => {
                       <>
                         <Row>
                           <Col md={6}>
-                            <p><strong>Watts Per Day:</strong> {energyUsage[0].wattsPerDay || 'N/A'}</p>
-                            <p><strong>Hours Per Day:</strong> {energyUsage[0].hoursPerDay || 'N/A'}</p>
-                            <p><strong>Days Per Month:</strong> {energyUsage[0].daysPerMonth || 'N/A'}</p>
-                            <p><strong>Cost Per kWh:</strong> {energyUsage[0].costPerKWh || 'N/A'}</p>
+                            {energyUsage[0].wattsPerDay && <p><strong>Watts Per Day:</strong> {energyUsage[0].wattsPerDay}</p>}
+                            {energyUsage[0].hoursPerDay && <p><strong>Hours Per Day:</strong> {energyUsage[0].hoursPerDay}</p>}
+                            {energyUsage[0].daysPerMonth && <p><strong>Days Per Month:</strong> {energyUsage[0].daysPerMonth}</p>}
+                            {energyUsage[0].costPerKWh && <p><strong>Cost Per kWh:</strong> {energyUsage[0].costPerKWh}</p>}
                           </Col>
                           <Col md={6}>
-                            <p><strong>Energy Usage Per Day:</strong> {energyUsage[0].energyUsage.perDay || 'N/A'} kWh</p>
-                            <p><strong>Energy Usage Per Month:</strong> {energyUsage[0].energyUsage.perMonth || 'N/A'} kWh</p>
-                            <p><strong>Energy Usage Per Year:</strong> {energyUsage[0].energyUsage.perYear || 'N/A'} kWh</p>
-                            <p><strong>Cost Per Day:</strong> ${energyUsage[0].cost.perDay || 'N/A'}</p>
-                            <p><strong>Cost Per Month:</strong> ${energyUsage[0].cost.perMonth || 'N/A'}</p>
-                            <p><strong>Cost Per Year:</strong> ${energyUsage[0].cost.perYear || 'N/A'}</p>
+                            {energyUsage[0].energyUsage?.perDay && <p><strong>Energy Usage Per Day:</strong> {energyUsage[0].energyUsage.perDay.toFixed(2)} kWh</p>}
+                            {energyUsage[0].energyUsage?.perMonth && <p><strong>Energy Usage Per Month:</strong> {energyUsage[0].energyUsage.perMonth.toFixed(2)} kWh</p>}
+                            {energyUsage[0].energyUsage?.perYear && <p><strong>Energy Usage Per Year:</strong> {energyUsage[0].energyUsage.perYear.toFixed(2)} kWh</p>}
+                            {energyUsage[0].cost?.perDay && <p><strong>Cost Per Day:</strong> ${energyUsage[0].cost.perDay.toFixed(2)}</p>}
+                            {energyUsage[0].cost?.perMonth && <p><strong>Cost Per Month:</strong> ${energyUsage[0].cost.perMonth.toFixed(2)}</p>}
+                            {energyUsage[0].cost?.perYear && <p><strong>Cost Per Year:</strong> ${energyUsage[0].cost.perYear.toFixed(2)}</p>}
                             <p><strong>Date Created:</strong> {formatDate(energyUsage[0].createdAt)}</p>
                             <p><strong>Time Created:</strong> {formatTime(energyUsage[0].createdAt)}</p>
                           </Col>
