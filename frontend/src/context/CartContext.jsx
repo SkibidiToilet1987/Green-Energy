@@ -2,28 +2,54 @@ import React, { createContext, useState, useEffect } from 'react';
 
 export const CartContext = createContext();
 
-export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState(() => {
-    try {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        const savedCart = localStorage.getItem('cartItems');
-        return savedCart ? JSON.parse(savedCart) : [];
-      }
-    } catch (error) {
-      console.error('Error accessing localStorage:', error);
+// Helper function to safely check localStorage availability
+const isLocalStorageAvailable = () => {
+  try {
+    const testKey = '__test__';
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+      return false;
     }
-    return []; // Fallback to an empty cart
-  });
+    localStorage.setItem(testKey, testKey);
+    localStorage.removeItem(testKey);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
 
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState([]);
+  const [storageAvailable, setStorageAvailable] = useState(false);
+
+  // Initialize cart and check storage availability
   useEffect(() => {
-    try {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        localStorage.setItem('cartItems', JSON.stringify(cart));
+    const available = isLocalStorageAvailable();
+    setStorageAvailable(available);
+    
+    if (available) {
+      try {
+        const savedCart = localStorage.getItem('cartItems');
+        if (savedCart) {
+          setCart(JSON.parse(savedCart));
+        }
+      } catch (error) {
+        console.error('Error loading cart from localStorage:', error);
       }
-    } catch (error) {
-      console.error('Error saving to localStorage:', error);
     }
-  }, [cart]);
+  }, []);
+
+  // Persist cart to storage when it changes
+  useEffect(() => {
+    if (storageAvailable) {
+      try {
+        localStorage.setItem('cartItems', JSON.stringify(cart));
+      } catch (error) {
+        console.error('Error saving cart to localStorage:', error);
+      }
+    }
+    // Note: We don't need to handle the in-memory case here
+    // as React state will keep it in memory automatically
+  }, [cart, storageAvailable]);
 
   const addToCart = (product) => {
     setCart((prevCart) => {
@@ -64,22 +90,18 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
-    try {
-      if (typeof window !== 'undefined' && window.localStorage) {
+    if (storageAvailable) {
+      try {
         localStorage.removeItem('cartItems');
+      } catch (error) {
+        console.error('Error clearing cart from localStorage:', error);
       }
-    } catch (error) {
-      console.error('Error clearing localStorage:', error);
     }
   };
 
-  const getTotalItems = () => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  };
+  const getTotalItems = () => cart.reduce((total, item) => total + item.quantity, 0);
 
-  const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  };
+  const getTotalPrice = () => cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
     <CartContext.Provider
@@ -92,6 +114,7 @@ export const CartProvider = ({ children }) => {
         clearCart,
         getTotalItems,
         getTotalPrice,
+        storageAvailable, // Optional: expose storage availability to consumers
       }}
     >
       {children}

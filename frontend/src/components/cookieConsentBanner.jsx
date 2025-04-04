@@ -1,11 +1,21 @@
-import React from 'react';
-import CookieConsent, { Cookies } from 'react-cookie-consent';
+import React, { useState, useEffect } from 'react';
+import CookieConsent from 'react-cookie-consent';
+import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import '../assets/cookie.css'; // Import the CSS file for styling
 
 const CookieConsentBanner = () => {
+  const [cookies, setCookie] = useCookies(['userConsent']);
+  const [showBanner, setShowBanner] = useState(false);
+
   const userId = '12345'; // Replace with actual user ID if available
   const userEmail = 'user@example.com'; // Replace with actual user email if available
+
+  useEffect(() => {
+    if (!cookies.userConsent) {
+      setShowBanner(true);
+    }
+  }, [cookies]);
 
   const handleAccept = () => {
     console.log("Cookies accepted!");
@@ -18,11 +28,12 @@ const CookieConsentBanner = () => {
     }).then(() => {
       console.log("Consent status saved successfully.");
     }).catch((error) => {
-      console.error("Error saving consent status:", error);
+      console.error("Error saving consent status:", error.response || error.message);
     });
 
     // Save cookie data locally
-    Cookies.set('userConsent', 'true', { expires: 365 });
+    setCookie('userConsent', 'true', { path: '/', expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) });
+    setShowBanner(false);
   };
 
   const handleDecline = () => {
@@ -36,12 +47,15 @@ const CookieConsentBanner = () => {
     }).then(() => {
       console.log("Decline status saved successfully.");
     }).catch((error) => {
-      console.error("Error saving decline status:", error);
+      console.error("Error saving decline status:", error.response || error.message);
     });
+
+    // Save cookie data locally
+    setCookie('userConsent', 'false', { path: '/', expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) });
+    setShowBanner(false);
   };
 
-  // Check if the userConsent cookie is already set
-  if (Cookies.get('userConsent')) {
+  if (!showBanner) {
     return null; // Do not render the banner if consent is already given or declined
   }
 
