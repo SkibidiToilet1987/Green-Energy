@@ -27,7 +27,7 @@ import { MdOutlineEnergySavingsLeaf } from 'react-icons/md';
 import { Container, Row, Col, Card, Button, Carousel } from 'react-bootstrap';
 import MainNavigation from '../components/mainnavigation';
 import MainFooter from '../components/MainFooter';
-import '.././/assets/HomePage.css';
+import '.././assets/HomePage.css';
 
 const HomePage = () => {
   // State for theme toggle
@@ -94,7 +94,7 @@ const HomePage = () => {
   const expertCompanies = [
     "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer", 
     "uSwitch", "Which?", "Which? Trusted Trader",
-    "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer",  // Duplicated for continuous scrolling
+    "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer",
     "uSwitch", "Which?", "Which? Trusted Trader"
   ];
 
@@ -235,7 +235,7 @@ const HomePage = () => {
         </Container>
       </section>
 
-      {/* MODIFIED: Looking for the power to make a difference section */}
+      {/* Looking for the power to make a difference section */}
       <section className="cart-section">
         <Container>
           <Card className="cart-card power-difference-card">
@@ -256,7 +256,7 @@ const HomePage = () => {
                       variant="dark" 
                       size="lg" 
                       as={Link} 
-                      to="/energy-usage/calculator"
+                      to="/energy-usage"
                       className="primary-button switch-button"
                     >
                       Switch in 2 minutes <FaArrowRight className="ms-2" />
@@ -306,15 +306,45 @@ const HomePage = () => {
       </section>
 
       {/* Recommended by Experts Section */}
-      <section className="experts-section">
+      <section className="experts-section" style={{
+        padding: '60px 0',
+        backgroundColor: 'white',
+        overflow: 'hidden',
+        width: '100vw',
+        position: 'relative',
+        left: '50%',
+        right: '50%',
+        marginLeft: '-50vw',
+        marginRight: '-50vw'
+      }}>
         <Container className="text-center">
           <h2 className="section-title mb-5" style={{ fontSize: '3rem' }}>Recommended by the Experts</h2>
           
-          <div className="expert-carousel-container">
-            <div className="expert-carousel">
+          <div className="expert-carousel-container" style={{ overflow: 'hidden', width: '100%', position: 'relative' }}>
+            <div className="expert-carousel" style={{ 
+              display: 'flex', 
+              animation: 'scrollLogos 30s linear infinite',
+              width: 'fit-content'
+            }}>
               {expertCompanies.map((company, index) => (
-                <div className="expert-logo" key={index}>
-                  <div className="logo-placeholder">
+                <div className="expert-logo" key={index} style={{ 
+                  padding: '10px',
+                  minWidth: '200px',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}>
+                  <div className="logo-placeholder" style={{
+                    width: '160px',
+                    height: '80px',
+                    backgroundColor: '#f0f0f0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.9rem',
+                    color: '#666',
+                    borderRadius: '5px',
+                    border: '1px dashed #ccc'
+                  }}>
                     {company}
                   </div>
                 </div>
@@ -322,6 +352,16 @@ const HomePage = () => {
             </div>
           </div>
         </Container>
+
+        {/* Add the animation style */}
+        <style>
+          {`
+            @keyframes scrollLogos {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+          `}
+        </style>
       </section>
 
       {/* Reviews Section */}
@@ -390,7 +430,7 @@ const HomePage = () => {
               size="lg" 
               className="consultation-button"
               as={Link} 
-              to="/consultation"
+              to="/bookings"
             >
               Book a Consultation
             </Button>
@@ -398,7 +438,7 @@ const HomePage = () => {
               variant="outline-dark" 
               size="lg" 
               as={Link} 
-              to="/bookings/installations"
+              to="/bookings"
               className="outline-button"
             >
               Schedule Installation

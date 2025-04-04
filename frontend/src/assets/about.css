@@ -293,3 +293,8 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.faq-section {
+  margin-bottom: 0 !important;
+}
+

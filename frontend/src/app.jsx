@@ -1,23 +1,23 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import CookieConsentBanner from './components/cookieConsentBanner'; // Import the banner
-import Home from './routes/home/Home';
-import About from './routes/about/about';
+import CookieConsentBanner from './components/cookieConsentBanner';
+import Login from './routes/login/login';
+import Register from './routes/register/register';
 
-const App = () => {
+function App() {
   return (
     <Router>
       <div>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-
-        {/* Add the Cookie Consent Banner */}
+        {/* Render the cookie consent banner */}
         <CookieConsentBanner />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          {/* Add other routes here */}
+        </Routes>
       </div>
     </Router>
   );
-};
+}
 
 export default App;

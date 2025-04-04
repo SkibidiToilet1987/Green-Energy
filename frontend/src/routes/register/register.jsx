@@ -144,6 +144,20 @@ export default function Register() {
     return (
         <>
             <MainNavigation />
+            {/* Hero Section */}
+            <section className="hero-section" style={{ minHeight: '350px' }}>
+                <div className="container h-100">
+                    <div className="row align-items-center h-100">
+                        <div className="col-lg-6 text-center text-lg-start">
+                            <h1 className="display-3 fw-bold mb-3">Sign up to</h1>
+                            <h1 className="display-3 fw-bold mb-3">a new account</h1>
+                        </div>
+                        <div className="col-lg-6 text-center">
+                            <FaUserPlus className="display-1 pulse-animation" />
+                        </div>
+                    </div>
+                </div>
+            </section>
             <Container fluid="true" className="vh-100 d-flex justify-content-center align-items-center">
                 <Row className="w-50 justify-content-center">
                     <Col md={7} style={{ paddingTop: "40px" }}>

@@ -247,39 +247,6 @@ const Products = () => {
           </Col>
         </Row>
       </Container>
-
-      <div className="featured-section py-5">
-        <Container>
-          <Row>
-            <Col md={6} className="mb-4 mb-md-0">
-              <div className="featured-card bg-dark text-white p-4 h-100 text-center">
-                <h3 className="border-bottom pb-2">Consultations & Installations</h3>
-                <p>Our certified technicians ensure proper installation and setup of all our green energy products.</p>
-                <p>We also offer free consultations</p>
-                <Button variant="light" className="rounded-pill btn-rounded">Schedule Now</Button>
-              </div>
-            </Col>
-            <Col md={6}>
-              <div className="featured-card bg-dark text-white p-4 h-100 text-center">
-                <h3 className="border-bottom pb-2">Calculate Your Carbon Footprint</h3>
-                <p>Use our carbon footprint calculator to see how much you can reduce your carbon footprint by switching to green energy solutions.</p>
-                <Button variant="light" className="rounded-pill btn-rounded">Try Calculator</Button>
-              </div>
-            </Col>
-          </Row>
-
-          <Row className="justify-content-center mt-4">
-            <Col md={6}>
-              <div className="featured-card bg-dark text-white p-4 h-100 text-center">
-                <h3 className="border-bottom pb-2">Calculate Your Energy Usage</h3>
-                <p>Estimate how much energy your home uses and discover ways to improve efficiency with our energy usage calculator.</p>
-                <Button variant="light" className="rounded-pill btn-rounded">Try Calculator</Button>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-
       <MainFooter />
     </div>
   );

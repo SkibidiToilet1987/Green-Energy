@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { FaUserCircle, FaInfoCircle, FaCalendarAlt, FaChartBar } from 'react-icons/fa';
+import { FaUserCircle, FaInfoCircle, FaCalendarAlt } from 'react-icons/fa';
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import axios from 'axios';
 import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { Line } from 'react-chartjs-2';
-import 'chart.js/auto';
 
 const AccountPage = () => {
   const [localPart, setLocalPart] = useState('');
   const [userInfo, setUserInfo] = useState({ fname: '', sname: '', email: '', _id: '' });
   const [consultations, setConsultations] = useState([]);
   const [installations, setInstallations] = useState([]);
-  const [energyUsage, setEnergyUsage] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState({ type: '', id: '' });
@@ -60,20 +57,8 @@ const AccountPage = () => {
           },
         });
         setInstallations(installationsResponse.data);
-
-        // Fetch energy usage with userId
-        if (_id) {
-          const energyUsageResponse = await axios.get(`http://localhost:3000/energy-usage/${_id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setEnergyUsage(energyUsageResponse.data);
-        }
       } catch (error) {
-        if (error.response && error.response.status === 404) {
-          console.error('Energy usage data not found.');
-        } else if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           console.error('Unauthorized. Redirecting to login...');
           navigate('/login', { state: { from: '/account' } });
         } else {
@@ -175,17 +160,9 @@ const AccountPage = () => {
     }
   };
 
-  const energyUsageGraphData = {
-    labels: energyUsage.map((usage, index) => `Entry ${index + 1}`),
-    datasets: [
-      {
-        label: 'Energy Usage Per Day (kWh)',
-        data: energyUsage.map((usage) => usage.energyUsage?.perDay || 0),
-        borderColor: '#007bff',
-        backgroundColor: 'rgba(0, 123, 255, 0.2)',
-        fill: true,
-      },
-    ],
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
@@ -224,6 +201,13 @@ const AccountPage = () => {
                     <Card.Text className="flex-grow-1">
                       This is your account dashboard where you can view and manage your personal information, track your carbon footprint, and explore ways to reduce your environmental impact.
                     </Card.Text>
+                    <Button 
+                      variant="danger" 
+                      className="mt-3" 
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </Button>
                   </Card.Body>
                 </Card>
               </Col>
@@ -347,50 +331,6 @@ const AccountPage = () => {
                         </div>
                       )}
                     </Row>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-
-            <Row className="gx-4 mt-4">
-              <Col md={12}>
-                <Card className="account-card w-100">
-                  <Card.Body>
-                    <h3 className="mb-3 text-center">
-                      <FaChartBar className="icon" /> Energy Usage
-                    </h3>
-                    {energyUsage.length > 0 ? (
-                      <>
-                        <Row>
-                          <Col md={6}>
-                            {energyUsage[0].wattsPerDay && <p><strong>Watts Per Day:</strong> {energyUsage[0].wattsPerDay}</p>}
-                            {energyUsage[0].hoursPerDay && <p><strong>Hours Per Day:</strong> {energyUsage[0].hoursPerDay}</p>}
-                            {energyUsage[0].daysPerMonth && <p><strong>Days Per Month:</strong> {energyUsage[0].daysPerMonth}</p>}
-                            {energyUsage[0].costPerKWh && <p><strong>Cost Per kWh:</strong> {energyUsage[0].costPerKWh}</p>}
-                          </Col>
-                          <Col md={6}>
-                            {energyUsage[0].energyUsage?.perDay && <p><strong>Energy Usage Per Day:</strong> {energyUsage[0].energyUsage.perDay.toFixed(2)} kWh</p>}
-                            {energyUsage[0].energyUsage?.perMonth && <p><strong>Energy Usage Per Month:</strong> {energyUsage[0].energyUsage.perMonth.toFixed(2)} kWh</p>}
-                            {energyUsage[0].energyUsage?.perYear && <p><strong>Energy Usage Per Year:</strong> {energyUsage[0].energyUsage.perYear.toFixed(2)} kWh</p>}
-                            {energyUsage[0].cost?.perDay && <p><strong>Cost Per Day:</strong> ${energyUsage[0].cost.perDay.toFixed(2)}</p>}
-                            {energyUsage[0].cost?.perMonth && <p><strong>Cost Per Month:</strong> ${energyUsage[0].cost.perMonth.toFixed(2)}</p>}
-                            {energyUsage[0].cost?.perYear && <p><strong>Cost Per Year:</strong> ${energyUsage[0].cost.perYear.toFixed(2)}</p>}
-                            <p><strong>Date Created:</strong> {formatDate(energyUsage[0].createdAt)}</p>
-                            <p><strong>Time Created:</strong> {formatTime(energyUsage[0].createdAt)}</p>
-                          </Col>
-                        </Row>
-                        <div className="mt-4">
-                          <Line data={energyUsageGraphData} />
-                        </div>
-                      </>
-                    ) : (
-                      <div className="text-center">
-                        <p>No energy usage data available.</p>
-                        <Button variant="dark" onClick={() => navigate('/energy-usage/calculator')}>
-                          Measure your Energy Usage
-                        </Button>
-                      </div>
-                    )}
                   </Card.Body>
                 </Card>
               </Col>
