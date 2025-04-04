@@ -5,6 +5,7 @@ const {
   getConsultationById,
   updateConsultation,
   updateConsultationDate,
+  updateAdditionalNotes, // Added route for updating additional notes
   deleteConsultation,
 } = require('../../controllers/consultationController'); // Ensure this path is correct
 const authenticateToken = require('../../middleware/authenticateToken'); // Middleware for authentication
@@ -25,6 +26,9 @@ router.put('/:id', authenticateToken, updateConsultation);
 
 // PUT route to update the consultation date (protected route)
 router.put('/:id/date', authenticateToken, updateConsultationDate);
+
+// PUT route to update the additional notes (protected route)
+router.put('/:id/notes', authenticateToken, updateAdditionalNotes); // New route for additional notes
 
 // DELETE route to delete a consultation by ID (protected route)
 router.delete('/:id', authenticateToken, deleteConsultation);

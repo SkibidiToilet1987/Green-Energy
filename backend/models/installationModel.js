@@ -5,6 +5,7 @@ const installationSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true, // Removes extra spaces
+    minlength: [2, 'Name must be at least 2 characters long'], // Ensures name has a minimum length
   },
   email: {
     type: String,
@@ -29,6 +30,8 @@ const installationSchema = new mongoose.Schema({
   additionalNotes: {
     type: String,
     trim: true, // Removes extra spaces
+    maxlength: [500, 'Additional notes cannot exceed 500 characters'], // Ensures notes are not too long
+    default: '', // Default to an empty string if no notes are provided
   },
   status: {
     type: String,

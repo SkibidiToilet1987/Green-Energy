@@ -94,3 +94,30 @@ exports.deleteInstallation = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete installation request', error });
   }
 };
+
+// Controller to update additional notes for an installation request
+exports.updateAdditionalNotes = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { notes } = req.body;
+
+    if (!notes) {
+      return res.status(400).json({ message: 'Additional notes are required' });
+    }
+
+    const updatedInstallation = await Installation.findByIdAndUpdate(
+      id,
+      { notes },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedInstallation) {
+      return res.status(404).json({ message: 'Installation request not found' });
+    }
+
+    res.status(200).json({ message: 'Additional notes updated successfully', updatedInstallation });
+  } catch (error) {
+    console.error('Error updating additional notes:', error);
+    res.status(500).json({ message: 'Failed to update additional notes', error });
+  }
+};

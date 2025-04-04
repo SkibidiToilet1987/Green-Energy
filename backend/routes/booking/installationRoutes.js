@@ -5,6 +5,7 @@ const {
   getInstallationById,
   updateInstallation,
   updateInstallationDate,
+  updateAdditionalNotes, // Added route for updating additional notes
   deleteInstallation,
 } = require('../../controllers/installationController');
 const authenticateToken = require('../../middleware/authenticateToken');
@@ -25,6 +26,9 @@ router.put('/:id', authenticateToken, updateInstallation);
 
 // PUT route to update the installation date (protected route)
 router.put('/:id/date', authenticateToken, updateInstallationDate);
+
+// PUT route to update the additional notes (protected route)
+router.put('/:id/notes', authenticateToken, updateAdditionalNotes); // New route for additional notes
 
 // DELETE route to delete an installation request by ID (protected route)
 router.delete('/:id', authenticateToken, deleteInstallation);
