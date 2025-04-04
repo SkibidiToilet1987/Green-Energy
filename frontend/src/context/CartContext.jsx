@@ -4,12 +4,25 @@ export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem('cartItems');
-    return savedCart ? JSON.parse(savedCart) : [];
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const savedCart = localStorage.getItem('cartItems');
+        return savedCart ? JSON.parse(savedCart) : [];
+      }
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
+    }
+    return []; // Fallback to an empty cart
   });
 
   useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cart));
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('cartItems', JSON.stringify(cart));
+      }
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
   }, [cart]);
 
   const addToCart = (product) => {
@@ -33,9 +46,9 @@ export const CartProvider = ({ children }) => {
       prevCart.map((item) =>
         item._id === productId
           ? {
-            ...item,
-            quantity: action === 'increment' ? item.quantity + 1 : Math.max(item.quantity - 1, 1),
-          }
+              ...item,
+              quantity: action === 'increment' ? item.quantity + 1 : Math.max(item.quantity - 1, 1),
+            }
           : item
       )
     );
@@ -51,7 +64,13 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
-    localStorage.removeItem('cartItems');
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.removeItem('cartItems');
+      }
+    } catch (error) {
+      console.error('Error clearing localStorage:', error);
+    }
   };
 
   const getTotalItems = () => {
