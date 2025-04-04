@@ -16,8 +16,8 @@ const AccountPage = () => {
   const [energyUsage, setEnergyUsage] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
-  const [itemToReschedule, setItemToReschedule] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState({ type: '', id: '' });
+  const [itemToReschedule, setItemToReschedule] = useState({ type: '', id: '' });
   const [newDate, setNewDate] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -61,15 +61,20 @@ const AccountPage = () => {
         });
         setInstallations(installationsResponse.data);
 
-        // Fetch energy usage
-        const energyUsageResponse = await axios.get('http://localhost:3000/energyUsage', {
+        // Fetch energy usage with email included
+        const energyUsageResponse = await axios.get('http://localhost:3000/energy-usage', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          params: {
+            email: email
+          }
         });
         setEnergyUsage(energyUsageResponse.data);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 404) {
+          console.error('Energy usage data not found.');
+        } else if (error.response && error.response.status === 401) {
           console.error('Unauthorized. Redirecting to login...');
           navigate('/login', { state: { from: '/account' } });
         } else {
@@ -81,6 +86,16 @@ const AccountPage = () => {
 
     fetchUserData();
   }, [navigate]);
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
 
   const handleReschedule = (type, id) => {
     setItemToReschedule({ type, id });
@@ -94,15 +109,8 @@ const AccountPage = () => {
 
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        console.error('No token found. User is not authenticated.');
-        return;
-      }
-
-      console.log(`Rescheduling ${type} with ID: ${id} to new date: ${newDate}`);
-
       const response = await axios.put(
-        `http://localhost:3000/${type}/${id}/date`,
+        `http://localhost:3000/${type}/${id}`,
         { date: newDate },
         {
           headers: {
@@ -112,30 +120,26 @@ const AccountPage = () => {
       );
 
       if (response.status === 200) {
-        console.log(`${type} with ID: ${id} rescheduled successfully.`);
-
         if (type === 'consultations') {
-          setConsultations((prev) =>
-            prev.map((item) =>
+          setConsultations(prev =>
+            prev.map(item =>
               item._id === id ? { ...item, consultationDate: newDate } : item
             )
           );
         } else if (type === 'installations') {
-          setInstallations((prev) =>
-            prev.map((item) =>
+          setInstallations(prev =>
+            prev.map(item =>
               item._id === id ? { ...item, installationDate: newDate } : item
             )
           );
         }
-      } else {
-        console.error(`Failed to reschedule ${type} with ID: ${id}. Status: ${response.status}`);
+        setShowRescheduleModal(false);
+        setItemToReschedule({ type: '', id: '' });
+        setNewDate('');
       }
     } catch (error) {
-      console.error(`Error rescheduling ${type} with ID: ${id}`, error.response || error.message);
-    } finally {
-      setShowRescheduleModal(false);
-      setItemToReschedule(null);
-      setNewDate('');
+      console.error('Error rescheduling:', error);
+      setError('Failed to reschedule. Please try again.');
     }
   };
 
@@ -144,19 +148,12 @@ const AccountPage = () => {
     setShowConfirmModal(true);
   };
 
-  const handleDelete = async () => {
+  const confirmDelete = async () => {
     if (!itemToDelete) return;
-
-    const { type, id } = itemToDelete;
 
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        console.error('No token found. User is not authenticated.');
-        return;
-      }
-
-      console.log(`Attempting to delete ${type} with ID: ${id}`);
+      const { type, id } = itemToDelete;
 
       const response = await axios.delete(`http://localhost:3000/${type}/${id}`, {
         headers: {
@@ -165,32 +162,18 @@ const AccountPage = () => {
       });
 
       if (response.status === 200) {
-        console.log(`${type} with ID: ${id} deleted successfully from the database.`);
-
         if (type === 'consultations') {
-          setConsultations((prev) => prev.filter((item) => item._id !== id));
+          setConsultations(prev => prev.filter(item => item._id !== id));
         } else if (type === 'installations') {
-          setInstallations((prev) => prev.filter((item) => item._id !== id));
+          setInstallations(prev => prev.filter(item => item._id !== id));
         }
-      } else {
-        console.error(`Failed to delete ${type} with ID: ${id}. Status: ${response.status}`);
+        setShowConfirmModal(false);
+        setItemToDelete({ type: '', id: '' });
       }
     } catch (error) {
-      console.error(`Error deleting ${type} with ID: ${id}`, error.response || error.message);
-    } finally {
-      setShowConfirmModal(false);
-      setItemToDelete(null);
+      console.error('Error deleting:', error);
+      setError('Failed to delete. Please try again.');
     }
-  };
-
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
   };
 
   const energyUsageGraphData = {
@@ -198,7 +181,7 @@ const AccountPage = () => {
     datasets: [
       {
         label: 'Energy Usage Per Day (kWh)',
-        data: energyUsage.map((usage) => usage.energyUsage.perDay),
+        data: energyUsage.map((usage) => usage.energyUsage?.perDay || 0),
         borderColor: '#007bff',
         backgroundColor: 'rgba(0, 123, 255, 0.2)',
         fill: true,
@@ -404,6 +387,9 @@ const AccountPage = () => {
                     ) : (
                       <div className="text-center">
                         <p>No energy usage data available.</p>
+                        <Button variant="dark" onClick={() => navigate('/energy-usage/calculator')}>
+                          Measure your Energy Usage
+                        </Button>
                       </div>
                     )}
                   </Card.Body>
@@ -413,6 +399,50 @@ const AccountPage = () => {
           </Container>
         </section>
       </main>
+
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this {itemToDelete?.type === 'consultations' ? 'consultation' : 'installation'}?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" onClick={() => setShowConfirmModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showRescheduleModal} onHide={() => setShowRescheduleModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Reschedule</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="newDate">
+              <Form.Label>Select a new date</Form.Label>
+              <Form.Control
+                type="date"
+                min={new Date().toISOString().split('T')[0]}
+                value={newDate}
+                onChange={(e) => setNewDate(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" onClick={() => setShowRescheduleModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="dark" onClick={confirmReschedule}>
+            Confirm
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <MainFooter />
     </div>

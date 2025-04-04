@@ -4,40 +4,40 @@ const installationSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true,
+    trim: true, // Removes extra spaces
   },
   email: {
     type: String,
     required: true,
-    trim: true,
-    match: [/\S+@\S+\.\S+/, 'Please enter a valid email address'],
+    trim: true, // Removes extra spaces
+    match: [/\S+@\S+\.\S+/, 'Please enter a valid email address'], // Validates email format
   },
   phoneNumber: {
     type: String,
     required: true,
-    match: [/^\d{9}$/, 'Phone number must be exactly 9 digits'],
+    match: [/^\d{9}$/, 'Phone number must be exactly 9 digits'], // Validates phone number format
   },
   address: {
     type: String,
     required: true,
-    minlength: [5, 'Address must be at least 5 characters long'],
+    minlength: [5, 'Address must be at least 5 characters long'], // Ensures address has a minimum length
   },
   installationDate: {
     type: Date,
-    required: true,
+    required: true, // Ensures an installation date is provided
   },
   additionalNotes: {
     type: String,
-    trim: true,
+    trim: true, // Removes extra spaces
   },
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'completed', 'cancelled'],
-    default: 'pending',
+    enum: ['pending', 'confirmed', 'completed', 'cancelled'], // Restricts status to specific values
+    default: 'pending', // Default status is 'pending'
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now, // Automatically sets the creation date
   },
 });
 
