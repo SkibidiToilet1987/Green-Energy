@@ -9,7 +9,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 
 const Cart = () => {
-  const { cart, removeFromCart, updateCartItemQuantity } = useContext(CartContext);
+  const { cart, removeFromCart, updateCartItemQuantity, setCartComplete } = useContext(CartContext);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
   const navigate = useNavigate();
@@ -91,7 +91,12 @@ const Cart = () => {
         });
 
         console.log('Shopping cart data saved successfully:', response.data);
-        navigate('/cart/checkout'); // Redirect to /cart/checkout
+
+        // Mark cart as complete
+        setCartComplete(true);
+
+        // Redirect to /cart/checkout
+        navigate('/cart/checkout');
       }
     } catch (error) {
       console.error('Error during token verification or checkout:', error);

@@ -22,7 +22,7 @@ const Installations = () => {
         const token = localStorage.getItem('token');
         if (!token) {
           console.error('No token found. Redirecting to login...');
-          navigate('/login', { state: { from: '/installations' } });
+          navigate('/login', { state: { from: '/bookings/installations' } });
           return;
         }
 
@@ -37,7 +37,7 @@ const Installations = () => {
         setEmail(response.data.email);
       } catch (error) {
         console.error('Token verification failed. Redirecting to login...', error);
-        navigate('/login', { state: { from: '/installations' } });
+        navigate('/login', { state: { from: '/bookings/installations' } });
       }
     };
 
@@ -122,6 +122,11 @@ const Installations = () => {
       });
 
       console.log('Installation request saved successfully:', response.data);
+
+      // Mark installation as complete
+      localStorage.setItem('installationComplete', 'true');
+
+      // Redirect to the confirmation page
       navigate('/bookings/installations/confirm');
     } catch (error) {
       console.error('Error during installation request:', error);
@@ -144,11 +149,7 @@ const Installations = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <MainNavigation />
       <Container className="d-flex justify-content-center align-items-center" style={{ flex: '1' }}>
         <Row className="w-75 justify-content-center">

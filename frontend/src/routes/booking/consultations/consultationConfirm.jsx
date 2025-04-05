@@ -11,6 +11,15 @@ const ConsultationConfirm = () => {
   const [requestNumber, setRequestNumber] = useState('');
   const [responseTime] = useState('Within 2 Business Days');
 
+  // Redirect if the user hasn't completed the consultation process
+  useEffect(() => {
+    const consultationComplete = localStorage.getItem('consultationComplete');
+    if (!consultationComplete || consultationComplete !== 'true') {
+      console.error('Access denied. Redirecting to consultations page...');
+      navigate('/bookings/consultations');
+    }
+  }, [navigate]);
+
   useEffect(() => {
     const verifyToken = async () => {
       try {

@@ -26,7 +26,7 @@ body {
 
 .about-content {
   background-color: white;
-  margin-bottom: 0;
+  flex: 1; /* Ensures the content takes up the remaining space */
 }
 
 .container {
@@ -133,7 +133,7 @@ body {
 
 /* Mission Section */
 .mission-section {
-  background-color: #f8f9fa;
+  background-color: var(--white);
   padding: 80px 0;
 }
 
@@ -144,7 +144,6 @@ body {
 }
 
 .mission-card {
-  background-color: var(--white);
   padding: 30px;
   border-radius: 10px;
   text-align: center;
@@ -177,7 +176,6 @@ body {
 /* Experts Section */
 .experts-section {
   padding: 60px 0;
-  background-color: white;
   overflow: hidden;
 }
 
@@ -277,7 +275,6 @@ body {
   padding: 60px 0;
   background-color: #f4f4f4;
   margin: 0;
-  margin-bottom: 0;
 }
 
 .section-title {
@@ -337,8 +334,12 @@ body {
 }
 
 /* Footer */
-.main-footer {
-  margin-top: 0 !important;
+footer.bg-dark {
+  margin-top: 0 !important; /* Fixes the white space issue */
+  padding-top: 0; /* Optional: Adjust padding if needed */
+  padding-bottom: 0; /* Optional: Adjust padding if needed */
+  background-color: var(--secondary-color);
+  color: var(--white);
 }
 
 /* Responsive Design */

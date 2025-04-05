@@ -11,6 +11,15 @@ const InstallationConfirm = () => {
   const [requestNumber, setRequestNumber] = useState('');
   const [responseTime] = useState('Within 2 Business Days');
 
+  // Redirect if the user hasn't completed the installation process
+  useEffect(() => {
+    const installationComplete = localStorage.getItem('installationComplete');
+    if (!installationComplete || installationComplete !== 'true') {
+      console.error('Access denied. Redirecting to installations page...');
+      navigate('/bookings/installations');
+    }
+  }, [navigate]);
+
   useEffect(() => {
     const verifyToken = async () => {
       try {

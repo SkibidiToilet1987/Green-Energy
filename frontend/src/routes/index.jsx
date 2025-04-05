@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  FaSolarPanel, 
-  FaLeaf, 
-  FaChartLine, 
-  FaTools, 
-  FaCalendarCheck, 
+import {
+  FaSolarPanel,
+  FaLeaf,
+  FaChartLine,
+  FaTools,
+  FaCalendarCheck,
   FaHome,
   FaLightbulb,
   FaRecycle,
@@ -38,20 +38,20 @@ const HomePage = () => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark-mode');
       document.documentElement.classList.remove('light-mode');
-      
+
       // Make sure navbar and footer styling is preserved
       const navbar = document.querySelector('.main-navigation');
       const footer = document.querySelector('.main-footer');
-      
+
       if (navbar) navbar.classList.add('navbar-dark');
       if (footer) footer.classList.add('footer-dark');
     } else {
       document.documentElement.classList.add('light-mode');
       document.documentElement.classList.remove('dark-mode');
-      
+
       const navbar = document.querySelector('.main-navigation');
       const footer = document.querySelector('.main-footer');
-      
+
       if (navbar) navbar.classList.remove('navbar-dark');
       if (footer) footer.classList.remove('footer-dark');
     }
@@ -116,9 +116,9 @@ const HomePage = () => {
 
   // Expert companies
   const expertCompanies = [
-    "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer", 
+    "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer",
     "uSwitch", "Which?", "Which? Trusted Trader",
-    "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer", 
+    "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer",
     "uSwitch", "Which?", "Which? Trusted Trader"
   ];
 
@@ -163,19 +163,19 @@ const HomePage = () => {
   return (
     <div className={`home-page-container ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
       <MainNavigation />
-      
+
       {/* Theme Toggle Button */}
       <div className="theme-toggle-container">
-        <Button 
-          variant={isDarkMode ? "light" : "dark"} 
-          className="theme-toggle-button" 
+        <Button
+          variant={isDarkMode ? "light" : "dark"}
+          className="theme-toggle-button"
           onClick={toggleTheme}
           aria-label="Toggle dark/light mode"
         >
           {isDarkMode ? <FaSun /> : <FaMoon />}
         </Button>
       </div>
-      
+
       {/* Hero Section - directly connected to products section */}
       <section className="hero-section" style={{ minHeight: '500px', marginBottom: 0, paddingBottom: '100px' }}>
         <Container className="h-100">
@@ -197,8 +197,8 @@ const HomePage = () => {
       <section className="products-section" style={{ marginTop: 0, paddingTop: '80px' }}>
         <Container>
           <h2 className="section-title text-center mb-4" style={{ fontSize: '3rem' }}>Make Your Home a Powerhouse</h2>
-          
-          <Row style={{ marginTop: '50px' }}>  
+
+          <Row style={{ marginTop: '50px' }}>
             {products.map((product, index) => (
               <Col lg={3} md={6} className="mb-4" key={index}>
                 <Card className="product-card h-100">
@@ -212,10 +212,10 @@ const HomePage = () => {
                     </Card.Text>
                   </Card.Body>
                   <Card.Footer className="bg-transparent border-0 pb-4 text-start ps-4">
-                    <Button 
-                      variant="dark" 
+                    <Button
+                      variant="dark"
                       className="rounded-circle arrow-button"
-                      as={Link} 
+                      as={Link}
                       to="/products"
                       aria-label={`Explore ${product.title}`}
                     >
@@ -268,18 +268,18 @@ const HomePage = () => {
                 <Col md={6} className="p-4 p-md-5 text-start">
                   <h2 className="section-title mb-4" style={{ fontSize: '2.5rem' }}>Looking for the power to make a difference?</h2>
                   <p>
-                    Switch to the UK's only home energy supplier that's a Certified B Corp. With 100% renewable 
+                    Switch to the UK's only home energy supplier that's a Certified B Corp. With 100% renewable
                     electricity and greener gas tariffs*, plus customer service that's rated Excellent on Trustpilot.
                   </p>
                   <p>
-                    Take our quick 2-minute survey to help us understand your needs and provide 
+                    Take our quick 2-minute survey to help us understand your needs and provide
                     personalized recommendations for your green energy journey.
                   </p>
                   <div className="mt-4 mb-3">
-                    <Button 
-                      variant="dark" 
-                      size="lg" 
-                      as={Link} 
+                    <Button
+                      variant="dark"
+                      size="lg"
+                      as={Link}
                       to="/energy-usage"
                       className="primary-button switch-button"
                     >
@@ -301,12 +301,12 @@ const HomePage = () => {
       <section className="why-choose-section">
         <Container>
           <h2 className="section-title text-center mb-5" style={{ fontSize: '3rem' }}>How Green is Your Electricity?</h2>
-          
+
           <p className="section-subtitle text-center mb-4">
-            Many '100% renewable' electricity tariffs aren't as green as they claim. Our Good Green Supply 
+            Many '100% renewable' electricity tariffs aren't as green as they claim. Our Good Green Supply
             transparency standard reveals what really matters in renewable energy.
           </p>
-          
+
           <Row className="mt-5">
             {greenFeatures.map((feature, index) => (
               <Col md={4} className="mb-4" key={index}>
@@ -334,24 +334,24 @@ const HomePage = () => {
         <Container className="text-center">
           <h2 className="section-title mb-5" style={{ fontSize: '3rem' }}>Recommended by the Experts</h2>
         </Container>
-        <div className="expert-logos-container">
-          <div className="expert-logos">
-            {expertCompanies.map((company, index) => (
-              <div className="expert-logo" key={index}>
+        <Carousel indicators={false} controls={true} interval={3000} className="expert-carousel">
+          {expertCompanies.map((company, index) => (
+            <Carousel.Item key={index}>
+              <div className="expert-logo text-center">
                 <div className="logo-placeholder">
                   {company}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </Carousel.Item>
+          ))}
+        </Carousel>
       </section>
 
       {/* Reviews Section */}
       <section className="reviews-section">
         <Container>
           <h2 className="section-title text-center mb-5" style={{ fontSize: '3rem' }}>Our Latest Reviews</h2>
-          
+
           <Row>
             {reviews.slice(0, 2).map((review, index) => (
               <Col md={6} className="mb-4" key={index}>
@@ -403,24 +403,24 @@ const HomePage = () => {
         <Container className="text-center">
           <h2 className="section-title" style={{ fontSize: '3rem' }}>Start Your Green Energy Journey Today</h2>
           <p className="section-subtitle">
-            Our consultations and installations are designed to make the transition to green energy 
-            simple and effective. The survey takes less than 2 minutes, and our expert team will 
+            Our consultations and installations are designed to make the transition to green energy
+            simple and effective. The survey takes less than 2 minutes, and our expert team will
             handle the rest.
           </p>
           <div className="button-group">
-            <Button 
-              variant="dark" 
-              size="lg" 
+            <Button
+              variant="dark"
+              size="lg"
               className="consultation-button"
-              as={Link} 
+              as={Link}
               to="/bookings"
             >
               Book a Consultation
             </Button>
-            <Button 
-              variant="outline-dark" 
-              size="lg" 
-              as={Link} 
+            <Button
+              variant="outline-dark"
+              size="lg"
+              as={Link}
               to="/bookings"
               className="outline-button"
             >

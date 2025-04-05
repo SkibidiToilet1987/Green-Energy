@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
-export const CartContext = createContext();
+// Create the CartContext
+const CartContext = createContext(); // This is the context object
 
 // Helper function to safely check localStorage availability
 const isLocalStorageAvailable = () => {
@@ -17,15 +18,18 @@ const isLocalStorageAvailable = () => {
   }
 };
 
-export const CartProvider = ({ children }) => {
+// CartProvider component
+const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [storageAvailable, setStorageAvailable] = useState(false);
+  const [checkoutComplete, setCheckoutComplete] = useState(false); // Track checkout completion
+  const [cartComplete, setCartComplete] = useState(false); // Track cart completion
 
   // Initialize cart and check storage availability
   useEffect(() => {
     const available = isLocalStorageAvailable();
     setStorageAvailable(available);
-    
+
     if (available) {
       try {
         const savedCart = localStorage.getItem('cartItems');
@@ -47,8 +51,6 @@ export const CartProvider = ({ children }) => {
         console.error('Error saving cart to localStorage:', error);
       }
     }
-    // Note: We don't need to handle the in-memory case here
-    // as React state will keep it in memory automatically
   }, [cart, storageAvailable]);
 
   const addToCart = (product) => {
@@ -90,6 +92,8 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
+    setCheckoutComplete(false); // Reset checkout completion when cart is cleared
+    setCartComplete(false); // Reset cart completion when cart is cleared
     if (storageAvailable) {
       try {
         localStorage.removeItem('cartItems');
@@ -115,9 +119,25 @@ export const CartProvider = ({ children }) => {
         getTotalItems,
         getTotalPrice,
         storageAvailable, // Optional: expose storage availability to consumers
+        checkoutComplete, // Expose checkout completion state
+        setCheckoutComplete, // Expose setter for checkout completion
+        cartComplete, // Expose cart completion state
+        setCartComplete, // Expose setter for cart completion
       }}
     >
       {children}
     </CartContext.Provider>
   );
 };
+
+// Custom hook to use the CartContext
+const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};
+
+// Named exports for CartContext, CartProvider, and useCart
+export { CartContext, CartProvider, useCart };

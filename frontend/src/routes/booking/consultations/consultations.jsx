@@ -22,7 +22,7 @@ const Consultations = () => {
         const token = localStorage.getItem('token');
         if (!token) {
           console.error('No token found. Redirecting to login...');
-          navigate('/login', { state: { from: '/consultations' } });
+          navigate('/login', { state: { from: '/bookings/consultations' } });
           return;
         }
 
@@ -37,7 +37,7 @@ const Consultations = () => {
         setEmail(response.data.email);
       } catch (error) {
         console.error('Token verification failed. Redirecting to login...', error);
-        navigate('/login', { state: { from: '/consultations' } });
+        navigate('/login', { state: { from: '/bookings/consultations' } });
       }
     };
 
@@ -122,6 +122,11 @@ const Consultations = () => {
       });
 
       console.log('Consultation request saved successfully:', response.data);
+
+      // Mark consultation as complete
+      localStorage.setItem('consultationComplete', 'true');
+
+      // Redirect to the confirmation page
       navigate('/bookings/consultations/confirm');
     } catch (error) {
       console.error('Error during consultation request:', error);
@@ -144,11 +149,7 @@ const Consultations = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <MainNavigation />
       <Container className="d-flex justify-content-center align-items-center" style={{ flex: '1' }}>
         <Row className="w-75 justify-content-center">

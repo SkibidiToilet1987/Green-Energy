@@ -59,7 +59,6 @@ const About = () => {
     },
   ];
 
-  // Added solution data with icons
   const solutions = [
     {
       title: "Bespoke System Design",
@@ -75,7 +74,6 @@ const About = () => {
     }
   ]; 
 
-  // Added expert companies
   const expertCompanies = [
     "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer",
     "uSwitch", "Which?", "Which? Trusted Trader",
@@ -83,7 +81,6 @@ const About = () => {
     "uSwitch", "Which?", "Which? Trusted Trader"
   ];
 
-  // Added reviews data
   const reviews = [
     {
       text: "After installing the solar panels recommended by the team, my energy bills have decreased by over 60%. The consultation process was informative and the installation was completed professionally and on time.",
@@ -127,7 +124,6 @@ const About = () => {
                   Technologies
                 </h1>
               </div>
-              {/* Team-focused icon for "about us" */}
               <div className="hero-icon-container">
                 <FaUsers className="hero-icon pulse-animation" />
               </div>
@@ -135,10 +131,9 @@ const About = () => {
           </div>
         </section>
 
-        {/* Added Keeping Greener Energy Simple Section */}
         <section className="solutions-section">
           <div className="container">
-            <h2 className="section-title solutions-title">
+            <h2 className="section-title solutions-title  ">
               Keeping Greener Energy Simple
               <br />
               That's Rolsa Technologies
@@ -175,7 +170,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* Full-width Experts Section */}
         <section className="experts-section full-width">
           <div className="container">
             <h2 className="section-title">Recommended by the Experts</h2>
@@ -189,7 +183,6 @@ const About = () => {
                   </div>
                 </div>
               ))}
-              {/* Duplicate logos for continuous scrolling effect */}
               {expertCompanies.map((company, index) => (
                 <div className="expert-logo" key={`duplicate-${index}`}>
                   <div className="logo-placeholder">
@@ -201,7 +194,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* Added Reviews Section */}
         <section className="reviews-section">
           <div className="container">
             <h2 className="section-title text-center">Our Latest Reviews</h2>
@@ -222,7 +214,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* FAQ section at bottom with all 6 FAQs */}
         <section className="faq-section">
           <div className="container">
             <h2 className="section-title">Frequently Asked Questions</h2>

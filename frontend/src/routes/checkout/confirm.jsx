@@ -4,13 +4,24 @@ import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useCart } from '../../context/CartContext';
 
 const Confirm = () => {
   const navigate = useNavigate();
+  const { checkoutComplete } = useCart(); // Access the checkoutComplete state from CartContext
 
   const [orderNumber, setOrderNumber] = useState('');
   const [deliveryTime, setDeliveryTime] = useState('5-7 Business Days');
 
+  // Redirect to /cart/checkout if checkout is not complete
+  useEffect(() => {
+    if (!checkoutComplete) {
+      console.error('Checkout not completed. Redirecting to /cart/checkout...');
+      navigate('/cart/checkout');
+    }
+  }, [checkoutComplete, navigate]);
+
+  // Verify token and user authentication
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -38,6 +49,7 @@ const Confirm = () => {
     verifyToken();
   }, [navigate]);
 
+  // Generate a random order number
   useEffect(() => {
     const generateOrderNumber = () => {
       return Math.floor(Math.random() * 1000000);

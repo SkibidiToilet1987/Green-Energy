@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Form, Button, Spinner } from 'react-bootstra
 import MainNavigation from '../../components/mainnavigation';
 import MainFooter from '../../components/MainFooter';
 import axios from 'axios';
+import { useCart } from '../../context/CartContext';
 
 const Checkout = () => {
   const [name, setName] = useState('');
@@ -16,6 +17,15 @@ const Checkout = () => {
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { cartComplete, setCheckoutComplete } = useCart(); // Access cartComplete and checkoutComplete states from CartContext
+
+  // Redirect to /cart if cart is not complete
+  useEffect(() => {
+    if (!cartComplete) {
+      console.error('Cart not completed. Redirecting to /cart...');
+      navigate('/cart');
+    }
+  }, [cartComplete, navigate]);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -159,7 +169,12 @@ const Checkout = () => {
         });
 
         console.log('Checkout data saved successfully:', response.data);
-        navigate('/cart/checkout/confirm'); // Redirect to /checkout/confirm
+
+        // Mark checkout as complete
+        setCheckoutComplete(true);
+
+        // Redirect to /cart/checkout/confirm
+        navigate('/cart/checkout/confirm');
       }
     } catch (error) {
       console.error('Error during token verification or checkout:', error);
