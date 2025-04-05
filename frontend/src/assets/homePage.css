@@ -379,6 +379,7 @@
 .experts-section {
     padding: 60px 0;
     background-color: var(--light-color);
+    overflow: hidden;
     transition: var(--transition);
 }
 
@@ -386,68 +387,61 @@
     background-color: var(--dark-bg);
 }
 
-.expert-carousel-container {
+.experts-section.full-width {
+    width: 100%;
+}
+
+.expert-logos-container {
     width: 100%;
     overflow: hidden;
     position: relative;
-    margin: 0 auto;
 }
 
-.expert-carousel {
+.expert-logos {
     display: flex;
+    animation: scroll 30s linear infinite;
     width: max-content;
-    animation: scrollLogos 30s linear infinite;
-    will-change: transform;
 }
 
 .expert-logo {
-    padding: 10px;
-    min-width: 200px;
-    display: flex;
-    justify-content: center;
-    flex-shrink: 0;
+    flex: 0 0 auto;
+    padding: 15px;
 }
 
 .logo-placeholder {
-    width: 160px;
+    background-color: var(--light-gray);
+    color: var(--dark-color);
+    width: 150px;
     height: 80px;
-    background-color: #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
-    color: #666;
     border-radius: 5px;
-    border: 1px dashed #ccc;
+    font-weight: bold;
+    text-align: center;
     transition: var(--transition);
 }
 
 .dark-mode .logo-placeholder {
-    background-color: #2a2a2a;
-    color: #aaa;
-    border-color: #444;
+    background-color: var(--dark-card);
+    color: var(--dark-text);
 }
 
-@keyframes scrollLogos {
+.experts-section .section-title {
+    color: var(--dark-color);
+}
+
+.dark-mode .experts-section .section-title {
+    color: var(--dark-text);
+}
+
+@keyframes scroll {
     0% {
         transform: translateX(0);
     }
-
     100% {
         transform: translateX(-50%);
     }
-}
-
-.expert-carousel-container {
-    overflow: hidden;
-    width: 100%;
-    position: relative;
-}
-
-.expert-carousel {
-    display: flex;
-    animation: scrollLogos 30s linear infinite;
-    width: fit-content;
 }
 
 /* Reviews Section */

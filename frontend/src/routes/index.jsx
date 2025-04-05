@@ -118,7 +118,7 @@ const HomePage = () => {
   const expertCompanies = [
     "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer", 
     "uSwitch", "Which?", "Which? Trusted Trader",
-    "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer",
+    "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer", 
     "uSwitch", "Which?", "Which? Trusted Trader"
   ];
 
@@ -330,22 +330,21 @@ const HomePage = () => {
       </section>
 
       {/* Recommended by Experts Section */}
-      <section className="experts-section">
+      <section className="experts-section full-width">
         <Container className="text-center">
           <h2 className="section-title mb-5" style={{ fontSize: '3rem' }}>Recommended by the Experts</h2>
-          
-          <div className="expert-carousel-container">
-            <div className="expert-carousel">
-              {expertCompanies.map((company, index) => (
-                <div className="expert-logo" key={index}>
-                  <div className="logo-placeholder">
-                    {company}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </Container>
+        <div className="expert-logos-container">
+          <div className="expert-logos">
+            {expertCompanies.map((company, index) => (
+              <div className="expert-logo" key={index}>
+                <div className="logo-placeholder">
+                  {company}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Reviews Section */}

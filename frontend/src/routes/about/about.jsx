@@ -115,47 +115,41 @@ const About = () => {
     <div className="about-page">
       <MainNavigation />
 
-      <main className="about-content" style={{ backgroundColor: 'white' }}>
+      <main className="about-content">
         <section className="hero-section">
           <div className="container">
             <div className="hero-wrapper">
               <div className="hero-text">
-                <h1 className="main-heading" style={{ color: 'white' }}>
+                <h1 className="main-heading">
                   About Rolsa
                 </h1>
-                <h1 className="main-heading" style={{ color: 'white' }}>
+                <h1 className="main-heading">
                   Technologies
                 </h1>
               </div>
               {/* Team-focused icon for "about us" */}
-              <div className="hero-icon-container" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <FaUsers style={{ fontSize: '10rem', color: 'white', animation: 'pulse 2s infinite' }} />
+              <div className="hero-icon-container">
+                <FaUsers className="hero-icon pulse-animation" />
               </div>
             </div>
           </div>
         </section>
 
         {/* Added Keeping Greener Energy Simple Section */}
-        <section className="solutions-section" style={{ backgroundColor: 'white', padding: '80px 0' }}>
+        <section className="solutions-section">
           <div className="container">
-            <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '40px', fontSize: '2.5rem' }}>
+            <h2 className="section-title solutions-title">
               Keeping Greener Energy Simple
               <br />
               That's Rolsa Technologies
             </h2>
-            <div className="solutions-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '30px' }}>
+            <div className="solutions-grid">
               {solutions.map((solution, index) => (
-                <div key={index} className="solution-card" style={{
-                  backgroundColor: 'white',
-                  padding: '30px',
-                  borderRadius: '10px',
-                  boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)',
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-                }}>
-                  <h3 className="solution-title" style={{ fontSize: '1.5rem', marginBottom: '15px', textAlign: 'center' }}>
+                <div key={index} className="solution-card">
+                  <h3 className="solution-title">
                     {solution.title}
                   </h3>
-                  <p className="solution-description" style={{ color: '#666', lineHeight: '1.6' }}>
+                  <p className="solution-description">
                     {solution.description}
                   </p>
                 </div>
@@ -164,13 +158,13 @@ const About = () => {
           </div>
         </section>
 
-        <section className="mission-section" style={{ backgroundColor: 'white' }}>
+        <section className="mission-section">
           <div className="container">
             <h2 className="section-title">Our Green Energy Mission</h2>
             <div className="mission-grid">
               {greenEnergyMissions.map((mission, index) => (
                 <div key={index} className="mission-card">
-                  <div className="mission-icon" style={{ fontSize: '3rem', color: '#212529' }}>
+                  <div className="mission-icon">
                     {mission.icon}
                   </div>
                   <h3 className="mission-title">{mission.title}</h3>
@@ -181,67 +175,47 @@ const About = () => {
           </div>
         </section>
 
-        {/* Full-width Recommended by Experts Section */}
-        <section className="experts-section" style={{
-          padding: '60px 0',
-          backgroundColor: 'white',
-          overflow: 'hidden',
-          width: '100vw',
-          position: 'relative',
-          left: '50%',
-          right: '50%',
-          marginLeft: '-50vw',
-          marginRight: '-50vw'
-        }}>
-          <div>
-            <h2 className="section-title" style={{ marginBottom: '40px' }}>Recommended by the Experts</h2>
-
-            <div className="expert-carousel-container" style={{ overflow: 'hidden', width: '100%', position: 'relative' }}>
-              <div className="expert-carousel" style={{ display: 'flex', animation: 'scrollLogos 30s linear infinite' }}>
-                {expertCompanies.map((company, index) => (
-                  <div className="expert-logo" key={index} style={{ padding: '10px', transition: 'transform 0.3s' }}>
-                    <div className="logo-placeholder" style={{
-                      width: '120px',
-                      height: '60px',
-                      backgroundColor: '#f0f0f0',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.8rem',
-                      color: '#666',
-                      borderRadius: '5px',
-                      border: '1px dashed #ccc'
-                    }}>
-                      {company}
-                    </div>
+        {/* Full-width Experts Section */}
+        <section className="experts-section full-width">
+          <div className="container">
+            <h2 className="section-title">Recommended by the Experts</h2>
+          </div>
+          <div className="expert-logos-container">
+            <div className="expert-logos">
+              {expertCompanies.map((company, index) => (
+                <div className="expert-logo" key={index}>
+                  <div className="logo-placeholder">
+                    {company}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
+              {/* Duplicate logos for continuous scrolling effect */}
+              {expertCompanies.map((company, index) => (
+                <div className="expert-logo" key={`duplicate-${index}`}>
+                  <div className="logo-placeholder">
+                    {company}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* Added Reviews Section */}
-        <section className="reviews-section" style={{ padding: '60px 0', backgroundColor: 'white' }}>
+        <section className="reviews-section">
           <div className="container">
-            <h2 className="section-title text-center" style={{ marginBottom: '40px' }}>Our Latest Reviews</h2>
+            <h2 className="section-title text-center">Our Latest Reviews</h2>
 
-            <div className="reviews-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '30px' }}>
+            <div className="reviews-grid">
               {reviews.map((review, index) => (
-                <div key={index} className="review-card" style={{
-                  boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)',
-                  borderRadius: '10px',
-                  padding: '30px',
-                  backgroundColor: 'white',
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-                }}>
-                  <div className="trustpilot-stars" style={{ display: 'flex', marginBottom: '15px' }}>
+                <div key={index} className="review-card">
+                  <div className="trustpilot-stars">
                     {[...Array(review.rating)].map((_, i) => (
-                      <FaStar key={i} style={{ color: '#00b67a', fontSize: '1.25rem', marginRight: '2px' }} />
+                      <FaStar key={i} className="star-icon" />
                     ))}
                   </div>
-                  <p className="review-text" style={{ marginBottom: '20px' }}>"{review.text}"</p>
-                  <p className="review-author" style={{ fontSize: '0.95rem' }}><strong>{review.author} | {review.date}</strong></p>
+                  <p className="review-text">"{review.text}"</p>
+                  <p className="review-author"><strong>{review.author} | {review.date}</strong></p>
                 </div>
               ))}
             </div>
@@ -249,12 +223,7 @@ const About = () => {
         </section>
 
         {/* FAQ section at bottom with all 6 FAQs */}
-        <section className="faq-section" style={{
-          padding: '60px 0',
-          backgroundColor: '#f4f4f4',
-          margin: 0,
-          marginBottom: '0'
-        }}>
+        <section className="faq-section">
           <div className="container">
             <h2 className="section-title">Frequently Asked Questions</h2>
             <div className="accordion">
@@ -278,34 +247,6 @@ const About = () => {
         </section>
       </main>
       <MainFooter />
-
-      {/* Add keyframe animation for logo scrolling */}
-      <style>
-        {`
-    @keyframes scrollLogos {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-10%); }
-    }
-    
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    
-    .faq-section {
-      margin-bottom: 0 !important; /* Ensure no extra margin at the bottom */
-    }
-
-    .about-page main {
-      margin-bottom: 0; /* Ensure no extra margin at the bottom of the main content */
-    }
-
-    .main-footer {
-      margin-top: 0 !important; /* Ensure no extra margin at the top of the footer */
-    }
-  `}
-      </style>
     </div>
   );
 };
