@@ -228,7 +228,7 @@ const AccountPage = () => {
               </Col>
             </Row>
 
-            <Row className="gx-4 mt-4">
+            <Row className="gx-4 mt-4 mb-5">
               <Col md={6}>
                 <Card className="account-card w-100">
                   <Card.Body>
@@ -283,7 +283,7 @@ const AccountPage = () => {
               </Col>
 
               <Col md={6}>
-                <Card className="account-card w-100">
+                <Card className="account-card w-100 mb-2">
                   <Card.Body>
                     <h3 className="mb-3 text-center">
                       <FaCalendarAlt className="icon" /> Installations

@@ -117,8 +117,6 @@ const HomePage = () => {
   // Expert companies
   const expertCompanies = [
     "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer",
-    "uSwitch", "Which?", "Which? Trusted Trader",
-    "B Corporation", "Tesla Powerwall", "Trustpilot", "EthicalConsumer",
     "uSwitch", "Which?", "Which? Trusted Trader"
   ];
 
@@ -329,22 +327,20 @@ const HomePage = () => {
         </Container>
       </section>
 
-      {/* Recommended by Experts Section */}
-      <section className="experts-section full-width">
-        <Container className="text-center">
-          <h2 className="section-title mb-5" style={{ fontSize: '3rem' }}>Recommended by the Experts</h2>
-        </Container>
-        <Carousel indicators={false} controls={true} interval={3000} className="expert-carousel">
-          {expertCompanies.map((company, index) => (
-            <Carousel.Item key={index}>
-              <div className="expert-logo text-center">
-                <div className="logo-placeholder">
-                  {company}
+      {/* Recommended by Experts Section - FIXED CAROUSEL */}
+      <section className="experts-section" style={{ padding: '80px 0', margin: '40px 0', overflow: 'visible', position: 'relative', zIndex: '1' }}>
+          <h2 className="section-title text-center mb-5">Recommended by the Experts</h2>
+          <div className="expert-logos-container" style={{ width: '100vw', overflow: 'hidden', position: 'relative' }}>
+            <div className="expert-logos" style={{ display: 'flex', animation: 'scroll 30s linear infinite', width: 'max-content' }}>
+              {[...expertCompanies, ...expertCompanies].map((company, index) => (
+                <div className="expert-logo" key={index} style={{ padding: '15px', minWidth: '200px', display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+                  <div className="logo-placeholder" style={{ width: '150px', height: '80px', backgroundColor: '#f4f4f4', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '5px', border: '1px dashed #ccc', fontWeight: 'bold', textAlign: 'center' }}>
+                    {company}
+                  </div>
                 </div>
-              </div>
-            </Carousel.Item>
-          ))}
-        </Carousel>
+              ))}
+            </div>
+          </div>
       </section>
 
       {/* Reviews Section */}
