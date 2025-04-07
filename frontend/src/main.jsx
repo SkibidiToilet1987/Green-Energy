@@ -12,7 +12,6 @@ import About from './routes/about/about';
 import Cart from './routes/cart/cart';
 import Checkout from './routes/checkout/checkout';
 import Confirm from './routes/checkout/confirm';
-import Orders from './routes/orders/orders';
 import Bookings from './routes/booking/bookings';
 import Consultations from './routes/booking/consultations/consultations';
 import Installations from './routes/booking/installations/installations';
@@ -58,10 +57,6 @@ const router = createBrowserRouter([
   {
     path:"/cart/checkout/confirm",
     element: <Confirm/>
-  },
-  {
-    path:"/orders",
-    element: <Orders/>
   },
   {
     path: "/bookings",

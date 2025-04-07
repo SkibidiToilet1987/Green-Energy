@@ -7,25 +7,27 @@ import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom';
 
 const AccountPage = () => {
-  const [localPart, setLocalPart] = useState('');
-  const [userInfo, setUserInfo] = useState({ fname: '', sname: '', email: '', _id: '' });
-  const [consultations, setConsultations] = useState([]);
-  const [installations, setInstallations] = useState([]);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState({ type: '', id: '' });
-  const [itemToReschedule, setItemToReschedule] = useState({ type: '', id: '' });
-  const [newDate, setNewDate] = useState('');
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  // State variables to manage user data, consultations, installations, and UI modals
+  const [localPart, setLocalPart] = useState(''); // Stores the local part of the user's email
+  const [userInfo, setUserInfo] = useState({ fname: '', sname: '', email: '', _id: '' }); // Stores user info
+  const [consultations, setConsultations] = useState([]); // Stores consultations data
+  const [installations, setInstallations] = useState([]); // Stores installations data
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // Controls the delete confirmation modal
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false); // Controls the reschedule modal
+  const [itemToDelete, setItemToDelete] = useState({ type: '', id: '' }); // Stores the item to delete
+  const [itemToReschedule, setItemToReschedule] = useState({ type: '', id: '' }); // Stores the item to reschedule
+  const [newDate, setNewDate] = useState(''); // Stores the new date for rescheduling
+  const [error, setError] = useState(null); // Stores error messages
+  const navigate = useNavigate(); // Used for navigation
 
+  // Fetch user data, consultations, and installations when the component loads
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token'); // Get the token from localStorage
         if (!token) {
           console.error('No token found. Redirecting to login...');
-          navigate('/login', { state: { from: '/account' } });
+          navigate('/login', { state: { from: '/account' } }); // Redirect to login if no token
           return;
         }
 
@@ -38,7 +40,7 @@ const AccountPage = () => {
         });
 
         const { email, fname, sname, _id } = userResponse.data;
-        const localPartOfEmail = email.split('@')[0];
+        const localPartOfEmail = email.split('@')[0]; // Extract the local part of the email
         setLocalPart(localPartOfEmail);
         setUserInfo({ fname, sname, email, _id });
 
@@ -71,6 +73,7 @@ const AccountPage = () => {
     fetchUserData();
   }, [navigate]);
 
+  // Helper functions to format date and time
   const formatTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -81,6 +84,7 @@ const AccountPage = () => {
     return date.toLocaleDateString();
   };
 
+  // Handle rescheduling of consultations or installations
   const handleReschedule = (type, id) => {
     setItemToReschedule({ type, id });
     setShowRescheduleModal(true);
@@ -105,14 +109,14 @@ const AccountPage = () => {
 
       if (response.status === 200) {
         if (type === 'consultations') {
-          setConsultations(prev =>
-            prev.map(item =>
+          setConsultations((prev) =>
+            prev.map((item) =>
               item._id === id ? { ...item, consultationDate: newDate } : item
             )
           );
         } else if (type === 'installations') {
-          setInstallations(prev =>
-            prev.map(item =>
+          setInstallations((prev) =>
+            prev.map((item) =>
               item._id === id ? { ...item, installationDate: newDate } : item
             )
           );
@@ -127,6 +131,7 @@ const AccountPage = () => {
     }
   };
 
+  // Handle deletion of consultations or installations
   const handleDeleteConfirmation = (type, id) => {
     setItemToDelete({ type, id });
     setShowConfirmModal(true);
@@ -147,9 +152,9 @@ const AccountPage = () => {
 
       if (response.status === 200) {
         if (type === 'consultations') {
-          setConsultations(prev => prev.filter(item => item._id !== id));
+          setConsultations((prev) => prev.filter((item) => item._id !== id));
         } else if (type === 'installations') {
-          setInstallations(prev => prev.filter(item => item._id !== id));
+          setInstallations((prev) => prev.filter((item) => item._id !== id));
         }
         setShowConfirmModal(false);
         setItemToDelete({ type: '', id: '' });
@@ -160,6 +165,7 @@ const AccountPage = () => {
     }
   };
 
+  // Handle user logout
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/login');
@@ -192,6 +198,7 @@ const AccountPage = () => {
               </div>
             )}
             <Row className="gx-4 gy-4">
+              {/* Account Overview Card */}
               <Col md={6} className="d-flex">
                 <Card className="account-card flex-grow-1">
                   <Card.Body className="p-4 d-flex flex-column">
@@ -212,6 +219,7 @@ const AccountPage = () => {
                 </Card>
               </Col>
 
+              {/* Personal Information Card */}
               <Col md={6} className="d-flex">
                 <Card className="account-card flex-grow-1">
                   <Card.Body className="p-4 d-flex flex-column">
@@ -228,7 +236,9 @@ const AccountPage = () => {
               </Col>
             </Row>
 
+            {/* Consultations and Installations */}
             <Row className="gx-4 mt-4 mb-5">
+              {/* Consultations */}
               <Col md={6}>
                 <Card className="account-card w-100">
                   <Card.Body>
@@ -282,6 +292,7 @@ const AccountPage = () => {
                 </Card>
               </Col>
 
+              {/* Installations */}
               <Col md={6}>
                 <Card className="account-card w-100 mb-2">
                   <Card.Body>
@@ -339,6 +350,7 @@ const AccountPage = () => {
         </section>
       </main>
 
+      {/* Delete Confirmation Modal */}
       <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Deletion</Modal.Title>
@@ -356,6 +368,7 @@ const AccountPage = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* Reschedule Modal */}
       <Modal show={showRescheduleModal} onHide={() => setShowRescheduleModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Reschedule</Modal.Title>

@@ -160,7 +160,7 @@ export default function Register() {
             </section>
             <Container fluid="true" className="vh-100 d-flex justify-content-center align-items-center">
                 <Row className="w-50 justify-content-center">
-                    <Col md={7} style={{ paddingTop: "40px" }}>
+                    <Col md={7} style={{ paddingTop: "0px", paddingBottom: "60px" }}>
                         <Card className="shadow">
                             <Card.Body>
                                 <Card.Title className="fs-2 text-center"><strong>Signup</strong></Card.Title>

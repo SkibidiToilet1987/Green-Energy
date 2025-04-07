@@ -5,13 +5,8 @@ import {
   FaLeaf,
   FaChartLine,
   FaTools,
-  FaCalendarCheck,
   FaHome,
-  FaLightbulb,
   FaRecycle,
-  FaWater,
-  FaWind,
-  FaCheck,
   FaStar,
   FaThermometerHalf,
   FaChargingStation,
@@ -19,7 +14,6 @@ import {
   FaArrowRight,
   FaCertificate,
   FaMedal,
-  FaHandshake,
   FaSun,
   FaMoon
 } from 'react-icons/fa';

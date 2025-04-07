@@ -145,7 +145,7 @@ const Products = () => {
         </Container>
       </div>
 
-      <Container className="py-5">
+      <Container className="py-4">
         <Row className="mb-4">
           <Col>
             <h2 className="fw-bold">Green Energy Products</h2>

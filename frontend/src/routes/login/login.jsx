@@ -116,7 +116,7 @@ export default function Login() {
             </section>
             <Container className="vh-100 d-flex justify-content-center align-items-center">
                 <Row className="w-50 justify-content-center">
-                    <Col md={10} style={{ paddingTop: "40px" }}>
+                    <Col md={10} style={{ paddingTop: "0px", paddingBottom: "60px" }}>
                         <Card className="shadow">
                             <Card.Body>
                                 <Card.Title className="fs-2 text-center"><strong>Login</strong></Card.Title>
