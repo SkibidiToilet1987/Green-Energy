@@ -18,3 +18,4 @@ const calculatorSchema = new mongoose.Schema({
 }, { collection: 'carbonCalculator' });
 
 module.exports = mongoose.model('CarbonCalculator', calculatorSchema);
+
